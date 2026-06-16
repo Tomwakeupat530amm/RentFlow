@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --color-primary: #0d9488;
+  --color-primary-light: #5eead4;
+  --color-accent: #f97316;
+  --color-bg: #f0f2f5;
+  --color-surface: #ffffff;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-plus-jakarta);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Ant Design overrides for premium feel */
+.ant-layout-sider {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: #0f172a !important;
+}
+
+.ant-menu-dark {
+  background: #0f172a !important;
+}
+
+.ant-menu-item {
+  transition: all 0.2s ease !important;
+}
+
+/* Fix Links inside menu items to not show default link styling */
+.ant-menu-item a,
+.ant-menu-item a:hover,
+.ant-menu-item a:focus {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.ant-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.ant-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+}
+
+.ant-btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Loading skeleton animation — used by loading.tsx files */
+.skeleton-block {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -1,0 +1,68 @@
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\next-env.d.ts
+  3:1 Do not use a triple slash reference for ./.next/types/routes.d.ts, use `import` style instead. (@typescript-eslint/triple-slash-reference)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(auth)\login\page.tsx
+  4:62 'Space' is defined but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\buildings\BuildingsClient.tsx
+  5:62 'Statistic' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:73 'Space' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:89 'Dropdown' is defined but never used. (@typescript-eslint/no-unused-vars)
+  9:26 'MoreOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\buildings\[id]\BuildingDetailClient.tsx
+  10:5 'ClockCircleOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\buildings\[id]\CsvImportModal.tsx
+  125:26 'key' is defined but never used. (@typescript-eslint/no-unused-vars)
+  125:31 '_error' is defined but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\buildings\[id]\ServicePricesTable.tsx
+  4:62 'Popconfirm' is defined but never used. (@typescript-eslint/no-unused-vars)
+  4:82 'Space' is defined but never used. (@typescript-eslint/no-unused-vars)
+  49:82 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  125:92 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  156:25 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  156:34 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\contracts\ContractFormModal.tsx
+  229:100 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  241:100 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\contracts\ContractsClient.tsx
+  143:23 'config' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\dashboard\actions.ts
+  32:9 'roomStats' is never reassigned. Use 'const' instead. (prefer-const)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\incidents\IncidentFormModal.tsx
+  12:9 'Text' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+  22:84 'userId' is defined but never used. (@typescript-eslint/no-unused-vars)
+  73:8 React Hook useEffect has a missing dependency: 'fetchRooms'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\incidents\IncidentsClient.tsx
+  4:16 'Table' is defined but never used. (@typescript-eslint/no-unused-vars)
+  4:38 'Tag' is defined but never used. (@typescript-eslint/no-unused-vars)
+  4:58 'Popconfirm' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:24 'EditOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:38 'DeleteOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:54 'CheckCircleOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:75 'SyncOutlined' is defined but never used. (@typescript-eslint/no-unused-vars)
+  6:8 'dayjs' is defined but never used. (@typescript-eslint/no-unused-vars)
+  7:41 'IncidentPriority' is defined but never used. (@typescript-eslint/no-unused-vars)
+  15:9 'Text' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+  32:12 'isSubmitting' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+  32:26 'setIsSubmitting' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\incidents\KanbanBoard.tsx
+  3:17 'useMemo' is defined but never used. (@typescript-eslint/no-unused-vars)
+  4:121 'DragOverEvent' is defined but never used. (@typescript-eslint/no-unused-vars)
+  5:27 'arrayMove' is defined but never used. (@typescript-eslint/no-unused-vars)
+  8:16 'Space' is defined but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\invoices\[id]\page.tsx
+  3:62 'Divider' is defined but never used. (@typescript-eslint/no-unused-vars)
+  37:44 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  85:45 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  86:41 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\invoices\actions.ts
+  128:29 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\meters\MetersClient.tsx
+  9:9 'Title' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+  54:70 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  189:37 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\meters\actions.ts
+  83:69 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+  88:21 Unexpected any. Specify a different type. (@typescript-eslint/no-explicit-any)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\src\app\(dashboard)\rooms\RoomsClient.tsx
+  12:9 'Text' is assigned a value but never used. (@typescript-eslint/no-unused-vars)
+C:\Users\minhn\OneDrive\Desktop\App quan ly phong tro\testSupabase.js
+  1:26 A `require()` style import is forbidden. (@typescript-eslint/no-require-imports)
