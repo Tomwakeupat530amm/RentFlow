@@ -1,11 +1,6 @@
 import React from 'react';
 import { createClient } from '@/lib/supabase/server';
-import dynamic from 'next/dynamic';
-
-const TimelineCalendarClient = dynamic(() => import('./TimelineCalendarClient'), { 
-    ssr: false, 
-    loading: () => <div className="p-8 flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div></div> 
-});
+import TimelineCalendarClient from './TimelineCalendarClient';
 
 export const metadata = {
     title: 'Lịch Đặt Phòng Homestay | RentFlow',

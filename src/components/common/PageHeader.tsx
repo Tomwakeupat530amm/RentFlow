@@ -5,7 +5,6 @@ import { Breadcrumb, Typography } from 'antd';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-const { Title, Text } = Typography;
 
 // Vietnamese labels for each route segment
 const ROUTE_LABELS: Record<string, string> = {
@@ -87,13 +86,13 @@ export default function PageHeader({
                 }}
             >
                 <div>
-                    <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
+                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 700 }}>
                         {displayTitle}
-                    </Title>
+                    </Typography.Title>
                     {subtitle && (
-                        <Text type="secondary" style={{ fontSize: 14, marginTop: 2, display: 'block' }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 14, marginTop: 2, display: 'block' }}>
                             {subtitle}
-                        </Text>
+                        </Typography.Text>
                     )}
                 </div>
 

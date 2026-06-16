@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import { updateProfile, updateOrganization, regenerateInviteCode } from './actions';
 
-const { Text } = Typography;
 
 interface Props {
     profile: {
@@ -96,7 +95,7 @@ export default function SettingsClient({ profile, email, members }: Props) {
             key: 'full_name',
             render: (name: string | null, record: { id: string; role: string }) => (
                 <Space>
-                    <Text strong>{name || 'Chưa đặt tên'}</Text>
+                    <Typography.Text strong>{name || 'Chưa đặt tên'}</Typography.Text>
                     {record.role === 'owner' && <Tag color="gold" icon={<CrownOutlined />}>Owner</Tag>}
                     {record.id === profile?.id && <Tag>Bạn</Tag>}
                 </Space>
@@ -188,7 +187,7 @@ export default function SettingsClient({ profile, email, members }: Props) {
 
                             {/* Invite Code */}
                             <div>
-                                <Text style={{ fontWeight: 500, display: 'block', marginBottom: 8 }}>Mã mời</Text>
+                                <Typography.Text style={{ fontWeight: 500, display: 'block', marginBottom: 8 }}>Mã mời</Typography.Text>
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -198,7 +197,7 @@ export default function SettingsClient({ profile, email, members }: Props) {
                                     borderRadius: 8,
                                     border: '1px dashed #e2e8f0',
                                 }}>
-                                    <Text
+                                    <Typography.Text
                                         style={{
                                             fontFamily: 'monospace',
                                             fontSize: 18,
@@ -209,7 +208,7 @@ export default function SettingsClient({ profile, email, members }: Props) {
                                         }}
                                     >
                                         {inviteCode}
-                                    </Text>
+                                    </Typography.Text>
                                     <Tooltip title="Sao chép">
                                         <Button type="text" icon={<CopyOutlined />} onClick={handleCopyCode} />
                                     </Tooltip>
@@ -219,13 +218,13 @@ export default function SettingsClient({ profile, email, members }: Props) {
                                         </Tooltip>
                                     )}
                                 </div>
-                                <Text type="secondary" style={{ fontSize: 12, marginTop: 6, display: 'block' }}>
+                                <Typography.Text type="secondary" style={{ fontSize: 12, marginTop: 6, display: 'block' }}>
                                     Gửi mã này cho nhân viên/kế toán để họ tham gia tổ chức khi đăng ký.
-                                </Text>
+                                </Typography.Text>
                             </div>
                         </>
                     ) : (
-                        <Text type="secondary">Bạn chưa thuộc tổ chức nào.</Text>
+                        <Typography.Text type="secondary">Bạn chưa thuộc tổ chức nào.</Typography.Text>
                     )}
                 </Card>
 
@@ -250,15 +249,15 @@ export default function SettingsClient({ profile, email, members }: Props) {
                 >
                     {planType === 'premium' ? (
                         <div>
-                            <Text>Bạn đang sử dụng gói <Text strong style={{ color: '#faad14' }}>Premium</Text>.</Text>
+                            <Typography.Text>Bạn đang sử dụng gói <Typography.Text strong style={{ color: '#faad14' }}>Premium</Typography.Text>.</Typography.Text>
                             <br />
-                            <Text type="secondary" style={{ fontSize: 13 }}>
+                            <Typography.Text type="secondary" style={{ fontSize: 13 }}>
                                 Không giới hạn tòa nhà, phòng và toàn bộ tính năng nâng cao.
-                            </Text>
+                            </Typography.Text>
                         </div>
                     ) : (
                         <div>
-                            <Text>Bạn đang sử dụng gói <Text strong>Free</Text> (tối đa 2 tòa / 30 phòng).</Text>
+                            <Typography.Text>Bạn đang sử dụng gói <Typography.Text strong>Free</Typography.Text> (tối đa 2 tòa / 30 phòng).</Typography.Text>
                             <br />
                             <Button
                                 type="link"

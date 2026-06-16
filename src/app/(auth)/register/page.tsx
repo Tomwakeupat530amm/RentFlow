@@ -14,7 +14,6 @@ import {
 import Link from 'next/link';
 import { registerAndCreateOrg, registerAndJoinOrg, loginWithGoogle } from '../actions';
 
-const { Title, Text } = Typography;
 
 type RegisterMode = 'create' | 'join';
 
@@ -218,15 +217,15 @@ export default function RegisterPage() {
                         >
                             <HomeOutlined />
                         </div>
-                        <Title level={4} style={{ margin: 0 }}>RentFlow</Title>
+                        <Typography.Title level={4} style={{ margin: 0 }}>RentFlow</Typography.Title>
                     </div>
 
-                    <Title level={3} style={{ margin: 0, fontWeight: 700 }}>
+                    <Typography.Title level={3} style={{ margin: 0, fontWeight: 700 }}>
                         Tạo tài khoản
-                    </Title>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: 24, marginTop: 4 }}>
+                    </Typography.Title>
+                    <Typography.Text type="secondary" style={{ display: 'block', marginBottom: 24, marginTop: 4 }}>
                         Đăng ký miễn phí để bắt đầu quản lý phòng trọ.
-                    </Text>
+                    </Typography.Text>
 
 
 
@@ -247,7 +246,7 @@ export default function RegisterPage() {
 
                     {/* Mode Selector */}
                     <div style={{ marginBottom: 20 }}>
-                        <Text style={{ fontWeight: 500, marginBottom: 8, display: 'block' }}>Bạn muốn:</Text>
+                        <Typography.Text style={{ fontWeight: 500, marginBottom: 8, display: 'block' }}>Bạn muốn:</Typography.Text>
                         <Radio.Group
                             value={mode}
                             onChange={(e) => setMode(e.target.value)}

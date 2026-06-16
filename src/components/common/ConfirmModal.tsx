@@ -4,7 +4,6 @@ import React from 'react';
 import { Modal, Typography } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 
-const { Text } = Typography;
 
 interface ConfirmModalProps {
     /** Is the modal visible */
@@ -68,7 +67,7 @@ export default function ConfirmModal({
             width={420}
         >
             <div style={{ paddingLeft: 32, paddingTop: 4 }}>
-                <Text type="secondary">{description}</Text>
+                <Typography.Text type="secondary">{description}</Typography.Text>
             </div>
         </Modal>
     );

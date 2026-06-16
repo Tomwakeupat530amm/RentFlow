@@ -10,7 +10,6 @@ import { EditOutlined, DeleteOutlined, CheckCircleOutlined, SyncOutlined, MoreOu
 import dayjs from 'dayjs';
 import type { Incident, IncidentStatus, IncidentPriority } from '@/types/database';
 
-const { Text } = Typography;
 
 interface KanbanCardProps {
     incident: Incident;
@@ -69,7 +68,7 @@ const KanbanCard = ({ incident, isOwner, onEdit, onDelete }: KanbanCardProps) =>
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card size="small" className="shadow-sm hover:shadow-md transition-shadow border-gray-200" styles={{ body: { padding: '12px' } }}>
                 <div className="flex justify-between items-start mb-2">
-                    <Text strong className="truncate" style={{ maxWidth: '85%' }}>{incident.title}</Text>
+                    <Typography.Text strong className="truncate" style={{ maxWidth: '85%' }}>{incident.title}</Typography.Text>
                     <Dropdown menu={{ items }} trigger={['click']} placement="bottomRight">
                         <Button type="text" size="small" icon={<MoreOutlined />} onClick={e => e.stopPropagation()} />
                     </Dropdown>
@@ -110,7 +109,7 @@ const KanbanColumn = ({ id, title, incidents, isOwner, onEdit, onDelete, icon }:
         <div className="flex flex-col bg-gray-50 rounded-lg p-3 w-full min-h-[500px]">
             <div className="flex items-center mb-4 pb-2 border-b border-gray-200">
                 <span className="mr-2 text-lg">{icon}</span>
-                <Text strong className="text-gray-700">{title}</Text>
+                <Typography.Text strong className="text-gray-700">{title}</Typography.Text>
                 <Tag className="ml-auto rounded-full mr-0 px-2 py-0 border-none bg-gray-200 text-gray-600">
                     {incidents.length}
                 </Tag>

@@ -6,7 +6,6 @@ import { UploadOutlined, FileExcelOutlined, DownloadOutlined } from '@ant-design
 import type { RoomFormData, RoomType, RoomStatus } from '@/types/database';
 import { bulkImportRooms } from './actions';
 
-const { Text } = Typography;
 
 interface CsvImportModalProps {
     open: boolean;
@@ -85,7 +84,7 @@ const previewColumns = [
         key: '_error',
         width: 140,
         render: (err: string | undefined) =>
-            err ? <Text type="danger" style={{ fontSize: 12 }}>{err}</Text> : null,
+            err ? <Typography.Text type="danger" style={{ fontSize: 12 }}>{err}</Typography.Text> : null,
     },
 ];
 
@@ -190,9 +189,9 @@ export default function CsvImportModal({ open, buildingId, onClose, onSuccess }:
             {!fileSelected ? (
                 <div style={{ textAlign: 'center', padding: '24px 0' }}>
                     <div style={{ marginBottom: 16 }}>
-                        <Text type="secondary">
+                        <Typography.Text type="secondary">
                             Upload file CSV chứa danh sách phòng. File cần có header row với các cột:
-                        </Text>
+                        </Typography.Text>
                         <div style={{
                             marginTop: 8,
                             padding: '8px 12px',

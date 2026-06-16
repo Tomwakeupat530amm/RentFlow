@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, Typography } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
-const { Text } = Typography;
 
 interface StatCardProps {
     /** Card title / label */
@@ -46,9 +45,9 @@ export default function StatCard({
         >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                    <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
+                    <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
                         {title}
-                    </Text>
+                    </Typography.Text>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 8 }}>
                         <span style={{ fontSize: 28, fontWeight: 800, color: '#1e293b', lineHeight: 1 }}>
                             {value}

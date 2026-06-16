@@ -5,7 +5,6 @@ import { Card, Button, Typography, message, Alert, Divider } from 'antd';
 import { CreditCardOutlined } from '@ant-design/icons';
 import type { Invoice, PaymentSettingsFormData } from '@/types/database';
 
-const { Title, Text } = Typography;
 
 interface PaymentSectionProps {
     invoice: Partial<Invoice> & { id: string, total_amount: number | string, paid_amount: number | string };
@@ -60,10 +59,10 @@ export default function PaymentSection({ invoice, paymentSettings, hasPayosConfi
         <Card title="Phương thức thanh toán" className="mt-6 shadow-sm border-blue-100" headStyle={{ backgroundColor: '#f0f8ff' }}>
             {hasPayosConfig ? (
                 <div className="text-center py-6">
-                    <Title level={5} className="mb-4">Thanh toán tự động 24/7 (Khuyên dùng)</Title>
-                    <Text type="secondary" className="block mb-6">
+                    <Typography.Title level={5} className="mb-4">Thanh toán tự động 24/7 (Khuyên dùng)</Typography.Title>
+                    <Typography.Text type="secondary" className="block mb-6">
                         Thanh toán qua cổng PayOS. Hệ thống sẽ tự động xác nhận hoá đơn ngay lập tức sau khi chuyển khoản thành công.
-                    </Text>
+                    </Typography.Text>
                     <Button 
                         type="primary" 
                         size="large" 
@@ -78,31 +77,31 @@ export default function PaymentSection({ invoice, paymentSettings, hasPayosConfi
             ) : paymentSettings ? (
                 <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-4">
                     <div className="flex-1 text-center md:text-left">
-                        <Title level={5}>Chuyển khoản Ngân hàng (VietQR)</Title>
-                        <Text className="block mt-2 text-slate-500">
+                        <Typography.Title level={5}>Chuyển khoản Ngân hàng (VietQR)</Typography.Title>
+                        <Typography.Text className="block mt-2 text-slate-500">
                             Quý khách vui lòng quét mã QR bằng ứng dụng ngân hàng. Nội dung và số tiền đã được điền sẵn.
-                        </Text>
+                        </Typography.Text>
                         <div className="mt-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <div className="flex justify-between mb-2">
-                                <Text type="secondary">Ngân hàng:</Text>
-                                <Text strong>{paymentSettings.bank_name}</Text>
+                                <Typography.Text type="secondary">Ngân hàng:</Typography.Text>
+                                <Typography.Text strong>{paymentSettings.bank_name}</Typography.Text>
                             </div>
                             <div className="flex justify-between mb-2">
-                                <Text type="secondary">Số tài khoản:</Text>
-                                <Text strong className="text-lg text-blue-600">{paymentSettings.bank_account}</Text>
+                                <Typography.Text type="secondary">Số tài khoản:</Typography.Text>
+                                <Typography.Text strong className="text-lg text-blue-600">{paymentSettings.bank_account}</Typography.Text>
                             </div>
                             <div className="flex justify-between mb-2">
-                                <Text type="secondary">Chủ tài khoản:</Text>
-                                <Text strong>{paymentSettings.account_name}</Text>
+                                <Typography.Text type="secondary">Chủ tài khoản:</Typography.Text>
+                                <Typography.Text strong>{paymentSettings.account_name}</Typography.Text>
                             </div>
                             <div className="flex justify-between">
-                                <Text type="secondary">Số tiền:</Text>
-                                <Text strong className="text-lg text-red-500">{remaining.toLocaleString()} đ</Text>
+                                <Typography.Text type="secondary">Số tiền:</Typography.Text>
+                                <Typography.Text strong className="text-lg text-red-500">{remaining.toLocaleString()} đ</Typography.Text>
                             </div>
                             <Divider className="my-3" />
                             <div className="flex justify-between">
-                                <Text type="secondary">Nội dung CK:</Text>
-                                <Text strong className="bg-yellow-100 px-2 py-1 rounded">Thanh toan HD {invoice.id.split('-')[0]}</Text>
+                                <Typography.Text type="secondary">Nội dung CK:</Typography.Text>
+                                <Typography.Text strong className="bg-yellow-100 px-2 py-1 rounded">Thanh toan HD {invoice.id.split('-')[0]}</Typography.Text>
                             </div>
                         </div>
                     </div>

@@ -15,7 +15,6 @@ import Link from 'next/link';
 import StatCard from '@/components/common/StatCard';
 import RevenueChart from '@/components/dashboard/RevenueChart';
 
-const { Title, Text } = Typography;
 
 interface DashboardStats {
     fullName: string;
@@ -93,12 +92,12 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             {/* Page Header */}
             <div>
-                <Title level={4} style={{ margin: 0, fontWeight: 700 }}>
+                <Typography.Title level={4} style={{ margin: 0, fontWeight: 700 }}>
                     {greeting}, {fullName} 👋
-                </Title>
-                <Text type="secondary" style={{ fontSize: 14 }}>
+                </Typography.Title>
+                <Typography.Text type="secondary" style={{ fontSize: 14 }}>
                     Đây là tổng quan hệ thống ngày hôm nay.
-                </Text>
+                </Typography.Text>
             </div>
 
             {/* Stat Cards */}
@@ -125,15 +124,15 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
                         title={<span style={{ fontWeight: 700, fontSize: 15 }}>Trạng thái phòng</span>}
                     >
                         {roomStats.total === 0 ? (
-                            <Text type="secondary">Chưa có phòng nào.</Text>
+                            <Typography.Text type="secondary">Chưa có phòng nào.</Typography.Text>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                                        <Text>Đang cho thuê</Text>
-                                        <Text strong style={{ color: '#0d9488' }}>
+                                        <Typography.Text>Đang cho thuê</Typography.Text>
+                                        <Typography.Text strong style={{ color: '#0d9488' }}>
                                             {roomStats.occupied} / {roomStats.total}
-                                        </Text>
+                                        </Typography.Text>
                                     </div>
                                     <Progress
                                         percent={roomStats.total > 0 ? Math.round((roomStats.occupied / roomStats.total) * 100) : 0}
@@ -145,10 +144,10 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                                        <Text>Đang trống</Text>
-                                        <Text strong style={{ color: '#3b82f6' }}>
+                                        <Typography.Text>Đang trống</Typography.Text>
+                                        <Typography.Text strong style={{ color: '#3b82f6' }}>
                                             {roomStats.vacant} / {roomStats.total}
-                                        </Text>
+                                        </Typography.Text>
                                     </div>
                                     <Progress
                                         percent={roomStats.total > 0 ? Math.round((roomStats.vacant / roomStats.total) * 100) : 0}
@@ -160,10 +159,10 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                                        <Text>Đang sửa chữa</Text>
-                                        <Text strong style={{ color: '#f59e0b' }}>
+                                        <Typography.Text>Đang sửa chữa</Typography.Text>
+                                        <Typography.Text strong style={{ color: '#f59e0b' }}>
                                             {roomStats.maintenance} / {roomStats.total}
-                                        </Text>
+                                        </Typography.Text>
                                     </div>
                                     <Progress
                                         percent={roomStats.total > 0 ? Math.round((roomStats.maintenance / roomStats.total) * 100) : 0}
@@ -182,9 +181,9 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
                                     }}
                                     styles={{ body: { padding: 16, textAlign: 'center' } }}
                                 >
-                                    <Text type="secondary" style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
                                         Tỷ lệ lấp đầy
-                                    </Text>
+                                    </Typography.Text>
                                     <div style={{ fontSize: 36, fontWeight: 800, color: '#0d9488', lineHeight: 1.2, marginTop: 4 }}>
                                         {occupancyRate}%
                                     </div>

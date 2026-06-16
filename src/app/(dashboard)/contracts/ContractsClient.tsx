@@ -17,7 +17,6 @@ import { Drawer, Descriptions, Divider, Grid } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
 interface Props {
@@ -104,19 +103,19 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
             key: 'info',
             render: (_: unknown, record: Contract) => (
                 <div>
-                    <Text strong style={{ fontSize: 14, color: '#0d9488' }}>
+                    <Typography.Text strong style={{ fontSize: 14, color: '#0d9488' }}>
                         Phòng {record.room?.name}
-                    </Text>
+                    </Typography.Text>
                     {record.room?.building && (
-                        <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
                             ({record.room.building.name})
-                        </Text>
+                        </Typography.Text>
                     )}
                     <div style={{ marginTop: 4 }}>
-                        <Text style={{ fontSize: 14 }}>{record.tenant?.full_name}</Text>
-                        <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
+                        <Typography.Text style={{ fontSize: 14 }}>{record.tenant?.full_name}</Typography.Text>
+                        <Typography.Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
                             SĐT: {record.tenant?.phone || '—'}
-                        </Text>
+                        </Typography.Text>
                     </div>
                 </div>
             ),
@@ -126,7 +125,7 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
             key: 'financials',
             render: (_: unknown, record: Contract) => (
                 <div>
-                    <div>Giá: <Text strong>{formatCurrency(record.rent_amount)}</Text></div>
+                    <div>Giá: <Typography.Text strong>{formatCurrency(record.rent_amount)}</Typography.Text></div>
                     <div style={{ fontSize: 12, color: '#64748b' }}>
                         Cọc: {formatCurrency(record.deposit)}
                     </div>
@@ -138,7 +137,7 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
             key: 'period',
             render: (_: unknown, record: Contract) => (
                 <div>
-                    <div>Từ: <Text>{dayjs(record.start_date).format('DD/MM/YYYY')}</Text></div>
+                    <div>Từ: <Typography.Text>{dayjs(record.start_date).format('DD/MM/YYYY')}</Typography.Text></div>
                     <div style={{ fontSize: 12, color: '#64748b' }}>
                         Đến: {record.end_date ? dayjs(record.end_date).format('DD/MM/YYYY') : 'Vô thời hạn'}
                     </div>
@@ -180,7 +179,7 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
                         Xem
                     </Button>
                 ) : (
-                    <Text type="secondary">—</Text>
+                    <Typography.Text type="secondary">—</Typography.Text>
                 ),
         },
         {
@@ -344,11 +343,11 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                                     <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 18 }} />
-                                    <Text strong style={{ fontSize: 15 }}>Hợp đồng đã được xác nhận</Text>
+                                    <Typography.Text strong style={{ fontSize: 15 }}>Hợp đồng đã được xác nhận</Typography.Text>
                                 </div>
-                                <Text type="secondary" style={{ display: 'block', marginBottom: 12, fontSize: 13 }}>
+                                <Typography.Text type="secondary" style={{ display: 'block', marginBottom: 12, fontSize: 13 }}>
                                     Bản scan hợp đồng có chữ ký vật lý đã được tải lên hệ thống.
-                                </Text>
+                                </Typography.Text>
                                 <Button
                                     icon={<FileTextOutlined />}
                                     href={selectedContract.scan_url}
@@ -369,11 +368,11 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
                             }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                                     <FileTextOutlined style={{ color: '#faad14', fontSize: 18 }} />
-                                    <Text strong style={{ fontSize: 15 }}>Chưa có bản scan</Text>
+                                    <Typography.Text strong style={{ fontSize: 15 }}>Chưa có bản scan</Typography.Text>
                                 </div>
-                                <Text type="secondary" style={{ fontSize: 13 }}>
+                                <Typography.Text type="secondary" style={{ fontSize: 13 }}>
                                     Hãy chỉnh sửa hợp đồng và tải lên bản scan có chữ ký để xác nhận.
-                                </Text>
+                                </Typography.Text>
                             </div>
                         )}
                     </div>

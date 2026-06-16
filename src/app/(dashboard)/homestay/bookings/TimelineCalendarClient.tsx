@@ -20,6 +20,11 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
     const [bookings, setBookings] = useState<Booking[]>(initialBookings);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState<Partial<Booking> | null>(null);
+    const [isMounted, setIsMounted] = useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Sync bookings if initialBookings changes (from server revalidation)
     React.useEffect(() => {
@@ -48,6 +53,10 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
             default: return 'bg-gray-400 border-gray-500';
         }
     };
+
+    if (!isMounted) {
+        return <div className="p-8 flex justify-center items-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div></div>;
+    }
 
     return (
         <div className="flex flex-col h-full bg-white w-full">

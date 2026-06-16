@@ -5,7 +5,6 @@ import { Form, Input, Button, Select, message, Alert, Card, Typography } from 'a
 import { updatePaymentSettings } from './actions';
 import type { PaymentSettingsFormData } from '@/types/database';
 
-const { Title, Text } = Typography;
 
 interface Bank {
     id: number;
@@ -65,10 +64,10 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
     return (
         <Card className="max-w-2xl mx-auto shadow-sm border-slate-200">
             <div className="mb-6">
-                <Title level={4}>Cấu hình Thanh toán VietQR</Title>
-                <Text className="text-slate-500">
+                <Typography.Title level={4}>Cấu hình Thanh toán VietQR</Typography.Title>
+                <Typography.Text className="text-slate-500">
                     Hệ thống sẽ tự động tạo mã QR trên mỗi hoá đơn dựa vào thông tin ngân hàng của bạn.
-                </Text>
+                </Typography.Text>
             </div>
 
             <Alert

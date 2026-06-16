@@ -6,7 +6,6 @@ import { SaveOutlined, ReloadOutlined, ScanOutlined, CrownOutlined } from '@ant-
 import dayjs, { Dayjs } from 'dayjs';
 import { getMeterRecords, upsertMeterRecords } from './actions';
 
-const { Text } = Typography;
 
 interface MeterRow {
     room_id: string;
@@ -145,7 +144,7 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
             width: 120,
             render: (name: string, record: MeterRow) => (
                 <div>
-                    <Text strong>{name}</Text>
+                    <Typography.Text strong>{name}</Typography.Text>
                     <br />
                     {record.status === 'occupied' ? <Tag color="green">Đang thuê</Tag> : <Tag color="default">Trống</Tag>}
                 </div>
@@ -175,7 +174,7 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                     title: 'Tiêu thụ',
                     dataIndex: 'electricity_usage',
                     width: 90,
-                    render: (val: number) => <Text strong type="danger">{val}</Text>
+                    render: (val: number) => <Typography.Text strong type="danger">{val}</Typography.Text>
                 }
             ]
         },
@@ -203,7 +202,7 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                     title: 'Tiêu thụ',
                     dataIndex: 'water_usage',
                     width: 90,
-                    render: (val: number) => <Text strong style={{ color: '#0d9488' }}>{val}</Text>
+                    render: (val: number) => <Typography.Text strong style={{ color: '#0d9488' }}>{val}</Typography.Text>
                 }
             ]
         },
@@ -242,14 +241,14 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                     styles={{ body: { padding: '16px' } }}
                 >
                     <div className="flex justify-between items-center mb-3">
-                        <Text className="text-lg font-bold text-teal-700">{record.room_name}</Text>
+                        <Typography.Text className="text-lg font-bold text-teal-700">{record.room_name}</Typography.Text>
                         {record.status === 'occupied' ? <Tag color="green" className="m-0">Đang thuê</Tag> : <Tag color="default" className="m-0">Trống</Tag>}
                     </div>
 
                     <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-3">
                         <div className="flex justify-between items-center mb-2">
-                            <Text strong>⚡ Điện</Text>
-                            <Text className="text-xs text-gray-500">Số cũ: {record.electricity_old || 0}</Text>
+                            <Typography.Text strong>⚡ Điện</Typography.Text>
+                            <Typography.Text className="text-xs text-gray-500">Số cũ: {record.electricity_old || 0}</Typography.Text>
                         </div>
                         <div className="flex items-center gap-3">
                             <InputNumber
@@ -262,15 +261,15 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                             />
                             <div className="text-center min-w-[60px]">
                                 <div className="text-[10px] text-gray-400">Tiêu thụ</div>
-                                <Text strong className="text-red-500 text-base">{record.electricity_usage || 0}</Text>
+                                <Typography.Text strong className="text-red-500 text-base">{record.electricity_usage || 0}</Typography.Text>
                             </div>
                         </div>
                     </div>
 
                     <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-3">
                         <div className="flex justify-between items-center mb-2">
-                            <Text strong>💧 Nước</Text>
-                            <Text className="text-xs text-gray-500">Số cũ: {record.water_old || 0}</Text>
+                            <Typography.Text strong>💧 Nước</Typography.Text>
+                            <Typography.Text className="text-xs text-gray-500">Số cũ: {record.water_old || 0}</Typography.Text>
                         </div>
                         <div className="flex items-center gap-3">
                             <InputNumber
@@ -283,7 +282,7 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                             />
                             <div className="text-center min-w-[60px]">
                                 <div className="text-[10px] text-gray-400">Tiêu thụ</div>
-                                <Text strong className="text-teal-600 text-base">{record.water_usage || 0}</Text>
+                                <Typography.Text strong className="text-teal-600 text-base">{record.water_usage || 0}</Typography.Text>
                             </div>
                         </div>
                     </div>

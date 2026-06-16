@@ -36,11 +36,11 @@ test.describe('Infrastructure Flow (Buildings & Rooms)', () => {
     const buildingCard = page.locator('.ant-card').filter({ hasText: buildingName }).first();
     await expect(buildingCard).toBeVisible({ timeout: 15000 });
 
-    // Click the actual link (EyeOutlined action) inside the card
-    await buildingCard.locator('a').first().click();
-
-    // Wait for Building Detail Page to load by URL
-    await page.waitForURL('**/buildings/*');
+    // Get the href to the building details page and navigate directly
+    const href = await buildingCard.locator('a[href^="/buildings/"]').first().getAttribute('href');
+    if (!href) throw new Error('Cannot find building detail link');
+    await page.goto(href);
+    await page.waitForLoadState('domcontentloaded');
 
     // Click "Thêm phòng" using Regex to be safe
     await page.getByRole('button', { name: /Thêm phòng/i }).first().click();

@@ -5,7 +5,6 @@ import { Typography, Card, Table, Button } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import StatusTag from '@/components/common/StatusTag';
 
-const { Text } = Typography;
 
 const recentInvoices = [
     { key: '1', room: 'P.101 — Toà A', tenant: 'Nguyễn Văn An', amount: '4,500,000', status: 'paid' },
@@ -20,7 +19,7 @@ const columns = [
         title: 'Phòng',
         dataIndex: 'room',
         key: 'room',
-        render: (text: string) => <Text strong>{text}</Text>,
+        render: (text: string) => <Typography.Text strong>{text}</Typography.Text>,
     },
     { title: 'Khách thuê', dataIndex: 'tenant', key: 'tenant' },
     {
@@ -28,7 +27,7 @@ const columns = [
         dataIndex: 'amount',
         key: 'amount',
         align: 'right' as const,
-        render: (text: string) => <Text strong>{text}</Text>,
+        render: (text: string) => <Typography.Text strong>{text}</Typography.Text>,
     },
     {
         title: 'Trạng thái',

@@ -96,7 +96,7 @@ export default function ExpenseFormModal({ open, onClose, onSuccess, initialData
             confirmLoading={loading}
             okText={initialData ? 'Cập nhật' : 'Thêm mới'}
             cancelText="Huỷ"
-            destroyOnClose
+            destroyOnHidden
         >
             <Form form={form} layout="vertical" className="mt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">

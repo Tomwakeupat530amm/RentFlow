@@ -15,8 +15,16 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-    title: 'RentFlow - Quản lý phòng trọ',
-    description: 'Giải pháp quản lý vận hành phòng trọ chuyên nghiệp bằng phần mềm',
+    title: 'RentFlow - Giải pháp quản lý phòng trọ',
+    description: 'RentFlow giúp chủ nhà quản lý vận hành phòng trọ, căn hộ dịch vụ chuyên nghiệp, tạo hoá đơn tự động và quản lý sự cố hiệu quả.',
+    keywords: ['quản lý phòng trọ', 'căn hộ dịch vụ', 'thuê nhà', 'phần mềm quản lý', 'RentFlow'],
+    openGraph: {
+        title: 'RentFlow - Giải pháp quản lý phòng trọ',
+        description: 'RentFlow giúp chủ nhà quản lý vận hành phòng trọ, căn hộ dịch vụ chuyên nghiệp.',
+        type: 'website',
+        locale: 'vi_VN',
+        siteName: 'RentFlow',
+    },
 };
 
 export default function RootLayout({

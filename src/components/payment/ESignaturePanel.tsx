@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Card, Typography, Button, Space, Divider, Alert, message } from 'antd';
 import { EditOutlined, CheckCircleOutlined, CloseCircleOutlined, SafetyOutlined } from '@ant-design/icons';
 
-const { Text, Title } = Typography;
 
 interface SignatureData {
     signed_by_owner: boolean;
@@ -72,10 +71,10 @@ export default function ESignaturePanel({
                 background: fullyExecuted ? '#f6ffed' : '#fffbe6',
             }}
         >
-            <Title level={5} style={{ marginBottom: 16 }}>
+            <Typography.Title level={5} style={{ marginBottom: 16 }}>
                 <EditOutlined style={{ marginRight: 8 }} />
                 Ký hợp đồng điện tử
-            </Title>
+            </Typography.Title>
 
             {fullyExecuted && (
                 <Alert
@@ -98,20 +97,20 @@ export default function ESignaturePanel({
                     border: '1px solid #f0f0f0',
                 }}>
                     <div>
-                        <Text strong>Chủ nhà</Text>
+                        <Typography.Text strong>Chủ nhà</Typography.Text>
                         {ownerSigned ? (
                             <div style={{ marginTop: 4 }}>
                                 <CheckCircleOutlined style={{ color: '#52c41a', marginRight: 4 }} />
-                                <Text type="secondary" style={{ fontSize: 12 }}>
+                                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                                     Đã ký {signatureData.owner_signed_at
                                         ? new Date(signatureData.owner_signed_at).toLocaleDateString('vi-VN')
                                         : ''}
-                                </Text>
+                                </Typography.Text>
                             </div>
                         ) : (
                             <div style={{ marginTop: 4 }}>
                                 <CloseCircleOutlined style={{ color: '#faad14', marginRight: 4 }} />
-                                <Text type="secondary" style={{ fontSize: 12 }}>Chưa ký</Text>
+                                <Typography.Text type="secondary" style={{ fontSize: 12 }}>Chưa ký</Typography.Text>
                             </div>
                         )}
                     </div>
@@ -141,20 +140,20 @@ export default function ESignaturePanel({
                     border: '1px solid #f0f0f0',
                 }}>
                     <div>
-                        <Text strong>Khách thuê: {tenantName}</Text>
+                        <Typography.Text strong>Khách thuê: {tenantName}</Typography.Text>
                         {tenantSigned ? (
                             <div style={{ marginTop: 4 }}>
                                 <CheckCircleOutlined style={{ color: '#52c41a', marginRight: 4 }} />
-                                <Text type="secondary" style={{ fontSize: 12 }}>
+                                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                                     Đã ký {signatureData.tenant_signed_at
                                         ? new Date(signatureData.tenant_signed_at).toLocaleDateString('vi-VN')
                                         : ''}
-                                </Text>
+                                </Typography.Text>
                             </div>
                         ) : (
                             <div style={{ marginTop: 4 }}>
                                 <CloseCircleOutlined style={{ color: '#faad14', marginRight: 4 }} />
-                                <Text type="secondary" style={{ fontSize: 12 }}>Chưa ký</Text>
+                                <Typography.Text type="secondary" style={{ fontSize: 12 }}>Chưa ký</Typography.Text>
                             </div>
                         )}
                     </div>

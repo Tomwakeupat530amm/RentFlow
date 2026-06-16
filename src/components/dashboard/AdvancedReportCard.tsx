@@ -8,7 +8,6 @@ import {
     BarChartOutlined, ThunderboltOutlined,
 } from '@ant-design/icons';
 
-const { Text, Title } = Typography;
 
 interface ReportData {
     totalRevenue: number;
@@ -76,9 +75,9 @@ export default function AdvancedReportCard({ data }: Props) {
                             strokeColor={occupancyRate > 80 ? '#52c41a' : occupancyRate > 50 ? '#faad14' : '#ff4d4f'}
                             showInfo={false}
                         />
-                        <Text type="secondary" style={{ fontSize: 12 }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                             {data.occupiedRooms}/{data.totalRooms} phòng
-                        </Text>
+                        </Typography.Text>
                     </Col>
 
                     <Col xs={24} sm={12} md={6}>
@@ -111,23 +110,23 @@ export default function AdvancedReportCard({ data }: Props) {
             <Row gutter={[16, 16]}>
                 <Col xs={24} md={12}>
                     <Card style={{ borderRadius: 12 }} styles={{ body: { padding: 20 } }}>
-                        <Title level={5}>
+                        <Typography.Title level={5}>
                             <BarChartOutlined style={{ marginRight: 8 }} />
                             Thu tiền
-                        </Title>
+                        </Typography.Title>
                         <Divider style={{ margin: '12px 0' }} />
                         <Space direction="vertical" size={8} style={{ width: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text>Hoá đơn chờ thanh toán</Text>
+                                <Typography.Text>Hoá đơn chờ thanh toán</Typography.Text>
                                 <Tag color="orange">{data.pendingInvoices}</Tag>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text>Hoá đơn quá hạn</Text>
+                                <Typography.Text>Hoá đơn quá hạn</Typography.Text>
                                 <Tag color="red">{data.overdueInvoices}</Tag>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text>Tỷ lệ thu đúng hạn</Text>
-                                <Text strong>{collectionRate}%</Text>
+                                <Typography.Text>Tỷ lệ thu đúng hạn</Typography.Text>
+                                <Typography.Text strong>{collectionRate}%</Typography.Text>
                             </div>
                         </Space>
                     </Card>
@@ -135,18 +134,18 @@ export default function AdvancedReportCard({ data }: Props) {
 
                 <Col xs={24} md={12}>
                     <Card style={{ borderRadius: 12 }} styles={{ body: { padding: 20 } }}>
-                        <Title level={5}>
+                        <Typography.Title level={5}>
                             <DollarOutlined style={{ marginRight: 8 }} />
                             Doanh thu 6 tháng gần nhất
-                        </Title>
+                        </Typography.Title>
                         <Divider style={{ margin: '12px 0' }} />
                         <Space direction="vertical" size={4} style={{ width: '100%' }}>
                             {data.monthlyRevenue.slice(-6).map(month => (
                                 <div key={month.month} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Text type="secondary" style={{ fontSize: 13 }}>{month.month}</Text>
-                                    <Text strong style={{ color: '#0d9488' }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: 13 }}>{month.month}</Typography.Text>
+                                    <Typography.Text strong style={{ color: '#0d9488' }}>
                                         {month.amount.toLocaleString('vi-VN')}đ
-                                    </Text>
+                                    </Typography.Text>
                                 </div>
                             ))}
                         </Space>

@@ -5,7 +5,6 @@ import { Modal, Typography, Button, Space, Divider } from 'antd';
 import { CrownOutlined, ThunderboltOutlined, CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 
-const { Title, Text } = Typography;
 
 interface PremiumUpgradeModalProps {
     open: boolean;
@@ -82,13 +81,13 @@ export default function PremiumUpgradeModal({
                     <CrownOutlined style={{ fontSize: 32, color: '#fff' }} />
                 </div>
 
-                <Title level={3} style={{ color: '#fff', margin: 0, letterSpacing: '-0.5px' }}>
+                <Typography.Title level={3} style={{ color: '#fff', margin: 0, letterSpacing: '-0.5px' }}>
                     {featureName ? `Mở khóa ${featureName}` : 'Nâng cấp Premium'}
-                </Title>
+                </Typography.Title>
                 <div style={{ marginTop: 8 }}>
-                    <Text style={{ color: '#d1d5db', fontSize: 15 }}>
+                    <Typography.Text style={{ color: '#d1d5db', fontSize: 15 }}>
                         {description || 'Khám phá toàn bộ sức mạnh của RentFlow với hệ sinh thái tính năng tự động hóa và AI thông minh.'}
-                    </Text>
+                    </Typography.Text>
                 </div>
             </div>
 
@@ -100,8 +99,8 @@ export default function PremiumUpgradeModal({
                             <StarOutlined style={{ color: '#52c41a', fontSize: 20 }} />
                         </div>
                         <div>
-                            <Text strong style={{ fontSize: 16, display: 'block' }}>Không giới hạn Tòa nhà & Phòng</Text>
-                            <Text type="secondary">Mở rộng kinh doanh không lo giới hạn hệ thống.</Text>
+                            <Typography.Text strong style={{ fontSize: 16, display: 'block' }}>Không giới hạn Tòa nhà & Phòng</Typography.Text>
+                            <Typography.Text type="secondary">Mở rộng kinh doanh không lo giới hạn hệ thống.</Typography.Text>
                         </div>
                     </div>
 
@@ -110,8 +109,8 @@ export default function PremiumUpgradeModal({
                             <ThunderboltOutlined style={{ color: '#1890ff', fontSize: 20 }} />
                         </div>
                         <div>
-                            <Text strong style={{ fontSize: 16, display: 'block' }}>Tự động hóa với AI & Autofill</Text>
-                            <Text type="secondary">Quét CCCD, quét chỉ số đồng hồ điện/nước siêu tốc.</Text>
+                            <Typography.Text strong style={{ fontSize: 16, display: 'block' }}>Tự động hóa với AI & Autofill</Typography.Text>
+                            <Typography.Text type="secondary">Quét CCCD, quét chỉ số đồng hồ điện/nước siêu tốc.</Typography.Text>
                         </div>
                     </div>
 
@@ -120,8 +119,8 @@ export default function PremiumUpgradeModal({
                             <CheckCircleOutlined style={{ color: '#faad14', fontSize: 20 }} />
                         </div>
                         <div>
-                            <Text strong style={{ fontSize: 16, display: 'block' }}>VietQR & Ký Hợp đồng Điện tử</Text>
-                            <Text type="secondary">Gạch nợ hóa đơn tự động và ký hợp đồng ngay trên app.</Text>
+                            <Typography.Text strong style={{ fontSize: 16, display: 'block' }}>VietQR & Ký Hợp đồng Điện tử</Typography.Text>
+                            <Typography.Text type="secondary">Gạch nợ hóa đơn tự động và ký hợp đồng ngay trên app.</Typography.Text>
                         </div>
                     </div>
                 </Space>

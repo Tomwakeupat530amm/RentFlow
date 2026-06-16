@@ -21,7 +21,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-const { Text } = Typography;
 
 interface Incident {
     id: string;
@@ -80,20 +79,20 @@ function SortableCard({ incident }: { incident: Incident }) {
                 styles={{ body: { padding: '10px 12px' } }}
             >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                    <Text strong style={{ fontSize: 13, flex: 1 }} ellipsis>
+                    <Typography.Text strong style={{ fontSize: 13, flex: 1 }} ellipsis>
                         {incident.title}
-                    </Text>
+                    </Typography.Text>
                     <Tag color={priority.color} style={{ fontSize: 10, padding: '0 4px', margin: 0 }}>
                         {priority.label}
                     </Tag>
                 </div>
                 {incident.room_name && (
-                    <Text type="secondary" style={{ fontSize: 11 }}>📍 {incident.room_name}</Text>
+                    <Typography.Text type="secondary" style={{ fontSize: 11 }}>📍 {incident.room_name}</Typography.Text>
                 )}
                 <div style={{ marginTop: 4 }}>
-                    <Text type="secondary" style={{ fontSize: 10 }}>
+                    <Typography.Text type="secondary" style={{ fontSize: 10 }}>
                         {new Date(incident.created_at).toLocaleDateString('vi-VN')}
-                    </Text>
+                    </Typography.Text>
                 </div>
             </Card>
         </div>
@@ -175,7 +174,7 @@ export default function IncidentKanban({ incidents, onStatusChange, onAdd }: Pro
                                 }}>
                                     <Space size={6}>
                                         <span style={{ color: column.color }}>{column.icon}</span>
-                                        <Text strong style={{ fontSize: 13 }}>{column.label}</Text>
+                                        <Typography.Text strong style={{ fontSize: 13 }}>{column.label}</Typography.Text>
                                         <Badge
                                             count={columnItems.length}
                                             style={{ backgroundColor: column.color }}
@@ -195,7 +194,7 @@ export default function IncidentKanban({ incidents, onStatusChange, onAdd }: Pro
                                 {columnItems.length === 0 ? (
                                     <Empty
                                         image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                        description={<Text type="secondary" style={{ fontSize: 12 }}>Trống</Text>}
+                                        description={<Typography.Text type="secondary" style={{ fontSize: 12 }}>Trống</Typography.Text>}
                                         style={{ margin: '20px 0' }}
                                     />
                                 ) : (

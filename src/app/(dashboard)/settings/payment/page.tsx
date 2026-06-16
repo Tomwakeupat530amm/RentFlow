@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import PaymentSettingsForm from './PaymentSettingsForm';
 import { getPaymentSettings } from './actions';

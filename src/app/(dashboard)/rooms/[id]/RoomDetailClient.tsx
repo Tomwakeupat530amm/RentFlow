@@ -11,7 +11,6 @@ import type { Room, Contract, Tenant, MeterRecord } from '@/types/database';
 import dayjs from 'dayjs';
 import RoommatesSection from './RoommatesSection';
 
-const { Title, Text } = Typography;
 
 interface Props {
     room: Room;
@@ -46,7 +45,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
         {
             title: 'Khách đại diện',
             key: 'tenant',
-            render: (c: Contract & { tenant: Tenant | null }) => <Text strong>{c.tenant?.full_name}</Text>
+            render: (c: Contract & { tenant: Tenant | null }) => <Typography.Text strong>{c.tenant?.full_name}</Typography.Text>
         },
         {
             title: 'Thời hạn',
@@ -85,7 +84,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
     ];
 
     const tenantsColumns = [
-        { title: 'Họ tên', dataIndex: 'full_name', key: 'full_name', render: (val: string) => <Text strong>{val}</Text> },
+        { title: 'Họ tên', dataIndex: 'full_name', key: 'full_name', render: (val: string) => <Typography.Text strong>{val}</Typography.Text> },
         { title: 'SĐT', dataIndex: 'phone', key: 'phone' },
         { title: 'CCCD', dataIndex: 'id_number', key: 'id_number' },
         { title: 'Ảnh', dataIndex: 'id_image_url', key: 'id_image_url', render: (url: string) => url ? <a href={url} target="_blank" rel="noreferrer">Xem ảnh</a> : '—' },
@@ -96,7 +95,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
             title: 'Tháng',
             dataIndex: 'record_month',
             key: 'record_month',
-            render: (val: string) => <Text strong>{dayjs(val).format('MM/YYYY')}</Text>
+            render: (val: string) => <Typography.Text strong>{dayjs(val).format('MM/YYYY')}</Typography.Text>
         },
         {
             title: 'Điện (Chỉ số)',
@@ -107,7 +106,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
             title: 'Tiêu thụ (Điện)',
             dataIndex: 'electricity_usage',
             key: 'electricity_usage',
-            render: (val: number) => <Text type="danger" strong>{val}</Text>
+            render: (val: number) => <Typography.Text type="danger" strong>{val}</Typography.Text>
         },
         {
             title: 'Nước (Chỉ số)',
@@ -118,7 +117,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
             title: 'Tiêu thụ (Nước)',
             dataIndex: 'water_usage',
             key: 'water_usage',
-            render: (val: number) => <Text style={{ color: '#0d9488' }} strong>{val}</Text>
+            render: (val: number) => <Typography.Text style={{ color: '#0d9488' }} strong>{val}</Typography.Text>
         }
     ];
 
@@ -136,7 +135,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
                 <Link href={`/buildings/${room.building_id}`}>
                     <Button type="text" icon={<ArrowLeftOutlined />} />
                 </Link>
-                <Title level={4} style={{ margin: 0 }}>Phòng {room.name}</Title>
+                <Typography.Title level={4} style={{ margin: 0 }}>Phòng {room.name}</Typography.Title>
                 {renderRoomStatus()}
             </div>
 
@@ -145,7 +144,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
                     <Descriptions.Item label="Toà nhà">{room.building?.name}</Descriptions.Item>
                     <Descriptions.Item label="Tầng">{room.floor}</Descriptions.Item>
                     <Descriptions.Item label="Diện tích">{room.area_m2 ? `${room.area_m2} m²` : '—'}</Descriptions.Item>
-                    <Descriptions.Item label="Giá mặc định"><Text strong>{formatCurrency(room.default_rent)}</Text></Descriptions.Item>
+                    <Descriptions.Item label="Giá mặc định"><Typography.Text strong>{formatCurrency(room.default_rent)}</Typography.Text></Descriptions.Item>
                 </Descriptions>
             </Card>
 
@@ -159,7 +158,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
                             <Card style={{ borderRadius: 12 }}>
                                 {activeContract && (
                                     <div style={{ marginBottom: 24, padding: 16, backgroundColor: '#f0fdf4', borderRadius: 8, border: '1px solid #bbf7d0' }}>
-                                        <Title level={5} style={{ marginTop: 0, color: '#166534' }}>Hợp đồng hiện tại đang có hiệu lực</Title>
+                                        <Typography.Title level={5} style={{ marginTop: 0, color: '#166534' }}>Hợp đồng hiện tại đang có hiệu lực</Typography.Title>
                                         <p style={{ margin: 0, color: '#15803d' }}>
                                             Ký bởi: <strong>{activeContract.tenant?.full_name}</strong> - Hết hạn: <strong>{activeContract.end_date ? dayjs(activeContract.end_date).format('DD/MM/YYYY') : 'Vô thời hạn'}</strong>
                                         </p>
@@ -188,7 +187,7 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
                                 )}
                                 <Card style={{ borderRadius: 12 }}>
                                     <div style={{ marginBottom: 16 }}>
-                                        <Title level={5} style={{ margin: 0 }}>Lịch sử khách thuê</Title>
+                                        <Typography.Title level={5} style={{ margin: 0 }}>Lịch sử khách thuê</Typography.Title>
                                     </div>
                                     <Table
                                         columns={tenantsColumns}

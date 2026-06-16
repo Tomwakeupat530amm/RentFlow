@@ -17,7 +17,6 @@ const BuildingFormModal = dynamic(() => import('./BuildingFormModal'), { ssr: fa
 import ConfirmModal from '@/components/common/ConfirmModal';
 import SearchInput from '@/components/common/SearchInput';
 
-const { Text } = Typography;
 
 interface BuildingsClientProps {
     initialBuildings: Building[];
@@ -158,12 +157,12 @@ export default function BuildingsClient({ initialBuildings, serverError }: Build
                                             <HomeOutlined style={{ color: 'white', fontSize: 18 }} />
                                         </div>
                                         <div>
-                                            <Text strong style={{ fontSize: 15 }}>{building.name}</Text>
+                                            <Typography.Text strong style={{ fontSize: 15 }}>{building.name}</Typography.Text>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                                                 <EnvironmentOutlined style={{ fontSize: 11, color: '#94a3b8' }} />
-                                                <Text type="secondary" style={{ fontSize: 12 }} ellipsis>
+                                                <Typography.Text type="secondary" style={{ fontSize: 12 }} ellipsis>
                                                     {building.address || 'Chưa cập nhật'}
-                                                </Text>
+                                                </Typography.Text>
                                             </div>
                                         </div>
                                     </div>
@@ -202,10 +201,10 @@ export default function BuildingsClient({ initialBuildings, serverError }: Build
 
                                 {/* Footer info */}
                                 <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 8, marginTop: 4 }}>
-                                    <Text type="secondary" style={{ fontSize: 12 }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                                         {building.num_floors} tầng
                                         {building.description && ` · ${building.description}`}
-                                    </Text>
+                                    </Typography.Text>
                                 </div>
                             </Card>
                         </Col>

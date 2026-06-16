@@ -10,7 +10,6 @@ import dayjs from 'dayjs';
 
 import ExpenseFormModal from './ExpenseFormModal';
 
-const { Text } = Typography;
 
 const CATEGORY_MAP: Record<string, { label: string; color: string }> = {
     'electricity': { label: 'Điện', color: 'orange' },
@@ -84,7 +83,7 @@ export default function ExpenseList() {
             title: 'Ngày chi',
             dataIndex: 'date',
             key: 'date',
-            render: (date: string) => <Text>{dayjs(date).format('DD/MM/YYYY')}</Text>,
+            render: (date: string) => <Typography.Text>{dayjs(date).format('DD/MM/YYYY')}</Typography.Text>,
         },
         {
             title: 'Danh mục',
@@ -102,8 +101,8 @@ export default function ExpenseList() {
             render: (text: string, record: Expense) => (
                 <div>
                     <div>{text || '---'}</div>
-                    {record.building && <Text type="secondary" className="text-xs">{record.building.name}</Text>}
-                    {!record.building && <Text type="secondary" className="text-xs">Chung toàn hệ thống</Text>}
+                    {record.building && <Typography.Text type="secondary" className="text-xs">{record.building.name}</Typography.Text>}
+                    {!record.building && <Typography.Text type="secondary" className="text-xs">Chung toàn hệ thống</Typography.Text>}
                 </div>
             )
         },
@@ -111,7 +110,7 @@ export default function ExpenseList() {
             title: 'Số tiền',
             dataIndex: 'amount',
             key: 'amount',
-            render: (val: number) => <Text strong type="danger">-{val.toLocaleString()} đ</Text>,
+            render: (val: number) => <Typography.Text strong type="danger">-{val.toLocaleString()} đ</Typography.Text>,
             align: 'right' as const
         },
         {
@@ -193,7 +192,7 @@ export default function ExpenseList() {
             </Card>
 
             <div className="flex justify-end mb-2">
-                <Text strong className="text-lg">Tổng cộng: <Text type="danger">-{totalAmount.toLocaleString()} đ</Text></Text>
+                <Typography.Text strong className="text-lg">Tổng cộng: <Typography.Text type="danger">-{totalAmount.toLocaleString()} đ</Typography.Text></Typography.Text>
             </div>
 
             <Table

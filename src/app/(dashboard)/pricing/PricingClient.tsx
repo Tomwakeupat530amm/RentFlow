@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import { activatePremium } from '@/lib/subscription/actions';
 
-const { Title, Text, Paragraph } = Typography;
 
 interface Props {
     currentPlan: 'free' | 'premium';
@@ -72,13 +71,13 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
     return (
         <div style={{ padding: '24px', maxWidth: 1000, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
-                <Title level={2} style={{ marginBottom: 8 }}>
+                <Typography.Title level={2} style={{ marginBottom: 8 }}>
                     <CrownOutlined style={{ color: '#faad14', marginRight: 8 }} />
                     Chọn gói phù hợp
-                </Title>
-                <Paragraph type="secondary" style={{ fontSize: 16 }}>
+                </Typography.Title>
+                <Typography.Paragraph type="secondary" style={{ fontSize: 16 }}>
                     Bắt đầu miễn phí, nâng cấp khi cần. Quản lý nhà trọ chuyên nghiệp hơn với AI.
-                </Paragraph>
+                </Typography.Paragraph>
             </div>
 
             <Row gutter={[24, 24]} align="stretch">
@@ -100,10 +99,10 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
                                         <Tag color="green">Gói hiện tại</Tag>
                                     )}
                                 </Space>
-                                <Title level={1} style={{ margin: '16px 0 4px' }}>
+                                <Typography.Title level={1} style={{ margin: '16px 0 4px' }}>
                                     Miễn phí
-                                </Title>
-                                <Text type="secondary">Trọn đời, không cần thẻ tín dụng</Text>
+                                </Typography.Title>
+                                <Typography.Text type="secondary">Trọn đời, không cần thẻ tín dụng</Typography.Text>
                             </div>
 
                             <Divider style={{ margin: '16px 0' }} />
@@ -116,9 +115,9 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
                                             <span style={{ color: item.included ? '#52c41a' : '#d9d9d9' }}>
                                                 {item.icon}
                                             </span>
-                                            <Text style={{ color: item.included ? undefined : '#bfbfbf' }}>
+                                            <Typography.Text style={{ color: item.included ? undefined : '#bfbfbf' }}>
                                                 {item.text}
-                                            </Text>
+                                            </Typography.Text>
                                         </Space>
                                     </List.Item>
                                 )}
@@ -158,10 +157,10 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
                                             <Tag color="green">Gói hiện tại</Tag>
                                         )}
                                     </Space>
-                                    <Title level={1} style={{ margin: '16px 0 4px' }}>
-                                        199K<Text type="secondary" style={{ fontSize: 16, fontWeight: 400 }}> /tháng</Text>
-                                    </Title>
-                                    <Text type="secondary">Hoặc 1,990K/năm (tiết kiệm 17%)</Text>
+                                    <Typography.Title level={1} style={{ margin: '16px 0 4px' }}>
+                                        199K<Typography.Text type="secondary" style={{ fontSize: 16, fontWeight: 400 }}> /tháng</Typography.Text>
+                                    </Typography.Title>
+                                    <Typography.Text type="secondary">Hoặc 1,990K/năm (tiết kiệm 17%)</Typography.Text>
                                 </div>
 
                                 <Divider style={{ margin: '16px 0' }} />
@@ -174,9 +173,9 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
                                                 <span style={{ color: '#faad14' }}>
                                                     {item.icon}
                                                 </span>
-                                                <Text strong={item.highlight}>
+                                                <Typography.Text strong={item.highlight}>
                                                     {item.text}
-                                                </Text>
+                                                </Typography.Text>
                                             </Space>
                                         </List.Item>
                                     )}
@@ -209,31 +208,31 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
 
             {/* FAQ */}
             <div style={{ textAlign: 'center', marginTop: 48, padding: '0 24px' }}>
-                <Title level={4}>Câu hỏi thường gặp</Title>
+                <Typography.Title level={4}>Câu hỏi thường gặp</Typography.Title>
                 <Row gutter={[24, 16]} style={{ textAlign: 'left', maxWidth: 800, margin: '0 auto' }}>
                     <Col span={24}>
-                        <Text strong>💡 Tôi có mất dữ liệu khi hết hạn Premium không?</Text>
+                        <Typography.Text strong>💡 Tôi có mất dữ liệu khi hết hạn Premium không?</Typography.Text>
                         <br />
-                        <Text type="secondary">
+                        <Typography.Text type="secondary">
                             Không. Dữ liệu luôn được bảo toàn. Khi hết hạn, bạn chỉ không thể sử dụng
                             các tính năng nâng cao và sẽ bị giới hạn quy mô về gói Free.
-                        </Text>
+                        </Typography.Text>
                     </Col>
                     <Col span={24}>
-                        <Text strong>💳 Thanh toán bằng hình thức nào?</Text>
+                        <Typography.Text strong>💳 Thanh toán bằng hình thức nào?</Typography.Text>
                         <br />
-                        <Text type="secondary">
+                        <Typography.Text type="secondary">
                             Chuyển khoản ngân hàng hoặc ví điện tử. Sau khi thanh toán, gói Premium
                             sẽ được kích hoạt trong vòng 5 phút.
-                        </Text>
+                        </Typography.Text>
                     </Col>
                     <Col span={24}>
-                        <Text strong>🔄 Tôi có thể hủy bất cứ lúc nào không?</Text>
+                        <Typography.Text strong>🔄 Tôi có thể hủy bất cứ lúc nào không?</Typography.Text>
                         <br />
-                        <Text type="secondary">
+                        <Typography.Text type="secondary">
                             Có. Bạn có thể hủy gói Premium bất cứ lúc nào. Gói sẽ tiếp tục hoạt động
                             cho đến ngày hết hạn.
-                        </Text>
+                        </Typography.Text>
                     </Col>
                 </Row>
             </div>

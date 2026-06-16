@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { loginWithEmail, loginWithGoogle } from '../actions';
 
-const { Title, Text } = Typography;
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
@@ -161,15 +160,15 @@ export default function LoginPage() {
                         >
                             <HomeOutlined />
                         </div>
-                        <Title level={4} style={{ margin: 0 }}>RentFlow</Title>
+                        <Typography.Title level={4} style={{ margin: 0 }}>RentFlow</Typography.Title>
                     </div>
 
-                    <Title level={3} style={{ margin: 0, fontWeight: 700 }}>
+                    <Typography.Title level={3} style={{ margin: 0, fontWeight: 700 }}>
                         Đăng nhập
-                    </Title>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: 32, marginTop: 4 }}>
+                    </Typography.Title>
+                    <Typography.Text type="secondary" style={{ display: 'block', marginBottom: 32, marginTop: 4 }}>
                         Chào mừng trở lại! Hãy đăng nhập để tiếp tục.
-                    </Text>
+                    </Typography.Text>
 
                     {/* Google Login */}
                     <Button

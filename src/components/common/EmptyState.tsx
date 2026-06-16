@@ -2,7 +2,6 @@ import React from 'react';
 import { Button, Typography } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 
-const { Title, Text } = Typography;
 
 interface EmptyStateProps {
     /** Icon to display */
@@ -54,12 +53,12 @@ export default function EmptyState({
                 {icon || <InboxOutlined style={{ fontSize: 36, color: '#0d9488' }} />}
             </div>
 
-            <Title level={5} style={{ margin: 0, fontWeight: 700, color: '#1e293b' }}>
+            <Typography.Title level={5} style={{ margin: 0, fontWeight: 700, color: '#1e293b' }}>
                 {title}
-            </Title>
-            <Text type="secondary" style={{ marginTop: 4, fontSize: 14, maxWidth: 320 }}>
+            </Typography.Title>
+            <Typography.Text type="secondary" style={{ marginTop: 4, fontSize: 14, maxWidth: 320 }}>
                 {description}
-            </Text>
+            </Typography.Text>
 
             {actionText && onAction && (
                 <Button

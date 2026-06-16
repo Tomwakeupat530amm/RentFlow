@@ -17,7 +17,7 @@ setup('authenticate', async ({ page }) => {
   await page.waitForURL('**/dashboard');
   
   // Wait until a specific dashboard element is visible to ensure full hydration
-  await expect(page.locator('text=Tổng Doanh Thu')).toBeVisible({ timeout: 15000 });
+  await expect(page.locator('text=Lối tắt nhanh')).toBeVisible({ timeout: 15000 });
   
   // Save the authenticated state
   await page.context().storageState({ path: authFile });

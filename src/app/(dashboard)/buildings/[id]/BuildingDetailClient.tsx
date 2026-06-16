@@ -19,7 +19,6 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 import SearchInput from '@/components/common/SearchInput';
 import ServicePricesTable from './ServicePricesTable';
 
-const { Text, Title } = Typography;
 
 const statusConfig: Record<RoomStatus, { label: string; color: string; icon: React.ReactNode }> = {
     vacant: { label: 'Trống', color: 'blue', icon: <CheckCircleOutlined /> },
@@ -149,7 +148,7 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
             dataIndex: 'notes',
             key: 'notes',
             ellipsis: true,
-            render: (notes: string | null) => notes || <Text type="secondary">—</Text>,
+            render: (notes: string | null) => notes || <Typography.Text type="secondary">—</Typography.Text>,
         },
         {
             title: '',
@@ -195,15 +194,15 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
                         <Link href="/buildings">
                             <Button type="text" icon={<ArrowLeftOutlined />} size="small" />
                         </Link>
-                        <Title level={4} style={{ margin: 0, fontWeight: 700 }}>{building.name}</Title>
+                        <Typography.Title level={4} style={{ margin: 0, fontWeight: 700 }}>{building.name}</Typography.Title>
                         <Tag color={building.status === 'active' ? 'green' : 'default'}>
                             {building.status === 'active' ? 'Hoạt động' : 'Tạm ngưng'}
                         </Tag>
                     </div>
                     {building.address && (
-                        <Text type="secondary" style={{ fontSize: 13, marginLeft: 40 }}>
+                        <Typography.Text type="secondary" style={{ fontSize: 13, marginLeft: 40 }}>
                             {building.address}
-                        </Text>
+                        </Typography.Text>
                     )}
                 </div>
                 <Space>
@@ -253,7 +252,7 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
                         children: (
                             <Card style={{ borderRadius: 12 }} styles={{ body: { padding: '16px 0' } }}>
                                 <div style={{ padding: '0 16px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Text strong style={{ fontSize: 15 }}>Danh sách phòng</Text>
+                                    <Typography.Text strong style={{ fontSize: 15 }}>Danh sách phòng</Typography.Text>
                                     <SearchInput
                                         placeholder="Tìm phòng..."
                                         onSearch={setSearch}

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Spin, message, Button, Space, Tag } from 'antd';
 import { CopyOutlined, QrcodeOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
-const { Text, Title } = Typography;
 
 interface Props {
     bankBin: string;
@@ -55,11 +54,11 @@ export default function VietQRCode({
             <Card style={{ borderRadius: 12, textAlign: 'center', padding: 24 }}>
                 <QrcodeOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
                 <div style={{ marginTop: 12 }}>
-                    <Text type="secondary">
+                    <Typography.Text type="secondary">
                         Chưa cấu hình thông tin ngân hàng.
                         <br />
                         Vui lòng cập nhật trong <strong>Cài đặt &gt; Tổ chức</strong>.
-                    </Text>
+                    </Typography.Text>
                 </div>
             </Card>
         );
@@ -74,10 +73,10 @@ export default function VietQRCode({
                 background: 'linear-gradient(180deg, #f6ffed 0%, #fff 40%)',
             }}
         >
-            <Title level={5} style={{ marginBottom: 16 }}>
+            <Typography.Title level={5} style={{ marginBottom: 16 }}>
                 <QrcodeOutlined style={{ marginRight: 8, color: '#52c41a' }} />
                 Quét QR để thanh toán
-            </Title>
+            </Typography.Title>
 
             {loading ? (
                 <Spin size="large" />
@@ -99,26 +98,26 @@ export default function VietQRCode({
                     <div style={{ marginTop: 16, textAlign: 'left', padding: '0 12px' }}>
                         <Space direction="vertical" size={4} style={{ width: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text type="secondary">Chủ TK:</Text>
-                                <Text strong>{accountName}</Text>
+                                <Typography.Text type="secondary">Chủ TK:</Typography.Text>
+                                <Typography.Text strong>{accountName}</Typography.Text>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text type="secondary">Số TK:</Text>
-                                <Text strong style={{ fontFamily: 'monospace' }}>{accountNumber}</Text>
+                                <Typography.Text type="secondary">Số TK:</Typography.Text>
+                                <Typography.Text strong style={{ fontFamily: 'monospace' }}>{accountNumber}</Typography.Text>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text type="secondary">Số tiền:</Text>
-                                <Text strong style={{ color: '#cf1322' }}>
+                                <Typography.Text type="secondary">Số tiền:</Typography.Text>
+                                <Typography.Text strong style={{ color: '#cf1322' }}>
                                     {amount.toLocaleString('vi-VN')} VNĐ
-                                </Text>
+                                </Typography.Text>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Text type="secondary">Nội dung:</Text>
-                                <Text style={{ fontSize: 12, maxWidth: 160 }} ellipsis>{description}</Text>
+                                <Typography.Text type="secondary">Nội dung:</Typography.Text>
+                                <Typography.Text style={{ fontSize: 12, maxWidth: 160 }} ellipsis>{description}</Typography.Text>
                             </div>
                             {invoiceId && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Text type="secondary">Mã HĐ:</Text>
+                                    <Typography.Text type="secondary">Mã HĐ:</Typography.Text>
                                     <Tag color="blue" style={{ fontSize: 11 }}>{invoiceId.slice(0, 8)}</Tag>
                                 </div>
                             )}
@@ -135,7 +134,7 @@ export default function VietQRCode({
                     </Button>
                 </div>
             ) : (
-                <Text type="secondary">Không thể tạo mã QR. Kiểm tra thông tin ngân hàng.</Text>
+                <Typography.Text type="secondary">Không thể tạo mã QR. Kiểm tra thông tin ngân hàng.</Typography.Text>
             )}
         </Card>
     );

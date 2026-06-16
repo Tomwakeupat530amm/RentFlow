@@ -251,7 +251,7 @@ export default function RoomFormModal({ open, room, buildingId, numFloors, onClo
             confirmLoading={loading}
             centered
             width={560}
-            destroyOnClose
+            destroyOnHidden
             style={activeTab === 'bulk' ? { top: 20 } : {}} // give more top space for bulk tab if needed
         >
             <Form

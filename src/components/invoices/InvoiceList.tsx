@@ -11,7 +11,6 @@ import type { Invoice } from '@/types/database';
 
 import PaymentModal from './PaymentModal';
 
-const { Text } = Typography;
 
 export default function InvoiceList() {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -77,7 +76,7 @@ export default function InvoiceList() {
             render: (text: string, record: Invoice) => (
                 <div>
                     <div className="font-semibold">{record.room?.name || '---'}</div>
-                    <Text type="secondary" className="text-xs">{record.building?.name}</Text>
+                    <Typography.Text type="secondary" className="text-xs">{record.building?.name}</Typography.Text>
                 </div>
             )
         },
@@ -92,7 +91,7 @@ export default function InvoiceList() {
             title: 'Tổng tiền',
             dataIndex: 'total_amount',
             key: 'total_amount',
-            render: (val: number) => <Text strong>{val.toLocaleString()} đ</Text>,
+            render: (val: number) => <Typography.Text strong>{val.toLocaleString()} đ</Typography.Text>,
             align: 'right' as const
         },
         {
@@ -101,7 +100,7 @@ export default function InvoiceList() {
             key: 'paid_amount',
             render: (val: number, record: Invoice) => {
                 const isPaid = Number(val) >= Number(record.total_amount) && Number(record.total_amount) > 0;
-                return <Text type={isPaid ? "success" : "secondary"}>{val.toLocaleString()} đ</Text>;
+                return <Typography.Text type={isPaid ? "success" : "secondary"}>{val.toLocaleString()} đ</Typography.Text>;
             },
             align: 'right' as const
         },
@@ -130,7 +129,7 @@ export default function InvoiceList() {
             render: (date: string) => {
                 if (!date) return '---';
                 const isOverdue = dayjs().isAfter(dayjs(date)) && dayjs().format('YYYY-MM-DD') !== date;
-                return <Text type={isOverdue ? 'danger' : 'secondary'}>{dayjs(date).format('DD/MM/YYYY')}</Text>;
+                return <Typography.Text type={isOverdue ? 'danger' : 'secondary'}>{dayjs(date).format('DD/MM/YYYY')}</Typography.Text>;
             },
             align: 'center' as const
         },

@@ -6,7 +6,6 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { Roommate, Tenant } from '@/types/database';
 import { createRoommate, updateRoommate, deleteRoommate } from '../../contracts/actions';
 
-const { Title, Text } = Typography;
 
 interface Props {
     contractId: string;
@@ -106,7 +105,7 @@ export default function RoommatesSection({ contractId, primaryTenant, roommates 
             key: 'full_name',
             render: (val: string, record: RoommateRow) => (
                 <Space>
-                    <Text strong>{val}</Text>
+                    <Typography.Text strong>{val}</Typography.Text>
                     {record.isPrimary && <Tag color="blue">Người đại diện</Tag>}
                 </Space>
             )
@@ -138,7 +137,7 @@ export default function RoommatesSection({ contractId, primaryTenant, roommates 
     return (
         <Card style={{ borderRadius: 12, marginBottom: 24 }} size="small">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, padding: '8px 4px' }}>
-                <Title level={5} style={{ margin: 0 }}>Thành viên phòng (Hiện tại)</Title>
+                <Typography.Title level={5} style={{ margin: 0 }}>Thành viên phòng (Hiện tại)</Typography.Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
                     Thêm người ở ghép
                 </Button>

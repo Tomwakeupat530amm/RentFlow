@@ -8,7 +8,6 @@ import InvoiceExport from '@/components/invoices/InvoiceExport';
 import type { Invoice, InvoiceItem } from '@/types/database';
 import PaymentSection from '@/components/invoices/PaymentSection';
 
-const { Title, Text } = Typography;
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
     // Note: Next.js 15 params properties need to be awaited
@@ -63,7 +62,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             title: 'Thành tiền',
             dataIndex: 'amount',
             key: 'amount',
-            render: (val: number) => <Text strong>{val.toLocaleString()} đ</Text>,
+            render: (val: number) => <Typography.Text strong>{val.toLocaleString()} đ</Typography.Text>,
             align: 'right' as const,
         },
     ];
@@ -100,8 +99,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <Card className="shadow-sm">
                     <div className="flex justify-between items-start mb-6">
                         <div>
-                            <Title level={4} className="!mt-0 !mb-1">{invoice.title}</Title>
-                            <Text type="secondary">Mã HĐ: <span className="font-mono">{invoice.id.split('-')[0]}</span></Text>
+                            <Typography.Title level={4} className="!mt-0 !mb-1">{invoice.title}</Typography.Title>
+                            <Typography.Text type="secondary">Mã HĐ: <span className="font-mono">{invoice.id.split('-')[0]}</span></Typography.Text>
                         </div>
                         <div>
                             <Tag color={statusColor} className="px-3 py-1 text-sm m-0 border-0">{statusLabel}</Tag>
@@ -110,16 +109,16 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
                     <Descriptions bordered column={{ md: 2, sm: 1, xs: 1 }} className="mb-8">
                         <Descriptions.Item label="Toà nhà">{building?.name}</Descriptions.Item>
-                        <Descriptions.Item label="Phòng"><Text strong>{room?.name}</Text></Descriptions.Item>
+                        <Descriptions.Item label="Phòng"><Typography.Text strong>{room?.name}</Typography.Text></Descriptions.Item>
                         <Descriptions.Item label="Khách thuê">{tenant?.full_name}</Descriptions.Item>
                         <Descriptions.Item label="Số điện thoại">{tenant?.phone || '---'}</Descriptions.Item>
                         <Descriptions.Item label="Kỳ thanh toán"><Tag color="blue">{invoice.month}</Tag></Descriptions.Item>
                         <Descriptions.Item label="Hạn thanh toán">
-                            <Text type="danger">{invoice.due_date ? dayjs(invoice.due_date).format('DD/MM/YYYY') : '---'}</Text>
+                            <Typography.Text type="danger">{invoice.due_date ? dayjs(invoice.due_date).format('DD/MM/YYYY') : '---'}</Typography.Text>
                         </Descriptions.Item>
                     </Descriptions>
 
-                    <Title level={5} className="mb-4">Chi tiết các khoản phí</Title>
+                    <Typography.Title level={5} className="mb-4">Chi tiết các khoản phí</Typography.Title>
                     <Table
                         columns={columns}
                         dataSource={items}
@@ -131,16 +130,16 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                     <div className="flex justify-end mt-6">
                         <div className="w-full md:w-1/2 lg:w-1/3">
                             <div className="flex justify-between py-2 border-b">
-                                <Text>Tổng cổng:</Text>
-                                <Text strong className="text-lg">{Number(invoice.total_amount).toLocaleString()} đ</Text>
+                                <Typography.Text>Tổng cổng:</Typography.Text>
+                                <Typography.Text strong className="text-lg">{Number(invoice.total_amount).toLocaleString()} đ</Typography.Text>
                             </div>
                             <div className="flex justify-between py-2 border-b">
-                                <Text>Đã thanh toán:</Text>
-                                <Text type="success" strong>{Number(invoice.paid_amount).toLocaleString()} đ</Text>
+                                <Typography.Text>Đã thanh toán:</Typography.Text>
+                                <Typography.Text type="success" strong>{Number(invoice.paid_amount).toLocaleString()} đ</Typography.Text>
                             </div>
                             <div className="flex justify-between py-3">
-                                <Text strong className="text-lg text-gray-700">Còn lại:</Text>
-                                <Text type="danger" strong className="text-xl">{remaining.toLocaleString()} đ</Text>
+                                <Typography.Text strong className="text-lg text-gray-700">Còn lại:</Typography.Text>
+                                <Typography.Text type="danger" strong className="text-xl">{remaining.toLocaleString()} đ</Typography.Text>
                             </div>
                         </div>
                     </div>

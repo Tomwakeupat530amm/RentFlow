@@ -15,7 +15,6 @@ const TenantFormModal = dynamic(() => import('./TenantFormModal'), { ssr: false 
 import ConfirmModal from '@/components/common/ConfirmModal';
 import SearchInput from '@/components/common/SearchInput';
 
-const { Text } = Typography;
 
 interface Props {
     initialTenants: Tenant[];
@@ -99,7 +98,7 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
                             <UserOutlined style={{ color: 'white', fontSize: 16 }} />
                         </div>
                         <div>
-                            <Text strong style={{ fontSize: 14 }}>{record.full_name}</Text>
+                            <Typography.Text strong style={{ fontSize: 14 }}>{record.full_name}</Typography.Text>
                             {!record.is_active && (
                                 <Tag color="default" style={{ marginLeft: 6, fontSize: 10 }}>
                                     Ngưng
@@ -107,16 +106,16 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
                             )}
                             <div style={{ display: 'flex', gap: 12, marginTop: 2 }}>
                                 {record.phone && (
-                                    <Text type="secondary" style={{ fontSize: 12 }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                                         <PhoneOutlined style={{ marginRight: 3 }} />
                                         {record.phone}
-                                    </Text>
+                                    </Typography.Text>
                                 )}
                                 {record.email && (
-                                    <Text type="secondary" style={{ fontSize: 12 }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                                         <MailOutlined style={{ marginRight: 3 }} />
                                         {record.email}
-                                    </Text>
+                                    </Typography.Text>
                                 )}
                             </div>
                         </div>
@@ -133,10 +132,10 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
                 val ? (
                     <Space size={4}>
                         <IdcardOutlined style={{ color: '#94a3b8' }} />
-                        <Text>{val}</Text>
+                        <Typography.Text>{val}</Typography.Text>
                     </Space>
                 ) : (
-                    <Text type="secondary">—</Text>
+                    <Typography.Text type="secondary">—</Typography.Text>
                 ),
         },
         {
@@ -163,7 +162,7 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
             dataIndex: 'notes',
             key: 'notes',
             ellipsis: true,
-            render: (val: string | null) => val || <Text type="secondary">—</Text>,
+            render: (val: string | null) => val || <Typography.Text type="secondary">—</Typography.Text>,
         },
         {
             title: '',
