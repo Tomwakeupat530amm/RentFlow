@@ -14,12 +14,12 @@ const { TextArea } = Input;
 interface IncidentFormModalProps {
     visible: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
     incident?: Incident;
     buildings: Building[];
-
 }
 
-export default function IncidentFormModal({ visible, onClose, incident, buildings }: IncidentFormModalProps) {
+export default function IncidentFormModal({ visible, onClose, onSuccess, incident, buildings }: IncidentFormModalProps) {
     const [form] = Form.useForm<IncidentFormData>();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -167,6 +167,7 @@ export default function IncidentFormModal({ visible, onClose, incident, building
             } else {
                 message.success(incident ? 'Cập nhật thành công!' : 'Đã báo cáo sự cố thành công!');
                 onClose();
+                if (onSuccess) onSuccess();
             }
         } catch (err: unknown) {
             if (err instanceof Error) {

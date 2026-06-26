@@ -7,8 +7,8 @@ setup('authenticate', async ({ page }) => {
   console.log('Logging in with test account...', process.env.TEST_EMAIL);
   
   await page.goto('/login');
-  await page.fill('#login_email', process.env.TEST_EMAIL!);
-  await page.fill('#login_password', process.env.TEST_PASSWORD!);
+  await page.fill('#login_email', process.env.TEST_EMAIL || 'minhnt@funix.edu.vn');
+  await page.fill('#login_password', process.env.TEST_PASSWORD || 'Tom03456789!');
   
   // Submit the form
   await page.click('button[type="submit"]');

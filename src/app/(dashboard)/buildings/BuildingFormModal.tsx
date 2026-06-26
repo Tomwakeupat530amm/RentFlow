@@ -31,6 +31,7 @@ export default function BuildingFormModal({ open, building, onClose, onSuccess }
                 num_floors: values.num_floors,
                 description: values.description,
                 status: values.status,
+                rental_type: values.rental_type,
             };
 
             const result = isEdit
@@ -89,6 +90,7 @@ export default function BuildingFormModal({ open, building, onClose, onSuccess }
                         : {
                             num_floors: 1,
                             status: 'active',
+                            rental_type: 'long_term',
                         }
                 }
                 style={{ marginTop: 16 }}
@@ -130,6 +132,20 @@ export default function BuildingFormModal({ open, building, onClose, onSuccess }
                         />
                     </Form.Item>
                 </div>
+
+                <Form.Item
+                    name="rental_type"
+                    label={<span style={{ fontWeight: 500 }}>Mô hình kinh doanh</span>}
+                    rules={[{ required: true }]}
+                >
+                    <Select
+                        options={[
+                            { label: '🏢 Dài hạn (Thuê tháng)', value: 'long_term' },
+                            { label: '🏨 Ngắn hạn (Homestay)', value: 'short_term' },
+                            { label: '🏢 + 🏨 Hỗn hợp (Mixed)', value: 'mixed' },
+                        ]}
+                    />
+                </Form.Item>
 
                 <Form.Item
                     name="description"

@@ -1,15 +1,17 @@
 'use client';
 
 import React from 'react';
-import { Card, Table, Tag, Typography, Breadcrumb, Tabs, Descriptions, Button } from 'antd';
+import { Card, Table, Tag, Typography, Breadcrumb, Tabs, Descriptions, Button, message } from 'antd';
 import {
     FileTextOutlined, UserOutlined, ClockCircleOutlined,
     ArrowLeftOutlined
 } from '@ant-design/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Room, Contract, Tenant, MeterRecord } from '@/types/database';
 import dayjs from 'dayjs';
 import RoommatesSection from './RoommatesSection';
+import { switchRoomModel } from './actions';
 
 
 interface Props {
@@ -19,6 +21,9 @@ interface Props {
 }
 
 export default function RoomDetailClient({ room, contracts, meterHistory }: Props) {
+    const router = useRouter();
+    const [switching, setSwitching] = React.useState(false);
+    
     const activeContract = contracts.find(c => c.status === 'active');
 
     // Tenants tab: display tenant history. The representative tenant comes from the contract.
@@ -131,12 +136,34 @@ export default function RoomDetailClient({ room, contracts, meterHistory }: Prop
                 ]}
             />
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <Link href={`/buildings/${room.building_id}`}>
-                    <Button type="text" icon={<ArrowLeftOutlined />} />
-                </Link>
-                <Typography.Title level={4} style={{ margin: 0 }}>Phòng {room.name}</Typography.Title>
-                {renderRoomStatus()}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <Link href={`/buildings/${room.building_id}`}>
+                        <Button type="text" icon={<ArrowLeftOutlined />} />
+                    </Link>
+                    <Typography.Title level={4} style={{ margin: 0 }}>Phòng {room.name}</Typography.Title>
+                    {renderRoomStatus()}
+                    {room.rental_type === 'short_term' && <Tag color="purple">Homestay</Tag>}
+                </div>
+                
+                <Button 
+                    type="primary" 
+                    ghost 
+                    loading={switching}
+                    onClick={async () => {
+                        setSwitching(true);
+                        const res = await switchRoomModel(room.id, room.rental_type || 'long_term');
+                        if (res.error) {
+                            message.error(res.error);
+                        } else {
+                            message.success('Chuyển đổi mô hình thành công!');
+                            router.refresh();
+                        }
+                        setSwitching(false);
+                    }}
+                >
+                    Đổi sang {room.rental_type === 'short_term' ? 'Thuê Dài hạn' : 'Homestay'}
+                </Button>
             </div>
 
             <Card style={{ borderRadius: 12 }}>

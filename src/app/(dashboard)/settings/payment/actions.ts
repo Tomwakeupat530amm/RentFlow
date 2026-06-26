@@ -61,6 +61,9 @@ export async function updatePaymentSettings(data: PaymentSettingsFormData) {
                     bank_bin: data.bank_bin,
                     bank_account: data.bank_account,
                     account_name: data.account_name,
+                    payos_client_id: data.payos_client_id || null,
+                    payos_api_key: data.payos_api_key || null,
+                    payos_checksum_key: data.payos_checksum_key || null,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', existing.id);
@@ -74,7 +77,10 @@ export async function updatePaymentSettings(data: PaymentSettingsFormData) {
                     bank_name: data.bank_name,
                     bank_bin: data.bank_bin,
                     bank_account: data.bank_account,
-                    account_name: data.account_name
+                    account_name: data.account_name,
+                    payos_client_id: data.payos_client_id || null,
+                    payos_api_key: data.payos_api_key || null,
+                    payos_checksum_key: data.payos_checksum_key || null
                 });
 
             if (error) throw error;

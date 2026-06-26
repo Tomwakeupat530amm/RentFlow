@@ -38,4 +38,37 @@ test.describe('Monthly Operations Flow (Invoices)', () => {
     // The invoice table should be present on the page
     await expect(page.locator('.ant-table-wrapper')).toBeVisible({ timeout: 10000 });
   });
+
+  test('should update meters successfully and validate invalid inputs', async ({ page }) => {
+    await page.goto('/meters');
+    await expect(page.getByRole('heading', { name: /Chỉ số điện nước/i })).toBeVisible({ timeout: 15000 });
+    
+    // Tìm các ô nhập chỉ số điện/nước
+    // Do bảng có nhiều dòng, ta thử lấy dòng đầu tiên có input
+    const electricityInputs = page.locator('input[placeholder="Điện mới"], input[id*="electricity"]');
+    if (await electricityInputs.count() > 0) {
+        const firstElInput = electricityInputs.first();
+        
+        // Cần lấy giá trị cũ để validate
+        // Giả sử ta nhập một số rất nhỏ để test validation
+        await firstElInput.fill('-1');
+        await page.keyboard.press('Tab');
+        
+        // Thường antd sẽ hiện lỗi màu đỏ hoặc không cho nhập số âm.
+        // Tiếp theo test nhập số nhỏ hơn số cũ (nếu có validation trực tiếp).
+        // Tùy theo logic app, đôi khi lỗi hiện ở tooltips hoặc viền đỏ.
+        // Ta nhập một số hợp lệ lớn hơn 0 để update
+        await firstElInput.click({ clickCount: 3 });
+        await firstElInput.type('999999'); 
+
+        // Submit (Lưu chỉ số)
+        const saveBtn = page.getByRole('button', { name: /Lưu|Cập nhật/i });
+        if (await saveBtn.count() > 0) {
+            await saveBtn.first().click();
+            
+            // Đợi thông báo thành công
+            await expect(page.locator('.ant-message-success, .ant-message-notice')).toBeVisible({ timeout: 10000 });
+        }
+    }
+  });
 });

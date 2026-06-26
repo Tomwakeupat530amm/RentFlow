@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Space, Input, Select, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import type { Incident, IncidentStatus, Building } from '@/types/database';
 import { deleteIncident, updateIncidentStatus } from './actions';
 import dynamic from 'next/dynamic';
 import { Skeleton } from 'antd';
+import { useRouter } from 'next/navigation';
+
 const IncidentFormModal = dynamic(() => import('./IncidentFormModal'), { ssr: false, loading: () => <Skeleton active /> });
 const KanbanBoard = dynamic(() => import('./KanbanBoard'), { ssr: false, loading: () => <Skeleton active /> });
 
@@ -21,7 +23,12 @@ interface IncidentsClientProps {
 }
 
 export default function IncidentsClient({ initialData, buildings, userRole }: IncidentsClientProps) {
+    const router = useRouter();
     const [data, setData] = useState<Incident[]>(initialData);
+
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
     const [searchText, setSearchText] = useState('');
     const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>('all');
 
@@ -120,6 +127,7 @@ export default function IncidentsClient({ initialData, buildings, userRole }: In
             <IncidentFormModal
                 visible={isModalVisible}
                 onClose={() => setIsModalVisible(false)}
+                onSuccess={() => router.refresh()}
                 incident={editingIncident}
                 buildings={buildings}
             />

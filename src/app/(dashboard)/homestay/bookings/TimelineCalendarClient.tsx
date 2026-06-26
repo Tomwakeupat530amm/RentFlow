@@ -2,9 +2,11 @@
  
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, DatePicker } from 'antd';
 import { LeftOutlined, RightOutlined, PlusOutlined } from '@ant-design/icons';
 import BookingModal from './BookingModal';
+
+const { RangePicker } = DatePicker;
 import type { Booking, Room } from '@/types/database';
  
 interface TimelineCalendarClientProps {
@@ -16,7 +18,7 @@ const CELL_WIDTH = 100; // px
 const ROW_HEIGHT = 60; // px
  
 export default function TimelineCalendarClient({ initialRooms, initialBookings }: TimelineCalendarClientProps) {
-    const [baseDate, setBaseDate] = useState(dayjs());
+    const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([dayjs().subtract(15, 'day'), dayjs().add(30, 'day')]);
     const [bookings, setBookings] = useState<Booking[]>(initialBookings);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState<Partial<Booking> | null>(null);
@@ -31,18 +33,32 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
         setBookings(initialBookings);
     }, [initialBookings]);
 
-    // Generate 45 days timeline (15 days before baseDate, 30 days after)
+    // Only show short_term rooms for homestay timeline
+    const shortTermRooms = useMemo(() => {
+        return initialRooms.filter(room => room.rental_type === 'short_term');
+    }, [initialRooms]);
+
+    // Generate timeline based on selected date range
     const dates = useMemo(() => {
-        const arr = [];
-        for (let i = -15; i <= 30; i++) {
-            arr.push(baseDate.add(i, 'day'));
+        const arr: dayjs.Dayjs[] = [];
+        if (!dateRange || !dateRange[0] || !dateRange[1]) return arr;
+        const start = dateRange[0].startOf('day');
+        const end = dateRange[1].startOf('day');
+        const diff = end.diff(start, 'day');
+        // Cap to 365 days to prevent performance issues
+        const maxDiff = Math.min(diff, 365);
+        for (let i = 0; i <= maxDiff; i++) {
+            arr.push(start.add(i, 'day'));
         }
         return arr;
-    }, [baseDate]);
+    }, [dateRange]);
 
-    const handlePrevious = () => setBaseDate(prev => prev.subtract(7, 'day'));
-    const handleNext = () => setBaseDate(prev => prev.add(7, 'day'));
-    const handleToday = () => setBaseDate(dayjs());
+    const handlePrevious = () => setDateRange(prev => [prev[0].subtract(7, 'day'), prev[1].subtract(7, 'day')]);
+    const handleNext = () => setDateRange(prev => [prev[0].add(7, 'day'), prev[1].add(7, 'day')]);
+    const handleToday = () => {
+        const diff = dateRange[1].diff(dateRange[0], 'day');
+        setDateRange([dayjs(), dayjs().add(diff, 'day')]);
+    };
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -68,9 +84,16 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
                         <Button onClick={handleToday}>Hôm nay</Button>
                         <Button icon={<RightOutlined />} onClick={handleNext} />
                     </Button.Group>
-                    <div className="text-md font-semibold text-slate-700">
-                        {dates[0].format('DD/MM/YYYY')} - {dates[dates.length - 1].format('DD/MM/YYYY')}
-                    </div>
+                    <RangePicker 
+                        value={dateRange} 
+                        onChange={(dates) => {
+                            if (dates && dates[0] && dates[1]) {
+                                setDateRange([dates[0], dates[1]]);
+                            }
+                        }} 
+                        allowClear={false}
+                        format="DD/MM/YYYY"
+                    />
                 </div>
                 <div>
                     <Button type="primary" icon={<PlusOutlined />} className="bg-teal-600" onClick={() => {
@@ -89,7 +112,7 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
                         <div className="h-14 border-b border-slate-200 flex items-center justify-center bg-slate-100 font-semibold text-slate-600">
                             Phòng
                         </div>
-                        {initialRooms.map(room => (
+                        {shortTermRooms.map(room => (
                             <div key={room.id} className="border-b border-slate-100 px-3 flex flex-col justify-center" style={{ height: ROW_HEIGHT }}>
                                 <div className="font-semibold text-slate-800 text-sm truncate">{room.name}</div>
                                 <div className="text-xs text-slate-500 truncate">{room.room_type} • {room.default_rent.toLocaleString()}đ</div>
@@ -121,7 +144,7 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
                             </div>
 
                             {/* Rows */}
-                            {initialRooms.map(room => {
+                            {shortTermRooms.map(room => {
                                 // Find bookings for this room
                                 const roomBookings = bookings.filter(b => b.room_id === room.id);
 
@@ -141,7 +164,7 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
                                             const duration = checkOut.diff(checkIn, 'day');
                                             
                                             // If booking is completely outside view, don't render
-                                            if (startDiff + duration < 0 || startDiff >= dates.length) return null;
+                                            if (!dates.length || startDiff + duration < 0 || startDiff >= dates.length) return null;
 
                                             // Adjust for bookings partially in view
                                             const left = Math.max(0, startDiff * CELL_WIDTH);
@@ -204,7 +227,7 @@ export default function TimelineCalendarClient({ initialRooms, initialBookings }
                     open={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     initialData={selectedBooking}
-                    rooms={initialRooms}
+                    rooms={shortTermRooms}
                 />
             )}
         </div>

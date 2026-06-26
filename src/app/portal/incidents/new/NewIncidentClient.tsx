@@ -13,10 +13,6 @@ export default function NewIncidentPage() {
     const onFinish = async (values: { title: string; description: string }) => {
         setLoading(true);
         try {
-            // TODO: In a real app, this should call an API to insert the incident securely
-            // For now, since we only have server-side admin client access, we would create a new API route.
-            // Since we haven't created the API route yet, we'll simulate the call.
-            
             const res = await fetch('/api/tenant/incidents', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

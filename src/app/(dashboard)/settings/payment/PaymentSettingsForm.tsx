@@ -37,7 +37,7 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
             .finally(() => setLoadingBanks(false));
     }, []);
 
-    const onFinish = async (values: { bank_bin: string; bank_account: string; account_name: string }) => {
+    const onFinish = async (values: { bank_bin: string; bank_account: string; account_name: string; payos_client_id?: string; payos_api_key?: string; payos_checksum_key?: string }) => {
         setSaving(true);
         try {
             // Find selected bank to get exact names
@@ -48,6 +48,9 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
                 bank_name: selectedBank ? `${selectedBank.shortName} - ${selectedBank.name}` : values.bank_bin,
                 bank_account: values.bank_account,
                 account_name: values.account_name.toUpperCase(),
+                payos_client_id: values.payos_client_id,
+                payos_api_key: values.payos_api_key,
+                payos_checksum_key: values.payos_checksum_key,
             };
 
             const res = await updatePaymentSettings(payload);
@@ -85,7 +88,10 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
                 initialValues={initialData ? {
                     bank_bin: initialData.bank_bin,
                     bank_account: initialData.bank_account,
-                    account_name: initialData.account_name
+                    account_name: initialData.account_name,
+                    payos_client_id: initialData.payos_client_id,
+                    payos_api_key: initialData.payos_api_key,
+                    payos_checksum_key: initialData.payos_checksum_key,
                 } : {}}
             >
                 <Form.Item
@@ -133,6 +139,36 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
                         size="large" 
                         onChange={(e) => form.setFieldsValue({ account_name: e.target.value.toUpperCase() })}
                     />
+                </Form.Item>
+
+                <div className="mt-8 mb-4">
+                    <Typography.Title level={5}>Tích hợp PayOS (Tùy chọn nâng cao)</Typography.Title>
+                    <Typography.Text className="text-slate-500 block mb-4">
+                        Nhập thông tin API từ tài khoản PayOS của bạn để bật tính năng Thanh toán tự động. Nếu để trống, hệ thống sẽ chỉ dùng mã VietQR tĩnh.
+                        <br/>
+                        <strong>Quan trọng:</strong> Đảm bảo bạn đã dán Webhook URL vào PayOS Dashboard. URL của hệ thống này là: <code>https://&lt;domain-cua-ban&gt;/api/payment/webhook</code>
+                    </Typography.Text>
+                </div>
+
+                <Form.Item
+                    label="Client ID"
+                    name="payos_client_id"
+                >
+                    <Input placeholder="Nhập Client ID từ PayOS" size="large" />
+                </Form.Item>
+
+                <Form.Item
+                    label="API Key"
+                    name="payos_api_key"
+                >
+                    <Input.Password placeholder="Nhập API Key" size="large" />
+                </Form.Item>
+
+                <Form.Item
+                    label="Checksum Key"
+                    name="payos_checksum_key"
+                >
+                    <Input.Password placeholder="Nhập Checksum Key" size="large" />
                 </Form.Item>
 
                 <div className="pt-4 border-t border-slate-100 flex justify-end">

@@ -29,6 +29,9 @@ export interface PaymentSettings {
     bank_bin: string;
     bank_account: string;
     account_name: string;
+    payos_client_id: string | null;
+    payos_api_key: string | null;
+    payos_checksum_key: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -38,9 +41,13 @@ export interface PaymentSettingsFormData {
     bank_bin: string;
     bank_account: string;
     account_name: string;
+    payos_client_id?: string;
+    payos_api_key?: string;
+    payos_checksum_key?: string;
 }
 
 export type BuildingStatus = 'active' | 'inactive';
+export type BuildingRentalType = 'long_term' | 'short_term' | 'mixed';
 
 export interface Building {
     id: string;
@@ -50,6 +57,7 @@ export interface Building {
     num_floors: number;
     description: string | null;
     status: BuildingStatus;
+    rental_type: BuildingRentalType;
     created_at: string;
     updated_at: string;
     // Virtual fields (from joins/counts)
@@ -60,6 +68,7 @@ export interface Building {
 
 export type RoomStatus = 'vacant' | 'occupied' | 'maintenance';
 export type RoomType = 'single' | 'double' | 'studio' | 'other';
+export type RoomRentalType = 'long_term' | 'short_term';
 
 export interface Room {
     id: string;
@@ -70,6 +79,7 @@ export interface Room {
     room_type: RoomType;
     default_rent: number;
     status: RoomStatus;
+    rental_type: RoomRentalType;
     notes: string | null;
     created_at: string;
     updated_at: string;
@@ -87,6 +97,7 @@ export interface BuildingFormData {
     num_floors: number;
     description?: string;
     status: BuildingStatus;
+    rental_type?: BuildingRentalType;
 }
 
 export interface RoomFormData {
@@ -96,6 +107,7 @@ export interface RoomFormData {
     room_type: RoomType;
     default_rent: number;
     status: RoomStatus;
+    rental_type?: RoomRentalType;
     notes?: string;
 }
 

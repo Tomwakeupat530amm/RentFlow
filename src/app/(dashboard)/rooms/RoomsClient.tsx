@@ -45,9 +45,14 @@ export default function RoomsClient({ initialRooms }: Props) {
             dataIndex: 'name',
             key: 'name',
             render: (name: string, record: RoomWithBuilding) => (
-                <Link href={`/rooms/${record.id}`} style={{ color: '#0d9488', fontWeight: 600 }}>
-                    {name}
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Link href={`/rooms/${record.id}`} style={{ color: '#0d9488', fontWeight: 600 }}>
+                        {name}
+                    </Link>
+                    {record.rental_type === 'short_term' && (
+                        <Tag color="purple" className="m-0 border-purple-200 bg-purple-50">Homestay</Tag>
+                    )}
+                </div>
             ),
             sorter: (a: RoomWithBuilding, b: RoomWithBuilding) => a.name.localeCompare(b.name),
         },

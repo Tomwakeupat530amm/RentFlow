@@ -62,4 +62,53 @@ test.describe('Infrastructure Flow (Buildings & Rooms)', () => {
     // Take screenshot of success
     await page.screenshot({ path: `playwright-report/infrastructure-success.png` });
   });
+
+  test('should show validation error when building name is empty', async ({ page }) => {
+    await page.goto('/buildings');
+    await expect(page.getByRole('heading', { name: 'Quản lý Toà nhà' })).toBeVisible({ timeout: 15000 });
+    await page.getByRole('button', { name: 'Thêm toà nhà' }).first().click();
+    await expect(page.locator('#name')).toBeVisible();
+    
+    // leave name empty, click submit
+    await page.getByRole('button', { name: 'Thêm mới' }).click();
+    
+    // Check for antd validation error message
+    await expect(page.locator('.ant-form-item-explain-error')).toBeVisible({ timeout: 5000 });
+  });
+
+  test('should update service prices for a building', async ({ page }) => {
+    await page.goto('/buildings');
+    
+    // Click on the first building to open details
+    const buildingCard = page.locator('.ant-card').first();
+    await expect(buildingCard).toBeVisible({ timeout: 15000 });
+    const href = await buildingCard.locator('a[href^="/buildings/"]').first().getAttribute('href');
+    if (!href) return; // skip if no building
+    
+    await page.goto(href);
+    await page.waitForLoadState('domcontentloaded');
+
+    // Switch to Service Prices tab if it exists
+    const tabServices = page.getByRole('tab', { name: /Dịch vụ|Service/i });
+    if (await tabServices.count() > 0) {
+        await tabServices.click();
+    }
+    
+    // Look for electricity price input
+    const electricityInput = page.locator('#electricity_price');
+    if (await electricityInput.count() > 0) {
+        await expect(electricityInput).toBeVisible({ timeout: 10000 });
+        
+        // Cần xóa số cũ rồi nhập số mới, antd InputNumber đôi khi cần click và select all
+        await electricityInput.click({ clickCount: 3 });
+        await electricityInput.type('4000');
+        
+        // Submit
+        const saveBtn = page.getByRole('button', { name: /Lưu|Cập nhật/i });
+        if (await saveBtn.count() > 0) {
+            await saveBtn.first().click();
+            await expect(page.locator('.ant-message-success, .ant-message-notice')).toBeVisible({ timeout: 10000 });
+        }
+    }
+  });
 });

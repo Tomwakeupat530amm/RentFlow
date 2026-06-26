@@ -11,3 +11,8 @@ export const payos = new PayOS(
   PAYOS_API_KEY,
   PAYOS_CHECKSUM_KEY
 );
+
+// Function to create a dynamic PayOS instance for specific landlords
+export function createPayOSClient(clientId: string, apiKey: string, checksumKey: string) {
+  return new PayOS(clientId, apiKey, checksumKey);
+}

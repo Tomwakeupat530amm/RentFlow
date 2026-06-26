@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { payos } from '@/lib/payos';
-import { createClient } from '@/lib/supabase/server';
+import { createPayOSClient } from '@/lib/payos';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(req: Request) {
     try {
@@ -14,13 +14,36 @@ export async function POST(req: Request) {
             );
         }
 
-        // Verify the user is authenticated and has access to this invoice
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        // Accept either landlord (supabase auth) or tenant (cookie session)
+        // Since we just need to generate a payment link, we can check if the invoice exists.
+        const adminSupabase = createAdminClient();
         
-        if (!user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const { data: invoice } = await adminSupabase
+            .from('invoices')
+            .select('id, org_id')
+            .eq('id', invoiceId)
+            .single();
+
+        if (!invoice) {
+            return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
         }
+
+        // Fetch payment settings for this organization
+        const { data: paymentSettings } = await adminSupabase
+            .from('payment_settings')
+            .select('payos_client_id, payos_api_key, payos_checksum_key')
+            .eq('org_id', invoice.org_id)
+            .single();
+
+        if (!paymentSettings?.payos_client_id || !paymentSettings?.payos_api_key || !paymentSettings?.payos_checksum_key) {
+            return NextResponse.json({ error: 'Chủ nhà chưa cấu hình PayOS.' }, { status: 400 });
+        }
+
+        const dynamicPayos = createPayOSClient(
+            paymentSettings.payos_client_id,
+            paymentSettings.payos_api_key,
+            paymentSettings.payos_checksum_key
+        );
 
         // Must cast amount to Number because PayOS expects an integer amount
         const orderAmount = Number(amount);
@@ -40,7 +63,7 @@ export async function POST(req: Request) {
             cancelUrl: `${YOUR_DOMAIN}/invoices?status=cancelled`,
         };
 
-        const paymentLinkData = await payos.createPaymentLink(bodyData);
+        const paymentLinkData = await dynamicPayos.createPaymentLink(bodyData);
 
         // Here we could potentially update the invoice in DB to save the `orderCode` for tracking
         // For simplicity, we just return the checkoutUrl

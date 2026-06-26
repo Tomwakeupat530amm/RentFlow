@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createPayOSClient } from '@/lib/payos';
 
 // Khởi tạo Supabase client với Service Role Key để bỏ qua RLS khi xử lý webhook (từ server)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -38,16 +39,36 @@ export async function POST(req: Request) {
 
         console.log(`🚀 [Webhook PayOS] Đang xử lý thanh toán cho Hoá Đơn: ${invoiceId}, Số tiền: ${amount}`);
 
-        // Lấy thông tin hoá đơn hiện tại
+        // Lấy thông tin hoá đơn hiện tại và org_id
         const { data: invoice, error: fetchError } = await supabase
             .from('invoices')
-            .select('paid_amount')
+            .select('paid_amount, org_id')
             .eq('id', invoiceId)
             .single();
 
         if (fetchError || !invoice) {
             console.error('❌ [Webhook PayOS] Lỗi lấy thông tin hoá đơn:', fetchError?.message);
             return NextResponse.json({ success: false, error: 'Invoice not found' }, { status: 404 });
+        }
+
+        // Lấy cấu hình PayOS của tổ chức để xác thực Webhook Signature
+        const { data: settings } = await supabase
+            .from('payment_settings')
+            .select('payos_client_id, payos_api_key, payos_checksum_key')
+            .eq('org_id', invoice.org_id)
+            .single();
+
+        if (settings?.payos_client_id && settings?.payos_api_key && settings?.payos_checksum_key) {
+            try {
+                const dynamicPayos = createPayOSClient(settings.payos_client_id, settings.payos_api_key, settings.payos_checksum_key);
+                dynamicPayos.verifyPaymentWebhookData(body);
+                console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công.');
+            } catch (verifyError) {
+                console.error('❌ [Webhook PayOS] Lỗi xác thực chữ ký (Invalid Signature):', verifyError);
+                return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
+            }
+        } else {
+            console.log('⚠️ [Webhook PayOS] Tổ chức chưa cấu hình PayOS Key, bỏ qua bước verify (có thể không an toàn).');
         }
 
         const newPaidAmount = Number(invoice.paid_amount) + Number(amount);
