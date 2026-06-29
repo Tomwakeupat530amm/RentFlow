@@ -72,6 +72,7 @@ export async function generateInvoices(buildingId: string, month: string) {
         .from('contracts')
         .select('*, room:rooms!inner(id, building_id, name)')
         .eq('status', 'active')
+        .is('deleted_at', null)
         .eq('rooms.building_id', buildingId);
 
     if (contractsError) return { error: `Lỗi lấy hợp đồng: ${contractsError.message}` };

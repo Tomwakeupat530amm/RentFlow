@@ -21,6 +21,7 @@ import {
     ScheduleOutlined,
     ClearOutlined,
     WalletOutlined,
+    HistoryOutlined,
 } from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -140,6 +141,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
                     key: '/incidents',
                     icon: <ToolOutlined />,
                     label: <Link href="/incidents">Sự cố</Link>,
+                },
+                {
+                    key: '/activity-logs',
+                    icon: <HistoryOutlined />,
+                    label: <Link href="/activity-logs">Nhật ký hoạt động</Link>,
                 },
                 {
                     key: '/settings',

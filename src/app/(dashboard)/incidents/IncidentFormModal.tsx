@@ -98,6 +98,14 @@ export default function IncidentFormModal({ visible, onClose, onSuccess, inciden
     const uploadImages = async (): Promise<string[]> => {
         const uploadedUrls: string[] = [];
 
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data: profile } = await supabase.from('user_profiles').select('org_id').eq('id', user?.id).single();
+        const orgId = profile?.org_id;
+
+        if (!orgId && fileList.some(f => !f.url && f.originFileObj)) {
+            throw new Error('Không tìm thấy thông tin tổ chức');
+        }
+
         // Loop through all files
         for (const file of fileList) {
             // Already uploaded files have a url property
@@ -108,12 +116,11 @@ export default function IncidentFormModal({ visible, onClose, onSuccess, inciden
 
             if (file.originFileObj) {
                 const fileExt = file.name.split('.').pop();
-                const fileName = `incident_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const filePath = `incidents/${fileName}`; // Reusing contracts bucket under 'incidents' folder
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `${orgId}/${fileName}`;
 
-                // Using contracts bucket because it's already configured with public read access
                 const { error: uploadError } = await supabase.storage
-                    .from('contracts')
+                    .from('incidents')
                     .upload(filePath, file.originFileObj);
 
                 if (uploadError) {
@@ -121,10 +128,7 @@ export default function IncidentFormModal({ visible, onClose, onSuccess, inciden
                     throw new Error(`Không thể tải ảnh lên: ${uploadError.message}`);
                 }
 
-                const { data } = supabase.storage.from('contracts').getPublicUrl(filePath);
-                if (data?.publicUrl) {
-                    uploadedUrls.push(data.publicUrl);
-                }
+                uploadedUrls.push(`/api/files?bucket=incidents&path=${encodeURIComponent(filePath)}`);
             }
         }
 

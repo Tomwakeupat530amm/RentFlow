@@ -24,6 +24,7 @@ export async function getRoomsByBuilding(buildingId: string) {
         .from('rooms')
         .select('*')
         .eq('building_id', buildingId)
+        .is('deleted_at', null)
         .order('floor', { ascending: true })
         .order('name', { ascending: true });
 
@@ -111,7 +112,7 @@ export async function deleteRoom(roomId: string, buildingId: string) {
 
     const { error } = await supabase
         .from('rooms')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', roomId);
 
     if (error) return { error: error.message };

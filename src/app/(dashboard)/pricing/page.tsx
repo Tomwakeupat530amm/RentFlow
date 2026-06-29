@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import PricingClient from './PricingClient';
 
 export default async function PricingPage() {
@@ -25,9 +26,11 @@ export default async function PricingPage() {
     }
 
     return (
-        <PricingClient
-            currentPlan={currentPlan as 'free' | 'premium'}
-            isOwner={profile?.role === 'owner'}
-        />
+        <Suspense fallback={<div>Loading pricing...</div>}>
+            <PricingClient
+                currentPlan={currentPlan as 'free' | 'premium'}
+                isOwner={profile?.role === 'owner'}
+            />
+        </Suspense>
     );
 }

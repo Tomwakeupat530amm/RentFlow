@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, Typography, Button, Tag, Row, Col, List, message, Space, Divider, Badge } from 'antd';
 import {
     CheckCircleOutlined, CloseCircleOutlined, CrownOutlined,
@@ -8,13 +9,12 @@ import {
     FileTextOutlined, BarChartOutlined, CameraOutlined,
     BankOutlined, EditOutlined,
 } from '@ant-design/icons';
-import { activatePremium } from '@/lib/subscription/actions';
-
 
 interface Props {
     currentPlan: 'free' | 'premium';
     isOwner: boolean;
 }
+
 
 const FREE_FEATURES = [
     { text: 'Tối đa 2 tòa nhà', icon: <CheckCircleOutlined />, included: true },
@@ -48,6 +48,20 @@ const PREMIUM_FEATURES = [
 
 export default function PricingClient({ currentPlan, isOwner }: Props) {
     const [loading, setLoading] = useState(false);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    useEffect(() => {
+        const status = searchParams.get('status');
+        if (status === 'success') {
+            message.success('🎉 Thanh toán thành công! Gói Premium của bạn sẽ được kích hoạt trong giây lát.');
+            // Clean up the URL
+            router.replace('/pricing');
+        } else if (status === 'cancelled') {
+            message.info('Thanh toán đã bị hủy.');
+            router.replace('/pricing');
+        }
+    }, [searchParams, router]);
 
     const handleUpgrade = async () => {
         if (!isOwner) {
@@ -56,13 +70,27 @@ export default function PricingClient({ currentPlan, isOwner }: Props) {
         }
         setLoading(true);
         try {
-            const result = await activatePremium(1);
-            if (result.error) {
-                message.error(result.error);
-            } else {
-                message.success('🎉 Nâng cấp Premium thành công! Vui lòng tải lại trang.');
-                window.location.reload();
+            const res = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ months: 1 })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) {
+                message.error(data.error || 'Có lỗi xảy ra khi tạo thanh toán');
+                return;
             }
+
+            if (data.checkoutUrl) {
+                // Redirect to PayOS payment page
+                window.location.href = data.checkoutUrl;
+            } else {
+                message.error('Không nhận được link thanh toán từ hệ thống');
+            }
+        } catch (error) {
+            console.error(error);
+            message.error('Lỗi kết nối đến máy chủ thanh toán');
         } finally {
             setLoading(false);
         }

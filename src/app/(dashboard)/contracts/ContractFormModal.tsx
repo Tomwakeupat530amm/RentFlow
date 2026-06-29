@@ -73,7 +73,17 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
             const supabase = createClient();
             const file = fileList[0].originFileObj;
             const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const { data: { user } } = await supabase.auth.getUser();
+            const { data: profile } = await supabase.from('user_profiles').select('org_id').eq('id', user?.id).single();
+            const orgId = profile?.org_id;
+
+            if (!orgId) {
+                message.error('Không tìm thấy thông tin tổ chức');
+                setLoading(false);
+                return;
+            }
+
+            const fileName = `${orgId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('contracts')
@@ -85,8 +95,7 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
                 return;
             }
 
-            const { data } = supabase.storage.from('contracts').getPublicUrl(fileName);
-            uploadedUrl = data.publicUrl;
+            uploadedUrl = `/api/files?bucket=contracts&path=${encodeURIComponent(fileName)}`;
         } else if (fileList.length === 0) {
             uploadedUrl = undefined;
         }

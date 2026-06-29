@@ -29,6 +29,7 @@ export async function getContracts() {
             room:rooms(id, name, building:buildings(id, name)),
             tenant:tenants(id, full_name, phone, id_number)
         `)
+        .is('deleted_at', null)
         .order('created_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
@@ -55,7 +56,12 @@ export async function createContract(formData: ContractFormData) {
             notes: formData.notes || null,
         });
 
-    if (error) return { error: error.message };
+    if (error) {
+        if (error.message.includes('idx_one_active_contract_per_room')) {
+            return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
+        }
+        return { error: error.message };
+    }
 
     revalidatePath('/contracts');
     revalidatePath('/rooms');
@@ -81,7 +87,12 @@ export async function updateContract(id: string, formData: ContractFormData & { 
         })
         .eq('id', id);
 
-    if (error) return { error: error.message };
+    if (error) {
+        if (error.message.includes('idx_one_active_contract_per_room')) {
+            return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
+        }
+        return { error: error.message };
+    }
 
     revalidatePath('/contracts');
     revalidatePath('/rooms');
@@ -94,7 +105,7 @@ export async function deleteContract(id: string) {
 
     const { error } = await supabase
         .from('contracts')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id);
 
     if (error) return { error: error.message };
@@ -113,7 +124,12 @@ export async function updateContractStatus(id: string, status: ContractStatus) {
         .update({ status })
         .eq('id', id);
 
-    if (error) return { error: error.message };
+    if (error) {
+        if (error.message.includes('idx_one_active_contract_per_room')) {
+            return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
+        }
+        return { error: error.message };
+    }
 
     revalidatePath('/contracts');
     revalidatePath('/rooms');

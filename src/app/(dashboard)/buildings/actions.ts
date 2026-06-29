@@ -39,6 +39,7 @@ export async function getBuildings() {
         .from('buildings')
         .select('*')
         .eq('org_id', orgId)
+        .is('deleted_at', null)
         .order('created_at', { ascending: false });
 
     if (error) return { error: error.message, data: [] };
@@ -137,7 +138,7 @@ export async function deleteBuilding(id: string) {
 
     const { error } = await supabase
         .from('buildings')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id);
 
     if (error) return { error: error.message };

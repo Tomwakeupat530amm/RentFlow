@@ -24,6 +24,7 @@ export async function getTenants() {
     const { data, error } = await supabase
         .from('tenants')
         .select('*')
+        .is('deleted_at', null)
         .order('created_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
@@ -37,6 +38,7 @@ export async function getTenantById(id: string) {
         .from('tenants')
         .select('*')
         .eq('id', id)
+        .is('deleted_at', null)
         .single();
 
     if (error) return { data: null, error: error.message };
@@ -93,7 +95,7 @@ export async function deleteTenant(id: string) {
 
     const { error } = await supabase
         .from('tenants')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id);
 
     if (error) return { error: error.message };

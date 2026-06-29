@@ -19,13 +19,15 @@ export async function getDashboardStats() {
     const { count: buildingCount } = await supabase
         .from('buildings')
         .select('*', { count: 'exact', head: true })
-        .eq('org_id', profile.org_id);
+        .eq('org_id', profile.org_id)
+        .is('deleted_at', null);
 
     // Get all rooms for this org
     const { data: buildings } = await supabase
         .from('buildings')
         .select('id')
-        .eq('org_id', profile.org_id);
+        .eq('org_id', profile.org_id)
+        .is('deleted_at', null);
 
     const buildingIds = buildings?.map(b => b.id) || [];
 
@@ -35,7 +37,8 @@ export async function getDashboardStats() {
         const { data: rooms } = await supabase
             .from('rooms')
             .select('status')
-            .in('building_id', buildingIds);
+            .in('building_id', buildingIds)
+            .is('deleted_at', null);
 
         rooms?.forEach(r => {
             roomStats.total++;
@@ -68,7 +71,7 @@ export async function getDashboardStats() {
         const { data: invoices } = await supabase
             .from('invoices')
             .select('month, status, total_amount, paid_amount')
-            .in('building_id', buildingIds)
+            .eq('org_id', profile.org_id)
             .in('month', last6Months);
 
         invoices?.forEach(inv => {

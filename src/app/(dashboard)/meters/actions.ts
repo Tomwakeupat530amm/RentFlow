@@ -28,7 +28,8 @@ export async function getBuildingsForMeters() {
         .from('buildings')
         .select('id, name')
         .eq('org_id', profile.org_id)
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .is('deleted_at', null);
 
     return { data: data || [], isPremium, error: error?.message };
 }
@@ -41,6 +42,7 @@ export async function getMeterRecords(buildingId: string, monthStr: string) {
         .from('rooms')
         .select('id, name, status, floor')
         .eq('building_id', buildingId)
+        .is('deleted_at', null)
         .order('floor')
         .order('name');
 

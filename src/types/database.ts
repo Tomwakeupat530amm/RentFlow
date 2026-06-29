@@ -60,6 +60,7 @@ export interface Building {
     rental_type: BuildingRentalType;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     // Virtual fields (from joins/counts)
     room_count?: number;
     occupied_count?: number;
@@ -83,6 +84,7 @@ export interface Room {
     notes: string | null;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     // Virtual fields
     building?: Building;
 }
@@ -129,6 +131,7 @@ export interface Tenant {
     is_active: boolean;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
 }
 
 export interface Roommate {
@@ -164,6 +167,7 @@ export interface Contract {
     notes: string | null;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     // Virtual fields (from joins)
     room?: Room;
     tenant?: Tenant;
