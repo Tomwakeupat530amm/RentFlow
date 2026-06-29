@@ -29,6 +29,12 @@ export default async function HousekeepingPage() {
         .eq('org_id', orgId)
         .order('scheduled_date', { ascending: false });
 
+    // Fetch rooms for the dropdown
+    const { data: rooms } = await supabase
+        .from('rooms')
+        .select('*')
+        .eq('org_id', orgId)
+        .order('name');
         
     return (
         <div className="flex flex-col h-full bg-white rounded-lg shadow-sm border border-slate-200">
@@ -38,7 +44,7 @@ export default async function HousekeepingPage() {
             </div>
             
             <div className="p-4 flex-1 overflow-auto">
-                <HousekeepingClient initialTasks={tasks || []} />
+                <HousekeepingClient initialTasks={tasks || []} rooms={rooms || []} />
             </div>
         </div>
     );

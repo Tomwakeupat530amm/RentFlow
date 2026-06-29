@@ -1,22 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button, Space, message, Select } from 'antd';
 import { CheckCircleOutlined, SyncOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import type { HousekeepingTask } from '@/types/database';
+import type { HousekeepingTask, Room } from '@/types/database';
+import { updateHousekeepingTaskStatus } from './actions';
+import HousekeepingModal from './HousekeepingModal';
 
 interface HousekeepingClientProps {
     initialTasks: HousekeepingTask[];
+    rooms: Room[];
 }
 
-export default function HousekeepingClient({ initialTasks }: HousekeepingClientProps) {
+export default function HousekeepingClient({ initialTasks, rooms }: HousekeepingClientProps) {
     const [tasks, setTasks] = useState<HousekeepingTask[]>(initialTasks);
+    const [filterStatus, setFilterStatus] = useState<string>('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
-    // In a real app, this would call a Server Action
-    const updateStatus = (taskId: string, newStatus: string) => {
+    // Sync tasks when server provides new data (e.g. after revalidatePath)
+    useEffect(() => {
+        setTasks(initialTasks);
+    }, [initialTasks]);
+    
+    const updateStatus = async (taskId: string, newStatus: string) => {
+        // Optimistic update
+        const previousTasks = [...tasks];
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus as HousekeepingTask['status'] } : t));
-        message.success('Cập nhật trạng thái thành công!');
+        
+        const result = await updateHousekeepingTaskStatus(taskId, newStatus as import('@/types/database').TaskStatus);
+        if (result.success) {
+            message.success('Cập nhật trạng thái thành công!');
+        } else {
+            message.error(result.error || 'Có lỗi xảy ra khi cập nhật trạng thái');
+            setTasks(previousTasks); // Rollback
+        }
     };
 
     const columns = [
@@ -77,24 +95,38 @@ export default function HousekeepingClient({ initialTasks }: HousekeepingClientP
         }
     ];
 
+    const filteredTasks = filterStatus === 'all' ? tasks : tasks.filter(t => t.status === filterStatus);
+
     return (
         <div>
             <div className="mb-4 flex justify-between">
                 <Space>
-                    <Select defaultValue="all" style={{ width: 150 }} options={[
-                        { value: 'all', label: 'Tất cả trạng thái' },
-                        { value: 'pending', label: 'Chờ xử lý' },
-                        { value: 'in_progress', label: 'Đang dọn' },
-                    ]} />
+                    <Select 
+                        value={filterStatus} 
+                        onChange={setFilterStatus}
+                        style={{ width: 150 }} 
+                        options={[
+                            { value: 'all', label: 'Tất cả trạng thái' },
+                            { value: 'pending', label: 'Chờ xử lý' },
+                            { value: 'in_progress', label: 'Đang dọn' },
+                            { value: 'completed', label: 'Hoàn thành' },
+                        ]} 
+                    />
                 </Space>
-                <Button type="primary" className="bg-teal-600">Thêm công việc</Button>
+                <Button type="primary" className="bg-teal-600" onClick={() => setIsModalOpen(true)}>Thêm công việc</Button>
             </div>
             <Table 
                 columns={columns} 
-                dataSource={tasks} 
+                dataSource={filteredTasks} 
                 rowKey="id" 
                 pagination={false}
                 locale={{ emptyText: 'Chưa có công việc dọn dẹp nào' }}
+            />
+            
+            <HousekeepingModal 
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                rooms={rooms}
             />
         </div>
     );
