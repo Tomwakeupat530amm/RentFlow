@@ -171,3 +171,38 @@ export async function loginWithGoogle() {
         redirect(data.url);
     }
 }
+
+// ─── PASSWORD RESET ───
+
+export async function requestPasswordReset(formData: FormData) {
+    const supabase = await createClient();
+    const email = formData.get('email') as string;
+    
+    // Fallback to localhost if NEXT_PUBLIC_APP_URL is not set
+    const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/reset-password`,
+    });
+
+    if (error) {
+        return { error: 'Không thể gửi email khôi phục. Vui lòng kiểm tra lại địa chỉ email.' };
+    }
+
+    return { success: true };
+}
+
+export async function updatePassword(formData: FormData) {
+    const supabase = await createClient();
+    const password = formData.get('password') as string;
+
+    const { error } = await supabase.auth.updateUser({
+        password: password
+    });
+
+    if (error) {
+        return { error: 'Không thể cập nhật mật khẩu. Link khôi phục có thể đã hết hạn.' };
+    }
+
+    return { success: true };
+}

@@ -298,6 +298,467 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Kịch bản kiểm thử (Test Cases) cho BA -->
+                <div class="mt-12 border-t pt-8">
+                    <h3 class="font-bold text-slate-900 text-2xl mb-4 border-b pb-2">Kịch bản kiểm thử (Test Cases) dành cho BA</h3>
+                    <p class="text-slate-600 mb-6 text-sm">Dưới đây là bộ kịch bản kiểm thử (Test Scenarios) chi tiết được thiết kế theo cấu trúc phân hệ để BA/QA thực hiện kiểm thử trên toàn bộ hệ thống RentFlow:</p>
+
+                    <div class="space-y-10">
+                        <!-- Phân hệ 1: Xác thực -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 1</span> Xác thực & Quản lý Tài khoản (Authentication)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>AUTH-01</strong></td>
+                                            <td>Đăng nhập</td>
+                                            <td>Đăng nhập bằng Email/Password hợp lệ</td>
+                                            <td>Truy cập thành công vào Dashboard.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-02</strong></td>
+                                            <td>Đăng nhập</td>
+                                            <td>Đăng nhập sai thông tin (sai email, sai pass, email chưa tồn tại)</td>
+                                            <td>Hệ thống báo lỗi tương ứng, không cho phép truy cập.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-03</strong></td>
+                                            <td>Đăng nhập</td>
+                                            <td>Đăng nhập qua Google OAuth</td>
+                                            <td>Đăng nhập/Đăng ký tài khoản nhanh qua Google thành công.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-04</strong></td>
+                                            <td>Đăng ký</td>
+                                            <td>Đăng ký tài khoản mới & Tạo Tổ chức (Organization) mới</td>
+                                            <td>Tài khoản được tạo, gán quyền 'owner' của tổ chức mới.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-05</strong></td>
+                                            <td>Đăng ký</td>
+                                            <td>Tham gia tổ chức bằng Mã mời (Invite Code)</td>
+                                            <td>Tài khoản được tạo và gán vào đúng tổ chức với quyền 'member'.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-06</strong></td>
+                                            <td>Quên mật khẩu</td>
+                                            <td>Luồng cấp lại mật khẩu qua email</td>
+                                            <td>Nhận được link reset, đổi thành công và đăng nhập được bằng mật khẩu mới.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>AUTH-07</strong></td>
+                                            <td>Đăng xuất</td>
+                                            <td>Đăng xuất khỏi hệ thống</td>
+                                            <td>Hủy phiên đăng nhập, điều hướng về trang Login.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 2: Tòa nhà & Phòng -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 2</span> Quản lý Tòa nhà & Phòng (Buildings & Rooms)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>BLD-01</strong></td>
+                                            <td>Tòa nhà</td>
+                                            <td>Tạo mới Tòa nhà</td>
+                                            <td>Tòa nhà mới hiển thị trên danh sách, thông tin chính xác.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>BLD-02</strong></td>
+                                            <td>Tòa nhà</td>
+                                            <td>Chỉnh sửa / Cập nhật thông tin Tòa nhà</td>
+                                            <td>Dữ liệu cập nhật ngay lập tức.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>BLD-03</strong></td>
+                                            <td>Tòa nhà</td>
+                                            <td>Xóa (hoặc Soft Delete) Tòa nhà</td>
+                                            <td>Tòa nhà bị ẩn/xóa khỏi danh sách. Các phòng trực thuộc cũng bị ảnh hưởng theo logic (cascade).</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ROM-01</strong></td>
+                                            <td>Phòng</td>
+                                            <td>Thêm phòng lẻ vào Tòa nhà</td>
+                                            <td>Phòng hiển thị đúng thuộc tòa nhà tương ứng.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ROM-02</strong></td>
+                                            <td>Phòng</td>
+                                            <td>Cập nhật cấu hình giá dịch vụ (Service Prices) cho từng phòng</td>
+                                            <td>Cấu hình giá điện, nước, dịch vụ được lưu thành công.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ROM-03</strong></td>
+                                            <td>Phòng</td>
+                                            <td>Tính năng Import Phòng hàng loạt (CSV Import)</td>
+                                            <td>Đọc đúng định dạng CSV, tạo thành công danh sách phòng loạt.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ROM-04</strong></td>
+                                            <td>Phòng</td>
+                                            <td>Quản lý người ở cùng (Roommates) trong một phòng</td>
+                                            <td>Thêm/Xóa thông tin roommate thành công.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 3: Khách thuê & Hợp đồng -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 3</span> Quản lý Khách thuê & Hợp đồng (Tenants & Contracts)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>TNT-01</strong></td>
+                                            <td>Khách thuê</td>
+                                            <td>Thêm mới Khách thuê (Tenant Onboarding)</td>
+                                            <td>Thông tin khách được lưu, có thể gán vào phòng cụ thể.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TNT-02</strong></td>
+                                            <td>Khách thuê</td>
+                                            <td>Cập nhật/Xóa thông tin khách thuê</td>
+                                            <td>Thay đổi dữ liệu cá nhân, trạng thái lưu trú thành công.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CTR-01</strong></td>
+                                            <td>Hợp đồng</td>
+                                            <td>Tạo mới Hợp đồng cho khách thuê</td>
+                                            <td>Thiết lập ngày bắt đầu, kết thúc, tiền cọc, giá thuê thành công.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CTR-02</strong></td>
+                                            <td>Hợp đồng</td>
+                                            <td>Tích hợp Chữ ký điện tử (E-Signature)</td>
+                                            <td>Khách có thể ký điện tử, trạng thái hợp đồng đổi thành "Đã ký".</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>CTR-03</strong></td>
+                                            <td>Hợp đồng</td>
+                                            <td>Gia hạn hoặc Thanh lý hợp đồng</td>
+                                            <td>Hệ thống tính toán lại ngày tháng, tiền cọc hoàn trả chính xác.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 4: Tài chính -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 4</span> Quản lý Tài chính (Invoices, Payments, Expenses)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>INV-01</strong></td>
+                                            <td>Hóa đơn</td>
+                                            <td>Tạo hóa đơn thủ công (Generate Invoice)</td>
+                                            <td>Hóa đơn được tạo với trạng thái "Chưa thanh toán" (Unpaid).</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>INV-02</strong></td>
+                                            <td>Hóa đơn</td>
+                                            <td>Tính toán tiền tự động (từ chỉ số điện/nước)</td>
+                                            <td>Tiền điện/nước được cộng dồn đúng theo giá dịch vụ cấu hình ở phòng.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>INV-03</strong></td>
+                                            <td>Hóa đơn</td>
+                                            <td>Xuất hóa đơn ra Excel/PDF</td>
+                                            <td>File tải xuống đúng format, đủ dữ liệu.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>PAY-01</strong></td>
+                                            <td>Thanh toán</td>
+                                            <td>Tích hợp mã VietQRCode</td>
+                                            <td>Khách quét mã QR hiển thị đúng số tiền và nội dung chuyển khoản.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>PAY-02</strong></td>
+                                            <td>Thanh toán</td>
+                                            <td>Tích hợp cổng PayOS (Webhooks)</td>
+                                            <td>Khi khách chuyển khoản thành công, hệ thống tự động đổi trạng thái Hóa đơn sang "Đã thanh toán".</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>EXP-01</strong></td>
+                                            <td>Chi phí</td>
+                                            <td>Thêm và phân loại chi phí (Expenses)</td>
+                                            <td>Chi phí lưu thành công (bảo trì, sửa chữa, v.v.).</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>RPT-01</strong></td>
+                                            <td>Báo cáo</td>
+                                            <td>Dashboard Doanh thu & Chi phí (Revenue Chart)</td>
+                                            <td>Hiển thị đúng số liệu dòng tiền, tính toán lợi nhuận chính xác.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 5: Đồng hồ & OCR -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 5</span> Đồng hồ Điện/Nước & Công nghệ OCR (Meters)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>MTR-01</strong></td>
+                                            <td>Chốt số</td>
+                                            <td>Ghi nhận chỉ số điện/nước thủ công</td>
+                                            <td>Lưu chỉ số cũ/mới thành công, cảnh báo nếu số mới &lt; số cũ.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>MTR-02</strong></td>
+                                            <td>AI OCR</td>
+                                            <td>Quét số liệu từ hình ảnh (Meter OCR)</td>
+                                            <td>Tải ảnh đồng hồ lên, hệ thống tự nhận diện và điền chỉ số.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ID-01</strong></td>
+                                            <td>AI OCR</td>
+                                            <td>Quét thông tin CCCD (CCCD OCR)</td>
+                                            <td>Tải ảnh CCCD khi onboarding khách thuê, hệ thống tự trích xuất Tên, Số CCCD.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 6: Sự cố -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 6</span> Quản lý Sự cố & Báo hỏng (Incidents)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>INC-01</strong></td>
+                                            <td>Sự cố</td>
+                                            <td>Tiếp nhận sự cố từ khách thuê</td>
+                                            <td>Hiển thị sự cố mới trên bảng Kanban (Cột Todo).</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>INC-02</strong></td>
+                                            <td>Sự cố</td>
+                                            <td>Thao tác Kéo-Thả (Drag & Drop) trên Kanban</td>
+                                            <td>Kéo thẻ sự cố sang "In Progress" hoặc "Resolved", trạng thái được cập nhật.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>INC-03</strong></td>
+                                            <td>Sự cố</td>
+                                            <td>Giao việc và thêm ghi chú</td>
+                                            <td>Phân công người xử lý, lưu lại log tiến độ.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 7: Homestay -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 7</span> Quản lý Mô hình Homestay (Homestay Booking)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>HMS-01</strong></td>
+                                            <td>Booking</td>
+                                            <td>Đặt phòng Homestay (Timeline Calendar)</td>
+                                            <td>Đặt phòng thành công trên lịch, ngày hiển thị bôi màu.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>HMS-02</strong></td>
+                                            <td>Booking</td>
+                                            <td>Ngăn chặn Đặt trùng (Double Booking Prevention)</td>
+                                            <td>Không cho phép đặt phòng nếu khoảng thời gian bị trùng lặp.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>HMS-03</strong></td>
+                                            <td>Dọn phòng</td>
+                                            <td>Quản lý lịch dọn phòng (Housekeeping)</td>
+                                            <td>Lên lịch, chuyển trạng thái dọn dẹp, nhân viên dọn dẹp check-in.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 8: Portal khách thuê -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 8</span> Cổng Thông Tin Khách Thuê (Tenant Portal)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>TPT-01</strong></td>
+                                            <td>Đăng nhập</td>
+                                            <td>Khách thuê đăng nhập</td>
+                                            <td>Sử dụng Access Code hoặc Email để vào đúng phòng của mình.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TPT-02</strong></td>
+                                            <td>Hóa đơn</td>
+                                            <td>Khách thuê xem Hóa đơn & Thanh toán</td>
+                                            <td>Xem danh sách hóa đơn, bấm Thanh toán (hiện VietQRCode / PayOS).</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TPT-03</strong></td>
+                                            <td>Sự cố</td>
+                                            <td>Khách thuê báo cáo sự cố (Report Incident)</td>
+                                            <td>Tạo form sự cố, tải ảnh lên, theo dõi trạng thái xử lý.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>TPT-04</strong></td>
+                                            <td>Hồ sơ</td>
+                                            <td>Xem thông tin hồ sơ & hợp đồng</td>
+                                            <td>Xem lại hợp đồng đang thuê, thông tin cá nhân chính xác.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Phân hệ 9: Bảo mật & Hệ thống -->
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+                                <span class="badge badge-purple">Phân hệ 9</span> Hệ thống & Bảo mật (System & Security)
+                            </h4>
+                            <div class="overflow-x-auto">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="w-24">ID</th>
+                                            <th class="w-32">Module</th>
+                                            <th>Kịch bản kiểm thử (Test Scenario)</th>
+                                            <th>Mục đích / Kết quả mong đợi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>SYS-01</strong></td>
+                                            <td>RLS</td>
+                                            <td>Phân quyền dữ liệu (Row Level Security)</td>
+                                            <td>Chủ nhà A không thể truy cập, xem hay sửa dữ liệu của Chủ nhà B.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SYS-02</strong></td>
+                                            <td>File RLS</td>
+                                            <td>Phân quyền file đính kèm (Storage RLS)</td>
+                                            <td>Khách thuê/Chủ nhà chỉ xem được hình ảnh hợp đồng, CCCD của tổ chức mình.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SYS-03</strong></td>
+                                            <td>Concurrency</td>
+                                            <td>Ngăn chặn Race Conditions</td>
+                                            <td>2 thao tác thanh toán gửi cùng lúc không bị trừ tiền hoặc lỗi trạng thái kép.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SYS-04</strong></td>
+                                            <td>Activity</td>
+                                            <td>Log nhật ký hoạt động (Activity Logs)</td>
+                                            <td>Hệ thống lưu lại vết (ai làm, hành động gì, lúc nào) trên các thao tác quan trọng.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SYS-05</strong></td>
+                                            <td>Settings</td>
+                                            <td>Cài đặt chung & Phương thức thanh toán</td>
+                                            <td>Cấu hình mã API PayOS hoặc tài khoản ngân hàng nhận tiền lưu thành công.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- SECTION 4: SƠ ĐỒ LUỒNG NGHIỆP VỤ -->

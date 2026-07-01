@@ -38,6 +38,14 @@ next-env.d.ts
 # Antigravity agent files & SQL
 .agent/
 *.sql
+!supabase/migrations/*.sql
+
+# Playwright and End-to-End testing
+/e2e
+/playwright
+/playwright-report
+/test-results
+/playwright.config.ts
 
 # Harness durable layer
 harness.db

@@ -222,7 +222,7 @@ export default function LoginPage() {
                             <Form.Item name="remember" valuePropName="checked" noStyle>
                                 <Checkbox>Ghi nhớ đăng nhập</Checkbox>
                             </Form.Item>
-                            <Link href="#" style={{ color: '#0d9488', fontWeight: 500, fontSize: 13 }}>
+                            <Link href="/forgot-password" style={{ color: '#0d9488', fontWeight: 500, fontSize: 13 }}>
                                 Quên mật khẩu?
                             </Link>
                         </div>
