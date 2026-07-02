@@ -129,6 +129,8 @@ export interface Tenant {
     permanent_address: string | null;
     notes: string | null;
     is_active: boolean;
+    access_code: string | null;
+    room_id: string | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;

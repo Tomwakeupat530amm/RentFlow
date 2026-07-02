@@ -1,84 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface OcrResult {
-    full_name?: string;
-    id_number?: string;
-    date_of_birth?: string;
-    permanent_address?: string;
+    full_name?: string | null;
+    id_number?: string | null;
+    date_of_birth?: string | null;
+    permanent_address?: string | null;
     raw_text: string;
-}
-
-/**
- * Parse Vietnamese CCCD/CMND from OCR text
- */
-function parseCccdText(text: string): OcrResult {
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-    const fullText = lines.join(' ');
-
-    let full_name: string | undefined;
-    let id_number: string | undefined;
-    let date_of_birth: string | undefined;
-    let permanent_address: string | undefined;
-
-    // Extract ID number (12 digits for CCCD, 9 digits for CMND)
-    const idMatch = fullText.match(/\b(\d{12}|\d{9})\b/);
-    if (idMatch) {
-        id_number = idMatch[1];
-    }
-
-    // Extract full name — look for patterns like "Họ và tên / Full name:" or "Name:"
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const lowerLine = line.toLowerCase();
-
-        // Name patterns
-        if (lowerLine.includes('họ và tên') || lowerLine.includes('full name') || lowerLine.includes('ho va ten')) {
-            const nameMatch = line.match(/(?:họ và tên|full name|ho va ten)[:\s]*(.+)/i);
-            if (nameMatch && nameMatch[1].trim().length > 2) {
-                full_name = nameMatch[1].trim().replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim();
-            } else if (i + 1 < lines.length && !lines[i + 1].match(/^\d/) && lines[i + 1].length > 2) {
-                full_name = lines[i + 1].replace(/[^a-zA-ZÀ-ỹ\s]/g, '').trim();
-            }
-        }
-
-        // Date of birth patterns
-        if (lowerLine.includes('ngày sinh') || lowerLine.includes('date of birth') || lowerLine.includes('sinh ngày')) {
-            const dateMatch = line.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-            if (dateMatch) {
-                date_of_birth = `${dateMatch[3]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[1].padStart(2, '0')}`;
-            } else if (i + 1 < lines.length) {
-                const nextDateMatch = lines[i + 1].match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-                if (nextDateMatch) {
-                    date_of_birth = `${nextDateMatch[3]}-${nextDateMatch[2].padStart(2, '0')}-${nextDateMatch[1].padStart(2, '0')}`;
-                }
-            }
-        }
-
-        // Address patterns
-        if (lowerLine.includes('nơi thường trú') || lowerLine.includes('quê quán') || lowerLine.includes('place of residence') || lowerLine.includes('noi thuong tru')) {
-            const addrMatch = line.match(/(?:nơi thường trú|quê quán|place of residence|noi thuong tru)[:\s]*(.+)/i);
-            if (addrMatch && addrMatch[1].trim().length > 3) {
-                permanent_address = addrMatch[1].trim();
-            } else if (i + 1 < lines.length && lines[i + 1].length > 3) {
-                permanent_address = lines[i + 1].trim();
-                // Concatenate next line if it doesn't start a new field
-                if (i + 2 < lines.length && !lines[i + 2].match(/(ngày|giới|quốc|đặc điểm|date|sex|nationality)/i) && lines[i + 2].length > 2) {
-                    permanent_address += ', ' + lines[i + 2].trim();
-                }
-            }
-        }
-    }
-
-    // Fallback: try to find date format anywhere in text
-    if (!date_of_birth) {
-        const dateMatch = fullText.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-        if (dateMatch) {
-            date_of_birth = `${dateMatch[3]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[1].padStart(2, '0')}`;
-        }
-    }
-
-    return { full_name, id_number, date_of_birth, permanent_address, raw_text: text };
 }
 
 export async function POST(request: NextRequest) {
@@ -122,64 +51,58 @@ export async function POST(request: NextRequest) {
         // Convert to base64
         const buffer = await file.arrayBuffer();
         const base64Image = Buffer.from(buffer).toString('base64');
+        const mimeType = file.type || 'image/jpeg';
 
-        // Use Google Cloud Vision API
-        const apiKey = process.env.GOOGLE_CLOUD_VISION_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
             // Fallback: return a demo result for development
             return NextResponse.json({
                 success: true,
                 data: {
-                    full_name: undefined,
-                    id_number: undefined,
-                    date_of_birth: undefined,
-                    permanent_address: undefined,
-                    raw_text: '[API Key chưa được cấu hình. Vui lòng thêm GOOGLE_CLOUD_VISION_API_KEY vào .env.local]',
+                    full_name: null,
+                    id_number: null,
+                    date_of_birth: null,
+                    permanent_address: null,
+                    raw_text: '[API Key chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY vào .env.local]',
                 },
                 message: 'API Key chưa được cấu hình. Tính năng OCR sẽ hoạt động khi có API Key.',
             });
         }
 
-        const visionResponse = await fetch(
-            `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ 
+            model: 'gemini-1.5-flash', 
+            generationConfig: { responseMimeType: "application/json" } 
+        });
+
+        const prompt = `Bạn là một hệ thống OCR phân tích Căn cước công dân (CCCD/CMND) Việt Nam. Hãy đọc ảnh và trích xuất các thông tin sau.
+Trả về dữ liệu dưới định dạng JSON với cấu trúc chính xác sau:
+{
+    "full_name": "Nguyễn Văn A",
+    "id_number": "012345678912",
+    "date_of_birth": "YYYY-MM-DD",
+    "permanent_address": "Địa chỉ thường trú hoặc Quê quán ghi trên thẻ",
+    "raw_text": "Toàn bộ văn bản thô bạn đọc được để debug"
+}
+Lưu ý quan trọng: 
+- Chỉ trả về chuỗi JSON hợp lệ. 
+- Chuyển đổi định dạng ngày sinh sang YYYY-MM-DD.
+- Tên viết hoa chữ cái đầu.
+- Nếu không thể trích xuất trường nào do ảnh mờ, hãy để giá trị null.`;
+
+        const result = await model.generateContent([
+            prompt,
             {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    requests: [
-                        {
-                            image: { content: base64Image },
-                            features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-                            imageContext: {
-                                languageHints: ['vi'],
-                            },
-                        },
-                    ],
-                }),
+                inlineData: {
+                    data: base64Image,
+                    mimeType: mimeType
+                }
             }
-        );
-
-        if (!visionResponse.ok) {
-            const errorBody = await visionResponse.text();
-            console.error('Vision API error:', errorBody);
-            return NextResponse.json(
-                { error: 'Lỗi khi gọi API nhận dạng ảnh' },
-                { status: 500 }
-            );
-        }
-
-        const visionData = await visionResponse.json();
-        const rawText = visionData.responses?.[0]?.fullTextAnnotation?.text || '';
-
-        if (!rawText) {
-            return NextResponse.json(
-                { error: 'Không thể đọc được nội dung từ ảnh. Vui lòng thử ảnh rõ nét hơn.' },
-                { status: 422 }
-            );
-        }
-
-        const parsed = parseCccdText(rawText);
+        ]);
+        
+        const responseText = result.response.text();
+        const parsed: OcrResult = JSON.parse(responseText);
 
         return NextResponse.json({
             success: true,

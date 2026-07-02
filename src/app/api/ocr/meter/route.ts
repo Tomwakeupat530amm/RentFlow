@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-/**
- * Parse meter reading from OCR text
- */
-function parseMeterReading(text: string): { reading: number | null; raw_text: string } {
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-    const fullText = lines.join(' ');
-
-    // Look for sequences of digits that could be meter readings (typically 4-8 digits)
-    const numbers = fullText.match(/\b(\d{4,8})\b/g);
-
-    if (numbers && numbers.length > 0) {
-        // Take the largest number as the most likely meter reading
-        const sorted = numbers.map(Number).sort((a, b) => b - a);
-        return { reading: sorted[0], raw_text: text };
-    }
-
-    return { reading: null, raw_text: text };
+interface MeterOcrResult {
+    electricity_new?: number | null;
+    water_new?: number | null;
+    reading?: number | null;
+    raw_text: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -59,8 +48,9 @@ export async function POST(request: NextRequest) {
 
         const buffer = await file.arrayBuffer();
         const base64Image = Buffer.from(buffer).toString('base64');
+        const mimeType = file.type || 'image/jpeg';
 
-        const apiKey = process.env.GOOGLE_CLOUD_VISION_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
             return NextResponse.json({
@@ -70,37 +60,45 @@ export async function POST(request: NextRequest) {
             });
         }
 
-        const visionResponse = await fetch(
-            `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ 
+            model: 'gemini-1.5-flash', 
+            generationConfig: { responseMimeType: "application/json" } 
+        });
+
+        const prompt = `Bạn là hệ thống nhận diện số trên đồng hồ điện, nước. Hãy đọc ảnh và trích xuất chỉ số.
+Lưu ý:
+- Với đồng hồ nước: Bỏ qua các số phụ màu đỏ, chỉ lấy dãy số màu đen.
+- Với đồng hồ điện tử: Chỉ lấy phần số chính, bỏ qua số thập phân phía sau.
+Trả về dữ liệu dưới định dạng JSON với cấu trúc chính xác sau (cố gắng đoán loại đồng hồ nếu có thể):
+{
+    "reading": 12345,
+    "electricity_new": 12345,
+    "water_new": 1234,
+    "raw_text": "Mô tả ngắn gọn lý do chọn số này (VD: đồng hồ nước lấy 4 số đầu)"
+}
+Quy tắc:
+- Thuộc tính "electricity_new": Nếu bạn chắc chắn đây là đồng hồ điện thì điền số nguyên vào, nếu không phải hoặc không chắc, hãy trả về giá trị null.
+- Thuộc tính "water_new": Nếu bạn chắc chắn đây là đồng hồ nước thì điền số nguyên vào, nếu không phải hoặc không chắc, hãy trả về giá trị null.
+- Thuộc tính "reading": Bắt buộc điền số nguyên. Đây là số đọc lớn nhất hoặc có ý nghĩa nhất.
+Chỉ trả về cú pháp JSON hợp lệ.`;
+
+        const result = await model.generateContent([
+            prompt,
             {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    requests: [
-                        {
-                            image: { content: base64Image },
-                            features: [{ type: 'TEXT_DETECTION', maxResults: 1 }],
-                        },
-                    ],
-                }),
+                inlineData: {
+                    data: base64Image,
+                    mimeType: mimeType
+                }
             }
-        );
-
-        if (!visionResponse.ok) {
-            return NextResponse.json({ error: 'Lỗi khi gọi API nhận dạng ảnh' }, { status: 500 });
-        }
-
-        const visionData = await visionResponse.json();
-        const rawText = visionData.responses?.[0]?.fullTextAnnotation?.text || '';
-
-        if (!rawText) {
-            return NextResponse.json(
-                { error: 'Không thể đọc số từ ảnh. Vui lòng chụp rõ nét hơn.' },
-                { status: 422 }
-            );
-        }
-
-        const parsed = parseMeterReading(rawText);
+        ]);
+        
+        const responseText = result.response.text();
+        const parsed: MeterOcrResult = JSON.parse(responseText);
+        
+        // Loại bỏ các trường null để tương thích với logic client (client dùng !== undefined)
+        if (parsed.electricity_new === null) delete parsed.electricity_new;
+        if (parsed.water_new === null) delete parsed.water_new;
 
         return NextResponse.json({
             success: true,

@@ -19,10 +19,10 @@ export async function POST(request: Request) {
         // Find tenant by phone and access_code
         const { data: tenant, error } = await supabase
             .from('tenants')
-            .select('id, name, phone, room_id')
+            .select('id, full_name, phone, access_code, room_id')
             .eq('phone', phone)
             .eq('access_code', access_code)
-            .eq('status', 'active')
+            .eq('is_active', true)
             .single();
 
         if (error || !tenant) {
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         // Set JWT session
         await setTenantSession({
             id: tenant.id,
-            name: tenant.name,
+            name: tenant.full_name,
             phone: tenant.phone,
             room_id: tenant.room_id,
         });

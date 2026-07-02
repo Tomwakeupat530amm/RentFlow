@@ -91,7 +91,7 @@ export async function generateInvoices(buildingId: string, month: string) {
     const { data: meters, error: metersError } = await supabase
         .from('meter_records')
         .select('*')
-        .eq('period', month)
+        .eq('record_month', month)
         .in('room_id', roomIds);
 
     if (metersError) return { error: `Lỗi lấy chỉ số đồng hồ: ${metersError.message}` };
@@ -146,18 +146,31 @@ export async function generateInvoices(buildingId: string, month: string) {
 
         // c. Thêm các mục dịch vụ tính theo đồng hồ (Điện, Nước)
         const meteredPrices = prices.filter(p => p.is_metered);
+        const meter = meters?.find(m => m.room_id === contract.room_id);
+
         for (const price of meteredPrices) {
-            const meter = meters.find(m => m.room_id === contract.room_id && m.service_type === price.service_type);
             if (meter) {
-                invoiceItems.push({
-                    invoice_id: invoice.id,
-                    type: price.service_type,
-                    description: `${price.label} (${meter.old_reading} - ${meter.new_reading})`,
-                    quantity: meter.usage,
-                    unit_price: price.unit_price,
-                    amount: meter.usage * price.unit_price,
-                    reference_id: meter.id
-                });
+                if (price.service_type === 'electricity') {
+                    invoiceItems.push({
+                        invoice_id: invoice.id,
+                        type: 'electricity',
+                        description: `${price.label} (${meter.electricity_old} - ${meter.electricity_new})`,
+                        quantity: meter.electricity_usage,
+                        unit_price: price.unit_price,
+                        amount: meter.electricity_usage * price.unit_price,
+                        reference_id: meter.id
+                    });
+                } else if (price.service_type === 'water') {
+                    invoiceItems.push({
+                        invoice_id: invoice.id,
+                        type: 'water',
+                        description: `${price.label} (${meter.water_old} - ${meter.water_new})`,
+                        quantity: meter.water_usage,
+                        unit_price: price.unit_price,
+                        amount: meter.water_usage * price.unit_price,
+                        reference_id: meter.id
+                    });
+                }
             }
         }
 
