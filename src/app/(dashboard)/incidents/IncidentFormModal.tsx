@@ -33,6 +33,7 @@ export default function IncidentFormModal({ visible, onClose, onSuccess, inciden
             .from('rooms')
             .select('*')
             .eq('building_id', buildingId)
+            .is('deleted_at', null)
             .order('name');
 
         if (data) {

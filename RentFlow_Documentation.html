@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,57 +8,232 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .section-title { position: relative; padding-bottom: 12px; margin-bottom: 24px; color: #0f172a; font-weight: 700; font-size: 1.75rem; }
-        .section-title::after { content: ''; position: absolute; left: 0; bottom: 0; height: 4px; width: 80px; background: linear-gradient(to right, #2563eb, #3b82f6); border-radius: 2px; }
-        .toc-link { transition: all 0.2s ease; display: block; padding: 7px 14px; border-radius: 8px; font-size: 0.875rem; }
-        .toc-link:hover { color: #2563eb; background-color: #eff6ff; font-weight: 500; transform: translateX(4px); }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1.5rem; background-color: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
-        th, td { border: 1px solid #e2e8f0; padding: 12px 16px; text-align: left; font-size: 0.875rem; }
-        th { background-color: #f8fafc; font-weight: 600; color: #334155; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
-        tr:hover { background-color: #f1f5f9; }
-        .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-        .badge-blue { background-color: #dbeafe; color: #1e40af; }
-        .badge-green { background-color: #dcfce7; color: #166534; }
-        .badge-purple { background-color: #f3e8ff; color: #6b21a8; }
-        .badge-amber { background-color: #fef3c7; color: #92400e; }
-        .step-card { position: relative; padding-left: 2.75rem; margin-bottom: 1.5rem; }
-        .step-card::before { content: ''; position: absolute; left: 0.95rem; top: 2.25rem; bottom: -1.25rem; width: 2px; background-color: #cbd5e1; }
-        .step-card:last-child::before { display: none; }
-        .step-number { position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; border-radius: 9999px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem; box-shadow: 0 2px 4px rgba(37,99,235,0.3); }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 4px;
+            width: 80px;
+            background: linear-gradient(to right, #2563eb, #3b82f6);
+            border-radius: 2px;
+        }
+
+        .toc-link {
+            transition: all 0.2s ease;
+            display: block;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .toc-link:hover {
+            color: #2563eb;
+            background-color: #eff6ff;
+            font-weight: 500;
+            transform: translateX(4px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        th,
+        td {
+            border: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-green {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-purple {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        .badge-amber {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .step-card {
+            position: relative;
+            padding-left: 2.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            left: 0.95rem;
+            top: 2.25rem;
+            bottom: -1.25rem;
+            width: 2px;
+            background-color: #cbd5e1;
+        }
+
+        .step-card:last-child::before {
+            display: none;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+
         /* Custom ERD Styling */
-        .erd-box { background-color: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 14px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.2s; }
-        .erd-box:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1); }
-        .erd-header { font-weight: 700; font-size: 0.9rem; color: #1e293b; padding-bottom: 8px; border-b: 2px solid #f1f5f9; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .erd-field { font-size: 0.75rem; color: #475569; padding: 3px 0; display: flex; justify-content: space-between; font-family: monospace; }
-        .erd-pk { color: #d97706; font-weight: 700; }
-        .erd-fk { color: #2563eb; font-weight: 600; }
-        .erd-connector { text-align: center; color: #94a3b8; font-weight: 700; font-size: 1.2rem; }
+        .erd-box {
+            background-color: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .erd-box:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.1);
+        }
+
+        .erd-header {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+            padding-bottom: 8px;
+            border-b: 2px solid #f1f5f9;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .erd-field {
+            font-size: 0.75rem;
+            color: #475569;
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+        }
+
+        .erd-pk {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .erd-fk {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .erd-connector {
+            text-align: center;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 antialiased">
 
     <!-- Header -->
-    <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white pt-20 pb-16 px-6 shadow-xl border-b border-blue-900">
+    <header
+        class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white pt-20 pb-16 px-6 shadow-xl border-b border-blue-900">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                <span class="badge badge-purple px-3.5 py-1.5 text-sm font-semibold">HỒ SƠ BÁO CÁO ĐỒ ÁN TỐT NGHIỆP</span>
+                <span class="badge badge-purple px-3.5 py-1.5 text-sm font-semibold">HỒ SƠ BÁO CÁO ĐỒ ÁN TỐT
+                    NGHIỆP</span>
                 <span class="text-slate-400 text-sm">Hệ thống RentFlow (Toàn diện & Chi tiết)</span>
             </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">RentFlow - Nền Tảng Quản Lý Lưu Trú & Homestay Số</h1>
-            <p class="text-xl text-blue-200 max-w-4xl leading-relaxed">Báo cáo Kiến trúc Phần mềm toàn diện: 13 Phân hệ Chức năng, Sơ đồ Luồng Nghiệp vụ, Sơ đồ Thực thể Quan hệ CSDL (ERD Diagram) và 10 Giải pháp Kỹ thuật Chuyên sâu trên toàn bộ hệ thống.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">RentFlow - Nền Tảng Quản Lý
+                Lưu Trú & Homestay Số</h1>
+            <p class="text-xl text-blue-200 max-w-4xl leading-relaxed">Báo cáo Kiến trúc Phần mềm toàn diện: 13 Phân hệ
+                Chức năng, Sơ đồ Luồng Nghiệp vụ, Sơ đồ Thực thể Quan hệ CSDL (ERD Diagram) và 10 Giải pháp Kỹ thuật
+                Chuyên sâu trên toàn bộ hệ thống.</p>
             <div class="mt-8 flex flex-wrap gap-4 text-sm font-medium">
-                <div class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span> Multi-Tenant SaaS Architecture
+                <div
+                    class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span> Multi-Tenant SaaS
+                    Architecture
                 </div>
-                <div class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
+                <div
+                    class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> Next.js 14 App Router + Server Actions
                 </div>
-                <div class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
+                <div
+                    class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span> Supabase Postgres (19 Tables ERD)
                 </div>
-                <div class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
+                <div
+                    class="bg-slate-800/90 backdrop-blur border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> PayOS Automated Webhook
                 </div>
             </div>
@@ -66,11 +242,12 @@
 
     <!-- Main Body Layout -->
     <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-10">
-        
+
         <!-- Sidebar Navigation -->
         <aside class="w-full lg:w-80 shrink-0">
             <div class="bg-white rounded-2xl shadow-sm p-6 sticky top-6 border border-slate-200/80">
-                <h3 class="font-bold text-base mb-4 text-slate-900 uppercase tracking-wider text-xs border-b pb-2">Mục lục Báo cáo Chi tiết</h3>
+                <h3 class="font-bold text-base mb-4 text-slate-900 uppercase tracking-wider text-xs border-b pb-2">Mục
+                    lục Báo cáo Chi tiết</h3>
                 <nav class="space-y-1">
                     <a href="#tong-quan" class="toc-link">1. Giới thiệu & Đặt vấn đề</a>
                     <a href="#cong-nghe" class="toc-link">2. Công nghệ & Kiến trúc SaaS</a>
@@ -92,13 +269,23 @@
                 <h2 class="section-title">1. Giới thiệu & Đặt vấn đề</h2>
                 <div class="prose max-w-none text-slate-600 space-y-4 text-justify leading-relaxed">
                     <p>
-                        Trong bối cảnh đô thị hóa và nền kinh tế chia sẻ phát triển mạnh mẽ, việc kinh doanh lưu trú không còn giới hạn ở các mô hình cho thuê phòng trọ dài hạn truyền thống mà đã mở rộng sang mô hình Căn hộ dịch vụ và Cho thuê Homestay ngắn hạn (Booking theo ngày). Tuy nhiên, quản lý vận hành của đa số các chủ nhà hiện nay vẫn dựa trên sổ sách thủ công, tin nhắn rải rác hoặc các file Excel rời rạc.
+                        Trong bối cảnh đô thị hóa và nền kinh tế chia sẻ phát triển mạnh mẽ, việc kinh doanh lưu trú
+                        không còn giới hạn ở các mô hình cho thuê phòng trọ dài hạn truyền thống mà đã mở rộng sang mô
+                        hình Căn hộ dịch vụ và Cho thuê Homestay ngắn hạn (Booking theo ngày). Tuy nhiên, quản lý vận
+                        hành của đa số các chủ nhà hiện nay vẫn dựa trên sổ sách thủ công, tin nhắn rải rác hoặc các
+                        file Excel rời rạc.
                     </p>
                     <p>
-                        Điều này dẫn đến hàng loạt bài toán nhức nhối: nhầm lẫn chỉ số điện nước, thất thoát chi phí sửa chữa, trễ hạn thu tiền phòng, khó khăn trong kiểm soát tạm trú tạm vắng, và đặc biệt là sự thiếu minh bạch khi có nhiều nhân viên/quản lý cùng tham gia vận hành.
+                        Điều này dẫn đến hàng loạt bài toán nhức nhối: nhầm lẫn chỉ số điện nước, thất thoát chi phí sửa
+                        chữa, trễ hạn thu tiền phòng, khó khăn trong kiểm soát tạm trú tạm vắng, và đặc biệt là sự thiếu
+                        minh bạch khi có nhiều nhân viên/quản lý cùng tham gia vận hành.
                     </p>
                     <p>
-                        <strong>RentFlow</strong> được xây dựng như một hệ sinh thái quản lý lưu trú số hóa toàn diện. Nền tảng được thiết kế theo mô hình <strong>Multi-tenant SaaS</strong>, hỗ trợ song song cả 2 hình thức: Cho thuê dài hạn (Long-term Rental) và Cho thuê ngắn hạn (Homestay Booking). Hệ thống tự động hóa từ khâu chốt điện nước, sinh hóa đơn, quản lý chi phí, dọn dẹp phòng, đến gán mã QR thanh toán ngân hàng tự động qua PayOS.
+                        <strong>RentFlow</strong> được xây dựng như một hệ sinh thái quản lý lưu trú số hóa toàn diện.
+                        Nền tảng được thiết kế theo mô hình <strong>Multi-tenant SaaS</strong>, hỗ trợ song song cả 2
+                        hình thức: Cho thuê dài hạn (Long-term Rental) và Cho thuê ngắn hạn (Homestay Booking). Hệ thống
+                        tự động hóa từ khâu chốt điện nước, sinh hóa đơn, quản lý chi phí, dọn dẹp phòng, đến gán mã QR
+                        thanh toán ngân hàng tự động qua PayOS.
                     </p>
                 </div>
             </section>
@@ -106,30 +293,48 @@
             <!-- SECTION 2: CÔNG NGHỆ & KIẾN TRÚC -->
             <section id="cong-nghe" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
                 <h2 class="section-title">2. Công nghệ & Kiến trúc Hệ thống</h2>
-                <p class="text-slate-600 mb-6">Hệ thống áp dụng mô hình kiến trúc hiện đại, phân tách rõ ràng trách nhiệm giữa Client và Server (Separation of Concerns):</p>
-                
+                <p class="text-slate-600 mb-6">Hệ thống áp dụng mô hình kiến trúc hiện đại, phân tách rõ ràng trách
+                    nhiệm giữa Client và Server (Separation of Concerns):</p>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="p-2 bg-blue-100 text-blue-700 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                            <div class="p-2 bg-blue-100 text-blue-700 rounded-lg"><svg class="w-6 h-6" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg></div>
                             <h3 class="font-bold text-slate-900 text-lg">Frontend Tier</h3>
                         </div>
                         <ul class="space-y-2 text-sm text-slate-600">
-                            <li><strong class="text-slate-900">Next.js 14 (App Router):</strong> Tận dụng React Server Components (RSC) giúp render dữ liệu ngay tại Server, kết hợp Server Actions để mutation dữ liệu an toàn.</li>
-                            <li><strong class="text-slate-900">TypeScript Chặt Chẽ:</strong> Định nghĩa toàn bộ Interface dữ liệu trùng khớp 100% với Database Schema.</li>
-                            <li><strong class="text-slate-900">Tailwind CSS & Lucide Icons:</strong> Giao diện Responsive chuẩn chỉnh trên mọi thiết bị Di động & Máy tính.</li>
+                            <li><strong class="text-slate-900">Next.js 14 (App Router):</strong> Tận dụng React Server
+                                Components (RSC) giúp render dữ liệu ngay tại Server, kết hợp Server Actions để mutation
+                                dữ liệu an toàn.</li>
+                            <li><strong class="text-slate-900">TypeScript Chặt Chẽ:</strong> Định nghĩa toàn bộ
+                                Interface dữ liệu trùng khớp 100% với Database Schema.</li>
+                            <li><strong class="text-slate-900">Tailwind CSS & Lucide Icons:</strong> Giao diện
+                                Responsive chuẩn chỉnh trên mọi thiết bị Di động & Máy tính.</li>
                         </ul>
                     </div>
 
                     <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg></div>
+                            <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg"><svg class="w-6 h-6" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                                    </path>
+                                </svg></div>
                             <h3 class="font-bold text-slate-900 text-lg">Backend & Database Tier</h3>
                         </div>
                         <ul class="space-y-2 text-sm text-slate-600">
-                            <li><strong class="text-slate-900">Supabase (PostgreSQL 15):</strong> Quản trị CSDL quan hệ với 19 bảng dữ liệu, sử dụng triệt để Stored Procedures, Triggers và JSONB.</li>
-                            <li><strong class="text-slate-900">Supabase Auth:</strong> Quản lý người dùng, phân quyền Role-based (Owner vs Member) qua JWT.</li>
-                            <li><strong class="text-slate-900">Supabase Storage:</strong> Quản lý lưu trữ file nhạy cảm ở chế độ Private Bucket.</li>
+                            <li><strong class="text-slate-900">Supabase (PostgreSQL 15):</strong> Quản trị CSDL quan hệ
+                                với 19 bảng dữ liệu, sử dụng triệt để Stored Procedures, Triggers và JSONB.</li>
+                            <li><strong class="text-slate-900">Supabase Auth:</strong> Quản lý người dùng, phân quyền
+                                Role-based (Owner vs Member) qua JWT.</li>
+                            <li><strong class="text-slate-900">Supabase Storage:</strong> Quản lý lưu trữ file nhạy cảm
+                                ở chế độ Private Bucket.</li>
                         </ul>
                     </div>
                 </div>
@@ -138,177 +343,262 @@
             <!-- SECTION 3: TẤT CẢ 13 PHÂN HỆ CHỨC NĂNG -->
             <section id="chuc-nang" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
                 <h2 class="section-title">3. Danh sách Tất cả 13 Phân hệ Chức năng & Workflow</h2>
-                <p class="text-slate-600 mb-6">Dưới đây là chi tiết toàn bộ các chức năng đã được lập trình hoàn chỉnh trong hệ thống RentFlow:</p>
+                <p class="text-slate-600 mb-6">Dưới đây là chi tiết toàn bộ các chức năng đã được lập trình hoàn chỉnh
+                    trong hệ thống RentFlow:</p>
 
                 <div class="grid grid-cols-1 gap-6">
                     <!-- Phân hệ 1 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
                             <span class="badge badge-blue">Phân hệ 1</span> Dashboard Overview (Trung tâm điều khiển)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Hiển thị báo cáo trực quan tức thì ngay sau khi chủ trọ đăng nhập.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Hiển thị báo cáo trực quan tức thì ngay
+                            sau khi chủ trọ đăng nhập.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Thống kê tổng doanh thu thu được trong tháng, tổng tiền nợ hóa đơn chưa thu, tổng số tòa nhà và phòng trọ đang quản lý.</p>
-                            <p><strong>• Workflow:</strong> Khi mở trang, Server Action tự động tính toán tổng số tiền từ bảng <code>invoices</code> có trạng thái <code>paid</code> vs <code>unpaid</code> trong kỳ hiện tại để vẽ biểu đồ chỉ số.</p>
+                            <p><strong>• Chức năng:</strong> Thống kê tổng doanh thu thu được trong tháng, tổng tiền nợ
+                                hóa đơn chưa thu, tổng số tòa nhà và phòng trọ đang quản lý.</p>
+                            <p><strong>• Workflow:</strong> Khi mở trang, Server Action tự động tính toán tổng số tiền
+                                từ bảng <code>invoices</code> có trạng thái <code>paid</code> vs <code>unpaid</code>
+                                trong kỳ hiện tại để vẽ biểu đồ chỉ số.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 2 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
                             <span class="badge badge-blue">Phân hệ 2</span> Quản lý Tòa nhà & Cơ sở (Buildings)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Quản lý danh mục các bất động sản lưu trú của chủ nhà.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Quản lý danh mục các bất động sản lưu trú
+                            của chủ nhà.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Thêm mới tòa nhà, sửa địa chỉ, số tầng, mô tả và gắn loại hình kinh doanh (Dài hạn <code>long_term</code>, Ngắn hạn <code>short_term</code> hoặc Hỗn hợp <code>mixed</code>).</p>
-                            <p><strong>• Workflow:</strong> Chủ trọ tạo Tòa nhà -> Cấu hình Bảng giá dịch vụ cố định riêng cho tòa đó (Điện, Nước, Khóa từ, Rác) -> Bắt đầu tạo danh sách các phòng thuộc tòa.</p>
+                            <p><strong>• Chức năng:</strong> Thêm mới tòa nhà, sửa địa chỉ, số tầng, mô tả và gắn loại
+                                hình kinh doanh (Dài hạn <code>long_term</code>, Ngắn hạn <code>short_term</code> hoặc
+                                Hỗn hợp <code>mixed</code>).</p>
+                            <p><strong>• Workflow:</strong> Chủ trọ tạo Tòa nhà -> Cấu hình Bảng giá dịch vụ cố định
+                                riêng cho tòa đó (Điện, Nước, Khóa từ, Rác) -> Bắt đầu tạo danh sách các phòng thuộc
+                                tòa.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 3 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
                             <span class="badge badge-blue">Phân hệ 3</span> Quản lý Phòng trọ & Trạng thái (Rooms)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Quản lý chi tiết từng không gian phòng.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Quản lý chi tiết từng không gian phòng.
+                        </p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Khởi tạo phòng theo tầng, diện tích m2, giá thuê niêm yết, ghi chú nội thất. Quản lý trạng thái phòng: Trống (<code>vacant</code>), Đang thuê (<code>occupied</code>), Đang bảo trì (<code>maintenance</code>).</p>
-                            <p><strong>• Workflow:</strong> Trạng thái phòng được tự động cập nhật nhảy màu trên sơ đồ phòng khi có Hợp đồng mới kích hoạt hoặc khi Thanh lý hợp đồng thành công.</p>
+                            <p><strong>• Chức năng:</strong> Khởi tạo phòng theo tầng, diện tích m2, giá thuê niêm yết,
+                                ghi chú nội thất. Quản lý trạng thái phòng: Trống (<code>vacant</code>), Đang thuê
+                                (<code>occupied</code>), Đang bảo trì (<code>maintenance</code>).</p>
+                            <p><strong>• Workflow:</strong> Trạng thái phòng được tự động cập nhật nhảy màu trên sơ đồ
+                                phòng khi có Hợp đồng mới kích hoạt hoặc khi Thanh lý hợp đồng thành công.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 4 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 4</span> Quản lý Khách thuê & Ở ghép (Tenants & Roommates)
+                            <span class="badge badge-blue">Phân hệ 4</span> Quản lý Khách thuê & Ở ghép (Tenants &
+                            Roommates)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed mb-3">Số hóa hồ sơ cư dân sinh sống.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Quản lý danh bạ khách thuê, số điện thoại, email, số CCCD, ngày sinh, địa chỉ thường trú. Tải lên và xem ảnh CCCD 2 mặt an toàn. Thêm danh sách người ở ghép (Roommates) thuộc cùng hợp đồng.</p>
-                            <p><strong>• Workflow:</strong> Nhập thông tin khách -> Upload ảnh CCCD qua Proxy API bảo mật -> Gán khách vào Hợp đồng đại diện.</p>
+                            <p><strong>• Chức năng:</strong> Quản lý danh bạ khách thuê, số điện thoại, email, số CCCD,
+                                ngày sinh, địa chỉ thường trú. Tải lên và xem ảnh CCCD 2 mặt an toàn. Thêm danh sách
+                                người ở ghép (Roommates) thuộc cùng hợp đồng.</p>
+                            <p><strong>• Workflow:</strong> Nhập thông tin khách -> Upload ảnh CCCD qua Proxy API bảo
+                                mật -> Gán khách vào Hợp đồng đại diện.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 5 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 5</span> Quản lý Hợp đồng & Chữ ký Số (Contracts & E-Sign)
+                            <span class="badge badge-blue">Phân hệ 5</span> Quản lý Hợp đồng & Chữ ký Số (Contracts &
+                            E-Sign)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed mb-3">Ràng buộc pháp lý cho thuê dài hạn.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Tạo hợp đồng mới, chọn phòng, khách đại diện, giá thuê chốt, tiền cọc deposit, thời hạn từ ngày đến ngày. Tải bản scan hợp đồng giấy. Quản lý trạng thái <code>active</code>, <code>expired</code>, <code>terminated</code>.</p>
-                            <p><strong>• Workflow Tạo hợp đồng:</strong> Chọn phòng vacant -> Hệ thống tạo hợp đồng active -> Tự động chuyển phòng sang occupied -> Kiểm tra chống trùng bằng Partial Unique Index.</p>
-                            <p><strong>• Workflow Thanh lý:</strong> Chọn kết thúc hợp đồng -> Nhập số tiền hoàn cọc / trừ nợ hư hỏng -> Chuyển trạng thái hợp đồng thành <code>terminated</code> -> Trả phòng về <code>vacant</code>.</p>
+                            <p><strong>• Chức năng:</strong> Tạo hợp đồng mới, chọn phòng, khách đại diện, giá thuê
+                                chốt, tiền cọc deposit, thời hạn từ ngày đến ngày. Tải bản scan hợp đồng giấy. Quản lý
+                                trạng thái <code>active</code>, <code>expired</code>, <code>terminated</code>.</p>
+                            <p><strong>• Workflow Tạo hợp đồng:</strong> Chọn phòng vacant -> Hệ thống tạo hợp đồng
+                                active -> Tự động chuyển phòng sang occupied -> Kiểm tra chống trùng bằng Partial Unique
+                                Index.</p>
+                            <p><strong>• Workflow Thanh lý:</strong> Chọn kết thúc hợp đồng -> Nhập số tiền hoàn cọc /
+                                trừ nợ hư hỏng -> Chuyển trạng thái hợp đồng thành <code>terminated</code> -> Trả phòng
+                                về <code>vacant</code>.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 6 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 6</span> Ghi chỉ số Điện/Nước hàng tháng (Meter Records)
+                            <span class="badge badge-blue">Phân hệ 6</span> Ghi chỉ số Điện/Nước hàng tháng (Meter
+                            Records)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed mb-3">Chốt số điện nước định kỳ.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Màn hình nhập nhanh chỉ số Điện cũ/mới, Nước cũ/mới theo tháng (kỳ <code>record_month</code>). Tự động tính chỉ số tiêu thụ.</p>
-                            <p><strong>• Workflow:</strong> Hệ thống tự lấy chỉ số mới của tháng trước làm chỉ số cũ tháng này. Khi lưu, dùng câu lệnh UPSERT vào CSDL để không lo bị nhập trùng.</p>
+                            <p><strong>• Chức năng:</strong> Màn hình nhập nhanh chỉ số Điện cũ/mới, Nước cũ/mới theo
+                                tháng (kỳ <code>record_month</code>). Tự động tính chỉ số tiêu thụ.</p>
+                            <p><strong>• Workflow:</strong> Hệ thống tự lấy chỉ số mới của tháng trước làm chỉ số cũ
+                                tháng này. Khi lưu, dùng câu lệnh UPSERT vào CSDL để không lo bị nhập trùng.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 7 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 7</span> Quản lý Hóa đơn & Thu tiền (Invoices & Payments)
+                            <span class="badge badge-blue">Phân hệ 7</span> Quản lý Hóa đơn & Thu tiền (Invoices &
+                            Payments)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tự động tính tiền và phát hành phiếu thu.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tự động tính tiền và phát hành phiếu thu.
+                        </p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Tự động tổng hợp Hóa đơn tháng bao gồm: Tiền phòng + Tiền điện tiêu thụ + Tiền nước tiêu thụ + Các dịch vụ cố định. Quản lý trạng thái <code>unpaid</code>, <code>partial</code>, <code>paid</code>.</p>
-                            <p><strong>• Workflow Sinh hóa đơn:</strong> Nhấp nút "Tạo hóa đơn tháng" -> Hệ thống quét chỉ số điện nước trong `meter_records` + đơn giá dịch vụ -> Tạo các dòng chi tiết `invoice_items` -> Xuất hóa đơn tổng cho từng phòng.</p>
+                            <p><strong>• Chức năng:</strong> Tự động tổng hợp Hóa đơn tháng bao gồm: Tiền phòng + Tiền
+                                điện tiêu thụ + Tiền nước tiêu thụ + Các dịch vụ cố định. Quản lý trạng thái
+                                <code>unpaid</code>, <code>partial</code>, <code>paid</code>.</p>
+                            <p><strong>• Workflow Sinh hóa đơn:</strong> Nhấp nút "Tạo hóa đơn tháng" -> Hệ thống quét
+                                chỉ số điện nước trong `meter_records` + đơn giá dịch vụ -> Tạo các dòng chi tiết
+                                `invoice_items` -> Xuất hóa đơn tổng cho từng phòng.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 8 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 8</span> Quản lý Sự cố & Báo hỏng (Incidents Management)
+                            <span class="badge badge-blue">Phân hệ 8</span> Quản lý Sự cố & Báo hỏng (Incidents
+                            Management)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tiếp nhận và xử lý phản ánh từ khách thuê.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tiếp nhận và xử lý phản ánh từ khách
+                            thuê.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Ghi nhận sự cố hỏng hóc (cháy bóng đèn, nghẹt nước, hỏng máy lạnh). Phân loại mức độ ưu tiên: Cao (<code>high</code>), Trung bình (<code>medium</code>), Thấp (<code>low</code>). Trạng thái: Mới (<code>open</code>), Đang sửa (<code>in_progress</code>), Đã xong (<code>resolved</code>).</p>
-                            <p><strong>• Workflow:</strong> Ghi nhận báo hỏng -> Gán hình ảnh thực tế -> Chủ trọ cập nhật ghi chú admin & chuyển trạng thái sau khi thợ sửa xong.</p>
+                            <p><strong>• Chức năng:</strong> Ghi nhận sự cố hỏng hóc (cháy bóng đèn, nghẹt nước, hỏng
+                                máy lạnh). Phân loại mức độ ưu tiên: Cao (<code>high</code>), Trung bình
+                                (<code>medium</code>), Thấp (<code>low</code>). Trạng thái: Mới (<code>open</code>),
+                                Đang sửa (<code>in_progress</code>), Đã xong (<code>resolved</code>).</p>
+                            <p><strong>• Workflow:</strong> Ghi nhận báo hỏng -> Gán hình ảnh thực tế -> Chủ trọ cập
+                                nhật ghi chú admin & chuyển trạng thái sau khi thợ sửa xong.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 9 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 9</span> Quản lý Chi phí Vận hành (Expenses Management)
+                            <span class="badge badge-blue">Phân hệ 9</span> Quản lý Chi phí Vận hành (Expenses
+                            Management)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Theo dõi luồng tiền chi ra của chủ nhà trọ.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Theo dõi luồng tiền chi ra của chủ nhà
+                            trọ.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Quản lý các khoản chi: Lương bảo vệ/nhân viên, tiền điện nước tổng trả cho nhà nước, tiền bảo trì sửa chữa lớn, chi phí marketing quảng cáo phòng.</p>
-                            <p><strong>• Workflow:</strong> Chủ trọ nhập khoản chi -> Đính kèm ảnh hóa đơn thanh toán -> Hệ thống tự trừ vào doanh thu tổng để ra **Lợi nhuận thực tế (Net Profit)**.</p>
+                            <p><strong>• Chức năng:</strong> Quản lý các khoản chi: Lương bảo vệ/nhân viên, tiền điện
+                                nước tổng trả cho nhà nước, tiền bảo trì sửa chữa lớn, chi phí marketing quảng cáo
+                                phòng.</p>
+                            <p><strong>• Workflow:</strong> Chủ trọ nhập khoản chi -> Đính kèm ảnh hóa đơn thanh toán ->
+                                Hệ thống tự trừ vào doanh thu tổng để ra **Lợi nhuận thực tế (Net Profit)**.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 10 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 10</span> Phân hệ Cho thuê Homestay & Đặt phòng (Homestay Booking)
+                            <span class="badge badge-blue">Phân hệ 10</span> Phân hệ Cho thuê Homestay & Đặt phòng
+                            (Homestay Booking)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Dành riêng cho mô hình kinh doanh homestay/căn hộ dịch vụ theo ngày.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Dành riêng cho mô hình kinh doanh
+                            homestay/căn hộ dịch vụ theo ngày.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Tạo đơn đặt phòng (Booking) cho khách ngắn hạn, chọn ngày check-in, check-out, tính tổng tiền. Quản lý trạng thái booking: <code>pending</code>, <code>confirmed</code>, <code>checked_in</code>, <code>checked_out</code>, <code>cancelled</code>.</p>
-                            <p><strong>• Workflow Chống Double Booking:</strong> Hệ thống tự động quét trùng lịch phòng (Date Overlap Check) trước khi xác nhận đơn mới, đảm bảo 1 phòng không bao giờ bị dính 2 đoàn khách trùng ngày.</p>
+                            <p><strong>• Chức năng:</strong> Tạo đơn đặt phòng (Booking) cho khách ngắn hạn, chọn ngày
+                                check-in, check-out, tính tổng tiền. Quản lý trạng thái booking: <code>pending</code>,
+                                <code>confirmed</code>, <code>checked_in</code>, <code>checked_out</code>,
+                                <code>cancelled</code>.</p>
+                            <p><strong>• Workflow Chống Double Booking:</strong> Hệ thống tự động quét trùng lịch phòng
+                                (Date Overlap Check) trước khi xác nhận đơn mới, đảm bảo 1 phòng không bao giờ bị dính 2
+                                đoàn khách trùng ngày.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 11 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 11</span> Quản lý Dọn dẹp & Bảo trì (Housekeeping Tasks)
+                            <span class="badge badge-blue">Phân hệ 11</span> Quản lý Dọn dẹp & Bảo trì (Housekeeping
+                            Tasks)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Phân công nhiệm vụ buồng phòng cho nhân viên.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Phân công nhiệm vụ buồng phòng cho nhân
+                            viên.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Tạo các tác vụ: Dọn vệ sinh (<code>cleaning</code>), Bảo trì thiết bị (<code>maintenance</code>), Kiểm tra phòng (<code>inspection</code>). Phân công nhân viên phụ trách và cài đặt ngày hẹn.</p>
-                            <p><strong>• Workflow:</strong> Khách homestay check-out -> Tự động sinh công việc Cleaning -> Nhân viên làm xong dọn dẹp bấm Complete -> Phòng sẵn sàng đón khách mới.</p>
+                            <p><strong>• Chức năng:</strong> Tạo các tác vụ: Dọn vệ sinh (<code>cleaning</code>), Bảo
+                                trì thiết bị (<code>maintenance</code>), Kiểm tra phòng (<code>inspection</code>). Phân
+                                công nhân viên phụ trách và cài đặt ngày hẹn.</p>
+                            <p><strong>• Workflow:</strong> Khách homestay check-out -> Tự động sinh công việc Cleaning
+                                -> Nhân viên làm xong dọn dẹp bấm Complete -> Phòng sẵn sàng đón khách mới.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 12 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 12</span> Quản lý Gói Dịch vụ & Hạn ngạch (Subscriptions Gate)
+                            <span class="badge badge-blue">Phân hệ 12</span> Quản lý Gói Dịch vụ & Hạn ngạch
+                            (Subscriptions Gate)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Kiểm soát tính năng theo gói tài khoản Free / Premium.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Kiểm soát tính năng theo gói tài khoản
+                            Free / Premium.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Hạn ngạch Gói Free:</strong> Tối đa 2 Tòa nhà (MAX_BUILDINGS = 2) và 30 Phòng (MAX_ROOMS = 30).</p>
-                            <p><strong>• Tính năng Premium:</strong> Khi nâng cấp Premium, hệ thống tự động mở khóa các tính năng cao cấp: Quản lý tòa nhà không giới hạn, Xuất báo cáo Excel, Chữ ký số E-signature, và Tích hợp cổng thanh toán tự động.</p>
+                            <p><strong>• Hạn ngạch Gói Free:</strong> Tối đa 2 Tòa nhà (MAX_BUILDINGS = 2) và 30 Phòng
+                                (MAX_ROOMS = 30).</p>
+                            <p><strong>• Tính năng Premium:</strong> Khi nâng cấp Premium, hệ thống tự động mở khóa các
+                                tính năng cao cấp: Quản lý tòa nhà không giới hạn, Xuất báo cáo Excel, Chữ ký số
+                                E-signature, và Tích hợp cổng thanh toán tự động.</p>
                         </div>
                     </div>
 
                     <!-- Phân hệ 13 -->
-                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
+                    <div
+                        class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition-all bg-slate-50/50">
                         <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2 mb-2">
-                            <span class="badge badge-blue">Phân hệ 13</span> Cổng Thanh Toán Tự Động PayOS (PayOS Gateway)
+                            <span class="badge badge-blue">Phân hệ 13</span> Cổng Thanh Toán Tự Động PayOS (PayOS
+                            Gateway)
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tự động hóa luồng gia hạn tài khoản qua ngân hàng.</p>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-3">Tự động hóa luồng gia hạn tài khoản qua
+                            ngân hàng.</p>
                         <div class="text-xs text-slate-700 space-y-1">
-                            <p><strong>• Chức năng:</strong> Cấu hình thông tin tài khoản ngân hàng (Bank BIN, STK, Tên chủ tài khoản) và các khóa API PayOS (Client ID, API Key, Checksum Key).</p>
-                            <p><strong>• Workflow Nâng cấp Premium:</strong> Người dùng chọn nâng cấp -> Hệ thống gọi PayOS tạo đơn hàng -> Xuất mã QR chuyển khoản VietQR -> Khách chuyển tiền -> Ngân hàng gửi Webhook về `/api/payos/webhook` -> Hệ thống xác thực Checksum và nâng cấp gói thành Premium ngay lập tức.</p>
+                            <p><strong>• Chức năng:</strong> Cấu hình thông tin tài khoản ngân hàng (Bank BIN, STK, Tên
+                                chủ tài khoản) và các khóa API PayOS (Client ID, API Key, Checksum Key).</p>
+                            <p><strong>• Workflow Nâng cấp Premium:</strong> Người dùng chọn nâng cấp -> Hệ thống gọi
+                                PayOS tạo đơn hàng -> Xuất mã QR chuyển khoản VietQR -> Khách chuyển tiền -> Ngân hàng
+                                gửi Webhook về `/api/payos/webhook` -> Hệ thống xác thực Checksum và nâng cấp gói thành
+                                Premium ngay lập tức.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Kịch bản kiểm thử (Test Cases) cho BA -->
                 <div class="mt-12 border-t pt-8">
-                    <h3 class="font-bold text-slate-900 text-2xl mb-4 border-b pb-2">Kịch bản kiểm thử (Test Cases) dành cho BA</h3>
-                    <p class="text-slate-600 mb-6 text-sm">Dưới đây là bộ kịch bản kiểm thử (Test Scenarios) chi tiết được thiết kế theo cấu trúc phân hệ để BA/QA thực hiện kiểm thử trên toàn bộ hệ thống RentFlow:</p>
+                    <h3 class="font-bold text-slate-900 text-2xl mb-4 border-b pb-2">Kịch bản kiểm thử (Test Cases) dành
+                        cho BA</h3>
+                    <p class="text-slate-600 mb-6 text-sm">Dưới đây là bộ kịch bản kiểm thử (Test Scenarios) chi tiết
+                        được thiết kế theo cấu trúc phân hệ để BA/QA thực hiện kiểm thử trên toàn bộ hệ thống RentFlow:
+                    </p>
 
                     <div class="space-y-10">
                         <!-- Phân hệ 1: Xác thực -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 1</span> Xác thực & Quản lý Tài khoản (Authentication)
+                                <span class="badge badge-purple">Phân hệ 1</span> Xác thực & Quản lý Tài khoản
+                                (Authentication)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -355,7 +645,8 @@
                                             <td><strong>AUTH-06</strong></td>
                                             <td>Quên mật khẩu</td>
                                             <td>Luồng cấp lại mật khẩu qua email</td>
-                                            <td>Nhận được link reset, đổi thành công và đăng nhập được bằng mật khẩu mới.</td>
+                                            <td>Nhận được link reset, đổi thành công và đăng nhập được bằng mật khẩu
+                                                mới.</td>
                                         </tr>
                                         <tr>
                                             <td><strong>AUTH-07</strong></td>
@@ -371,7 +662,8 @@
                         <!-- Phân hệ 2: Tòa nhà & Phòng -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 2</span> Quản lý Tòa nhà & Phòng (Buildings & Rooms)
+                                <span class="badge badge-purple">Phân hệ 2</span> Quản lý Tòa nhà & Phòng (Buildings &
+                                Rooms)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -400,7 +692,8 @@
                                             <td><strong>BLD-03</strong></td>
                                             <td>Tòa nhà</td>
                                             <td>Xóa (hoặc Soft Delete) Tòa nhà</td>
-                                            <td>Tòa nhà bị ẩn/xóa khỏi danh sách. Các phòng trực thuộc cũng bị ảnh hưởng theo logic (cascade).</td>
+                                            <td>Tòa nhà bị ẩn/xóa khỏi danh sách. Các phòng trực thuộc cũng bị ảnh hưởng
+                                                theo logic (cascade).</td>
                                         </tr>
                                         <tr>
                                             <td><strong>ROM-01</strong></td>
@@ -434,7 +727,8 @@
                         <!-- Phân hệ 3: Khách thuê & Hợp đồng -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 3</span> Quản lý Khách thuê & Hợp đồng (Tenants & Contracts)
+                                <span class="badge badge-purple">Phân hệ 3</span> Quản lý Khách thuê & Hợp đồng (Tenants
+                                & Contracts)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -485,7 +779,8 @@
                         <!-- Phân hệ 4: Tài chính -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 4</span> Quản lý Tài chính (Invoices, Payments, Expenses)
+                                <span class="badge badge-purple">Phân hệ 4</span> Quản lý Tài chính (Invoices, Payments,
+                                Expenses)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -508,7 +803,8 @@
                                             <td><strong>INV-02</strong></td>
                                             <td>Hóa đơn</td>
                                             <td>Tính toán tiền tự động (từ chỉ số điện/nước)</td>
-                                            <td>Tiền điện/nước được cộng dồn đúng theo giá dịch vụ cấu hình ở phòng.</td>
+                                            <td>Tiền điện/nước được cộng dồn đúng theo giá dịch vụ cấu hình ở phòng.
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><strong>INV-03</strong></td>
@@ -526,7 +822,8 @@
                                             <td><strong>PAY-02</strong></td>
                                             <td>Thanh toán</td>
                                             <td>Tích hợp cổng PayOS (Webhooks)</td>
-                                            <td>Khi khách chuyển khoản thành công, hệ thống tự động đổi trạng thái Hóa đơn sang "Đã thanh toán".</td>
+                                            <td>Khi khách chuyển khoản thành công, hệ thống tự động đổi trạng thái Hóa
+                                                đơn sang "Đã thanh toán".</td>
                                         </tr>
                                         <tr>
                                             <td><strong>EXP-01</strong></td>
@@ -548,7 +845,8 @@
                         <!-- Phân hệ 5: Đồng hồ & OCR -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 5</span> Đồng hồ Điện/Nước & Công nghệ OCR (Meters)
+                                <span class="badge badge-purple">Phân hệ 5</span> Đồng hồ Điện/Nước & Công nghệ OCR
+                                (Meters)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -577,7 +875,8 @@
                                             <td><strong>ID-01</strong></td>
                                             <td>AI OCR</td>
                                             <td>Quét thông tin CCCD (CCCD OCR)</td>
-                                            <td>Tải ảnh CCCD khi onboarding khách thuê, hệ thống tự trích xuất Tên, Số CCCD.</td>
+                                            <td>Tải ảnh CCCD khi onboarding khách thuê, hệ thống tự trích xuất Tên, Số
+                                                CCCD.</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -610,7 +909,8 @@
                                             <td><strong>INC-02</strong></td>
                                             <td>Sự cố</td>
                                             <td>Thao tác Kéo-Thả (Drag & Drop) trên Kanban</td>
-                                            <td>Kéo thẻ sự cố sang "In Progress" hoặc "Resolved", trạng thái được cập nhật.</td>
+                                            <td>Kéo thẻ sự cố sang "In Progress" hoặc "Resolved", trạng thái được cập
+                                                nhật.</td>
                                         </tr>
                                         <tr>
                                             <td><strong>INC-03</strong></td>
@@ -626,7 +926,8 @@
                         <!-- Phân hệ 7: Homestay -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 7</span> Quản lý Mô hình Homestay (Homestay Booking)
+                                <span class="badge badge-purple">Phân hệ 7</span> Quản lý Mô hình Homestay (Homestay
+                                Booking)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -665,7 +966,8 @@
                         <!-- Phân hệ 8: Portal khách thuê -->
                         <div>
                             <h4 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
-                                <span class="badge badge-purple">Phân hệ 8</span> Cổng Thông Tin Khách Thuê (Tenant Portal)
+                                <span class="badge badge-purple">Phân hệ 8</span> Cổng Thông Tin Khách Thuê (Tenant
+                                Portal)
                             </h4>
                             <div class="overflow-x-auto">
                                 <table>
@@ -733,25 +1035,29 @@
                                             <td><strong>SYS-02</strong></td>
                                             <td>File RLS</td>
                                             <td>Phân quyền file đính kèm (Storage RLS)</td>
-                                            <td>Khách thuê/Chủ nhà chỉ xem được hình ảnh hợp đồng, CCCD của tổ chức mình.</td>
+                                            <td>Khách thuê/Chủ nhà chỉ xem được hình ảnh hợp đồng, CCCD của tổ chức
+                                                mình.</td>
                                         </tr>
                                         <tr>
                                             <td><strong>SYS-03</strong></td>
                                             <td>Concurrency</td>
                                             <td>Ngăn chặn Race Conditions</td>
-                                            <td>2 thao tác thanh toán gửi cùng lúc không bị trừ tiền hoặc lỗi trạng thái kép.</td>
+                                            <td>2 thao tác thanh toán gửi cùng lúc không bị trừ tiền hoặc lỗi trạng thái
+                                                kép.</td>
                                         </tr>
                                         <tr>
                                             <td><strong>SYS-04</strong></td>
                                             <td>Activity</td>
                                             <td>Log nhật ký hoạt động (Activity Logs)</td>
-                                            <td>Hệ thống lưu lại vết (ai làm, hành động gì, lúc nào) trên các thao tác quan trọng.</td>
+                                            <td>Hệ thống lưu lại vết (ai làm, hành động gì, lúc nào) trên các thao tác
+                                                quan trọng.</td>
                                         </tr>
                                         <tr>
                                             <td><strong>SYS-05</strong></td>
                                             <td>Settings</td>
                                             <td>Cài đặt chung & Phương thức thanh toán</td>
-                                            <td>Cấu hình mã API PayOS hoặc tài khoản ngân hàng nhận tiền lưu thành công.</td>
+                                            <td>Cấu hình mã API PayOS hoặc tài khoản ngân hàng nhận tiền lưu thành công.
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -764,144 +1070,195 @@
             <!-- SECTION 4: SƠ ĐỒ LUỒNG NGHIỆP VỤ -->
             <section id="luong-nghiep-vu" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
                 <h2 class="section-title">4. Sơ đồ Luồng Nghiệp vụ Chi tiết (Workflows)</h2>
-                
-                <h3 class="font-bold text-slate-900 text-base mb-4">Workflow A: Quy trình Quản lý Hợp đồng & Nhận phòng Thuê dài hạn</h3>
+
+                <h3 class="font-bold text-slate-900 text-base mb-4">Workflow A: Quy trình Quản lý Hợp đồng & Nhận phòng
+                    Thuê dài hạn</h3>
                 <div class="space-y-4 my-6">
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <h4 class="font-bold text-slate-900 text-sm">Tạo Hồ sơ Khách thuê & Upload CCCD</h4>
-                        <p class="text-xs text-slate-500 mt-1">Nhập thông tin cá nhân khách thuê tại `/tenants`. Upload 2 mặt ảnh CCCD vào Private Bucket qua API mã hóa.</p>
+                        <p class="text-xs text-slate-500 mt-1">Nhập thông tin cá nhân khách thuê tại `/tenants`. Upload
+                            2 mặt ảnh CCCD vào Private Bucket qua API mã hóa.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h4 class="font-bold text-slate-900 text-sm">Lập Hợp đồng Thuê nhà mới</h4>
-                        <p class="text-xs text-slate-500 mt-1">Chọn phòng còn trống (`vacant`), gán khách đại diện, đặt tiền cọc và tiền thuê. Hệ thống gọi Server Action `createContract`.</p>
+                        <p class="text-xs text-slate-500 mt-1">Chọn phòng còn trống (`vacant`), gán khách đại diện, đặt
+                            tiền cọc và tiền thuê. Hệ thống gọi Server Action `createContract`.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">3</div>
                         <h4 class="font-bold text-slate-900 text-sm">Kiểm tra Khóa UNIQUE & Kích hoạt Phòng</h4>
-                        <p class="text-xs text-slate-500 mt-1">PostgreSQL kiểm tra Unique Index `idx_one_active_contract_per_room`. Nếu hợp lệ, hợp đồng chuyển sang `active`, trạng thái phòng tự đổi sang `occupied`.</p>
+                        <p class="text-xs text-slate-500 mt-1">PostgreSQL kiểm tra Unique Index
+                            `idx_one_active_contract_per_room`. Nếu hợp lệ, hợp đồng chuyển sang `active`, trạng thái
+                            phòng tự đổi sang `occupied`.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">4</div>
                         <h4 class="font-bold text-slate-900 text-sm">Ghi nhận Nhật ký Hoạt động (Audit Log)</h4>
-                        <p class="text-xs text-slate-500 mt-1">Database Trigger tự động bắt sự kiện `INSERT` trên bảng `contracts` và lưu vết vào `activity_logs`.</p>
+                        <p class="text-xs text-slate-500 mt-1">Database Trigger tự động bắt sự kiện `INSERT` trên bảng
+                            `contracts` và lưu vết vào `activity_logs`.</p>
                     </div>
                 </div>
 
-                <h3 class="font-bold text-slate-900 text-base mb-4 mt-10">Workflow B: Quy trình Thu tiền Hóa đơn Điện Nước Tự động hàng tháng</h3>
+                <h3 class="font-bold text-slate-900 text-base mb-4 mt-10">Workflow B: Quy trình Thu tiền Hóa đơn Điện
+                    Nước Tự động hàng tháng</h3>
                 <div class="space-y-4 my-6">
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <h4 class="font-bold text-slate-900 text-sm">Chốt chỉ số Điện/Nước định kỳ</h4>
-                        <p class="text-xs text-slate-500 mt-1">Quản lý mở màn hình `/meters`, nhập chỉ số mới. Hệ thống dùng lệnh `UPSERT` vào bảng `meter_records` theo kỳ `YYYY-MM`.</p>
+                        <p class="text-xs text-slate-500 mt-1">Quản lý mở màn hình `/meters`, nhập chỉ số mới. Hệ thống
+                            dùng lệnh `UPSERT` vào bảng `meter_records` theo kỳ `YYYY-MM`.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h4 class="font-bold text-slate-900 text-sm">Tự động Tổng hợp & Sinh Hóa đơn</h4>
-                        <p class="text-xs text-slate-500 mt-1">Hệ thống nhân lượng tiêu thụ với đơn giá dịch vụ trong `service_prices`, cộng với tiền phòng trong `contracts` để tạo bản ghi `invoices` và các dòng `invoice_items`.</p>
+                        <p class="text-xs text-slate-500 mt-1">Hệ thống nhân lượng tiêu thụ với đơn giá dịch vụ trong
+                            `service_prices`, cộng với tiền phòng trong `contracts` để tạo bản ghi `invoices` và các
+                            dòng `invoice_items`.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">3</div>
                         <h4 class="font-bold text-slate-900 text-sm">Khách quét mã QR & Xác nhận Thanh toán</h4>
-                        <p class="text-xs text-slate-500 mt-1">Khách xem hóa đơn và chuyển khoản VietQR. Quản lý bấm "Xác nhận thu tiền". Trạng thái hóa đơn chuyển sang `paid`.</p>
+                        <p class="text-xs text-slate-500 mt-1">Khách xem hóa đơn và chuyển khoản VietQR. Quản lý bấm
+                            "Xác nhận thu tiền". Trạng thái hóa đơn chuyển sang `paid`.</p>
                     </div>
                 </div>
             </section>
 
             <!-- SECTION 5: 10 GIẢI PHÁP KỸ THUẬT CHUYÊN SÂU -->
-            <section id="diem-sang" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-blue-600">
-                <h2 class="section-title">5. 全 BỘ 10 Giải pháp Kỹ thuật Chuyên sâu trên Toàn hệ thống</h2>
-                <p class="text-slate-600 mb-6 italic">Dưới đây là mô hình phân tích chi tiết 10 kỹ thuật kiến trúc phần mềm nâng cao được áp dụng xuyết suốt trong toàn bộ dự án RentFlow:</p>
+            <section id="diem-sang"
+                class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-blue-600">
+                <h2 class="section-title">5. BỘ 10 Giải pháp Kỹ thuật Chuyên sâu trên Toàn hệ thống</h2>
+                <p class="text-slate-600 mb-6 italic">Dưới đây là mô hình phân tích chi tiết 10 kỹ thuật kiến trúc phần
+                    mềm nâng cao được áp dụng xuyết suốt trong toàn bộ dự án RentFlow:</p>
 
                 <div class="space-y-6">
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 1</span> Kiến trúc SaaS Multi-Tenant & Cách ly Dữ liệu tại tầng CSDL (Row Level Security)
+                            <span class="badge badge-amber">Giải pháp 1</span> Kiến trúc SaaS Multi-Tenant & Cách ly Dữ
+                            liệu tại tầng CSDL (Row Level Security)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Thay vì triển khai riêng biệt từng CSDL cho từng nhà trọ, RentFlow áp dụng mô hình Multi-tenant chung 1 CSDL. Để đảm bảo an toàn tuyệt đối, dự án kích hoạt chính sách <strong>Row Level Security (RLS)</strong> trực tiếp trên nhân PostgreSQL. Mọi câu lệnh truy vấn từ ứng dụng đều tự động bị ép điều kiện lọc theo ID của Tổ chức (<code>org_id</code>) lấy từ token đăng nhập của người dùng.
+                            <strong>Mô tả kỹ thuật:</strong> Thay vì triển khai riêng biệt từng CSDL cho từng nhà trọ,
+                            RentFlow áp dụng mô hình Multi-tenant chung 1 CSDL. Để đảm bảo an toàn tuyệt đối, dự án kích
+                            hoạt chính sách <strong>Row Level Security (RLS)</strong> trực tiếp trên nhân PostgreSQL.
+                            Mọi câu lệnh truy vấn từ ứng dụng đều tự động bị ép điều kiện lọc theo ID của Tổ chức
+                            (<code>org_id</code>) lấy từ token đăng nhập của người dùng.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 2</span> Tối ưu Hiệu năng Rendering với Next.js 14 App Router & Server Actions
+                            <span class="badge badge-amber">Giải pháp 2</span> Tối ưu Hiệu năng Rendering với Next.js 14
+                            App Router & Server Actions
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Hệ thống sử dụng triệt để kiến trúc React Server Components (RSC). Dữ liệu được tính toán và chuẩn bị sẵn tại Server trước khi trả về cho trình duyệt, giúp giảm 80% dung lượng JavaScript gửi về phía Client và tăng tốc độ tải trang.
+                            <strong>Mô tả kỹ thuật:</strong> Hệ thống sử dụng triệt để kiến trúc React Server Components
+                            (RSC). Dữ liệu được tính toán và chuẩn bị sẵn tại Server trước khi trả về cho trình duyệt,
+                            giúp giảm 80% dung lượng JavaScript gửi về phía Client và tăng tốc độ tải trang.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 3</span> Thuật toán Kiểm tra Trùng lịch Homestay (Date Overlap Detection Algorithm)
+                            <span class="badge badge-amber">Giải pháp 3</span> Thuật toán Kiểm tra Trùng lịch Homestay
+                            (Date Overlap Detection Algorithm)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Đối với mô hình cho thuê homestay theo ngày, RentFlow xây dựng thuật toán kiểm tra giao thoa thời gian trước khi xác nhận đơn mới. Thuật toán sử dụng logic toán học: <code>(Start_New < End_Old) AND (End_New > Start_Old)</code> để đảm bảo 1 phòng không bao giờ bị dính 2 đoàn khách trùng ngày.
+                            <strong>Mô tả kỹ thuật:</strong> Đối với mô hình cho thuê homestay theo ngày, RentFlow xây
+                            dựng thuật toán kiểm tra giao thoa thời gian trước khi xác nhận đơn mới. Thuật toán sử dụng
+                            logic toán học: <code>(Start_New < End_Old) AND (End_New > Start_Old)</code> để đảm bảo 1
+                            phòng không bao giờ bị dính 2 đoàn khách trùng ngày.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 4</span> Cơ chế UPSERT Chống Trùng lặp Chỉ số Điện Nước
+                            <span class="badge badge-amber">Giải pháp 4</span> Cơ chế UPSERT Chống Trùng lặp Chỉ số Điện
+                            Nước
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Áp dụng kỹ thuật <strong>UPSERT (Update or Insert)</strong> của PostgreSQL dựa trên khóa phức hợp <code>(room_id, record_month)</code>. Nếu phòng đó trong tháng đó chưa có bản ghi, hệ thống sẽ tạo mới; nếu đã có bản ghi sẵn, hệ thống sẽ tự động cập nhật chỉ số mới mà không gây lỗi.
+                            <strong>Mô tả kỹ thuật:</strong> Áp dụng kỹ thuật <strong>UPSERT (Update or Insert)</strong>
+                            của PostgreSQL dựa trên khóa phức hợp <code>(room_id, record_month)</code>. Nếu phòng đó
+                            trong tháng đó chưa có bản ghi, hệ thống sẽ tạo mới; nếu đã có bản ghi sẵn, hệ thống sẽ tự
+                            động cập nhật chỉ số mới mà không gây lỗi.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 5</span> Hệ thống Xóa Mềm (Soft Delete Architecture) 保 Toàn Lịch Sử Tài Chính
+                            <span class="badge badge-amber">Giải pháp 5</span> Hệ thống Xóa Mềm (Soft Delete
+                            Architecture) 保 Toàn Lịch Sử Tài Chính
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Thêm trường <code>deleted_at</code> cho các bảng cốt lõi. Khi bấm xóa, hệ thống chỉ ghi nhận thời điểm xóa, đồng thời toàn bộ câu truy vấn trên giao diện đều tự động gắn thêm bộ lọc bỏ qua các bản ghi đã xóa mềm. Lịch sử thu tiền cũ vẫn được giữ nguyên vẹn 100%.
+                            <strong>Mô tả kỹ thuật:</strong> Thêm trường <code>deleted_at</code> cho các bảng cốt lõi.
+                            Khi bấm xóa, hệ thống chỉ ghi nhận thời điểm xóa, đồng thời toàn bộ câu truy vấn trên giao
+                            diện đều tự động gắn thêm bộ lọc bỏ qua các bản ghi đã xóa mềm. Lịch sử thu tiền cũ vẫn được
+                            giữ nguyên vẹn 100%.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 6</span> Bảo mật Ảnh CCCD Nhạy cảm qua Private Bucket & Proxy Stream API
+                            <span class="badge badge-amber">Giải pháp 6</span> Bảo mật Ảnh CCCD Nhạy cảm qua Private
+                            Bucket & Proxy Stream API
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Lưu trữ toàn bộ file ảnh trong bộ nhớ <strong>Private Bucket</strong>. Mọi yêu cầu xem ảnh từ giao diện phải đi qua Route Handler trung gian (Proxy API) để kiểm tra JWT Session và xác minh quyền sở hữu trước khi truyền luồng byte ảnh mã hóa về trình duyệt.
+                            <strong>Mô tả kỹ thuật:</strong> Lưu trữ toàn bộ file ảnh trong bộ nhớ <strong>Private
+                                Bucket</strong>. Mọi yêu cầu xem ảnh từ giao diện phải đi qua Route Handler trung gian
+                            (Proxy API) để kiểm tra JWT Session và xác minh quyền sở hữu trước khi truyền luồng byte ảnh
+                            mã hóa về trình duyệt.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 7</span> Tự động hóa Nhật ký Hoạt động (Audit Trail) bằng PostgreSQL Triggers & JSONB
+                            <span class="badge badge-amber">Giải pháp 7</span> Tự động hóa Nhật ký Hoạt động (Audit
+                            Trail) bằng PostgreSQL Triggers & JSONB
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Gắn các <strong>Database Triggers</strong> tự động bên dưới nhân PostgreSQL. Mỗi khi có thao tác Thêm, Sửa, Xóa trên các bảng quan trọng, Trigger sẽ tự động trích xuất toàn bộ dữ liệu cũ (Old Data) và dữ liệu mới (New Data) đóng gói dạng JSONB và đẩy vào bảng <code>activity_logs</code>.
+                            <strong>Mô tả kỹ thuật:</strong> Gắn các <strong>Database Triggers</strong> tự động bên dưới
+                            nhân PostgreSQL. Mỗi khi có thao tác Thêm, Sửa, Xóa trên các bảng quan trọng, Trigger sẽ tự
+                            động trích xuất toàn bộ dữ liệu cũ (Old Data) và dữ liệu mới (New Data) đóng gói dạng JSONB
+                            và đẩy vào bảng <code>activity_logs</code>.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 8</span> Phòng chống Tranh chấp Dữ liệu (Race Condition) bằng Partial Unique Indexes
+                            <span class="badge badge-amber">Giải pháp 8</span> Phòng chống Tranh chấp Dữ liệu (Race
+                            Condition) bằng Partial Unique Indexes
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Áp dụng các <strong>Partial Unique Index</strong> bên dưới CSDL (chỉ cho phép duy nhất 1 hợp đồng có trạng thái <code>active</code> trên cùng 1 ID phòng). Khi có xung đột xảy ra, CSDL sẽ từ chối giao dịch thứ hai và trả về thông báo lỗi thân thiện.
+                            <strong>Mô tả kỹ thuật:</strong> Áp dụng các <strong>Partial Unique Index</strong> bên dưới
+                            CSDL (chỉ cho phép duy nhất 1 hợp đồng có trạng thái <code>active</code> trên cùng 1 ID
+                            phòng). Khi có xung đột xảy ra, CSDL sẽ từ chối giao dịch thứ hai và trả về thông báo lỗi
+                            thân thiện.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 9</span> Tích hợp Webhook Ngân hàng PayOS Chống Tấn công Giả mạo (HMAC-SHA256 Checksum)
+                            <span class="badge badge-amber">Giải pháp 9</span> Tích hợp Webhook Ngân hàng PayOS Chống
+                            Tấn công Giả mạo (HMAC-SHA256 Checksum)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Khi ngân hàng báo tiền về qua Webhook, máy chủ RentFlow thực hiện thuật toán băm chữ ký số <strong>HMAC-SHA256</strong> đối chiếu chuỗi Checksum bí mật. Chỉ khi chữ ký số trùng khớp tuyệt đối, gói Premium mới được kích hoạt.
+                            <strong>Mô tả kỹ thuật:</strong> Khi ngân hàng báo tiền về qua Webhook, máy chủ RentFlow
+                            thực hiện thuật toán băm chữ ký số <strong>HMAC-SHA256</strong> đối chiếu chuỗi Checksum bí
+                            mật. Chỉ khi chữ ký số trùng khớp tuyệt đối, gói Premium mới được kích hoạt.
                         </p>
                     </div>
 
                     <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2 mb-2">
-                            <span class="badge badge-amber">Giải pháp 10</span> Engine Tự động Tính toán Hóa đơn Đa dịch vụ (Dynamic Pricing Engine)
+                            <span class="badge badge-amber">Giải pháp 10</span> Engine Tự động Tính toán Hóa đơn Đa dịch
+                            vụ (Dynamic Pricing Engine)
                         </h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            <strong>Mô tả kỹ thuật:</strong> Thuật toán tự động quét cấu hình bảng giá riêng của từng Tòa nhà, nhân với chỉ số tiêu thụ trong tháng, và bóc tách thành từng dòng chi tiết (Invoice Items) minh bạch cho khách thuê.
+                            <strong>Mô tả kỹ thuật:</strong> Thuật toán tự động quét cấu hình bảng giá riêng của từng
+                            Tòa nhà, nhân với chỉ số tiêu thụ trong tháng, và bóc tách thành từng dòng chi tiết (Invoice
+                            Items) minh bạch cho khách thuê.
                         </p>
                     </div>
                 </div>
@@ -910,20 +1267,24 @@
             <!-- SECTION 6: SƠ ĐỒ THỰC THỂ QUAN HỆ CSDL (ERD DIAGRAM Visual Layout) -->
             <section id="database-erd" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
                 <h2 class="section-title">6. Sơ đồ Thực thể Quan hệ CSDL (ERD Diagram)</h2>
-                <p class="text-slate-600 mb-6">Dưới đây là Sơ đồ Trực quan minh họa cấu trúc mối quan hệ giữa 19 bảng dữ liệu trong CSDL PostgreSQL của RentFlow:</p>
+                <p class="text-slate-600 mb-6">Dưới đây là Sơ đồ Trực quan minh họa cấu trúc mối quan hệ giữa 19 bảng dữ
+                    liệu trong CSDL PostgreSQL của RentFlow:</p>
 
                 <div class="bg-slate-900 p-8 rounded-2xl border border-slate-800 space-y-8 overflow-x-auto">
                     <div>
-                        <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-3 text-center">--- TẦNG GỐC QUẢN LÝ ĐA KHÁCH HÀNG (MULTI-TENANT ROOT) ---</div>
+                        <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-3 text-center">---
+                            TẦNG GỐC QUẢN LÝ ĐA KHÁCH HÀNG (MULTI-TENANT ROOT) ---</div>
                         <div class="max-w-md mx-auto">
                             <div class="erd-box border-emerald-500/80 bg-slate-800/90">
                                 <div class="erd-header text-emerald-300 border-slate-700">
                                     <span>🏢 organizations</span>
-                                    <span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">Root Table</span>
+                                    <span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">Root
+                                        Table</span>
                                 </div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
                                 <div class="erd-field"><span>name</span><span>VARCHAR</span></div>
-                                <div class="erd-field"><span>plan_type</span><span>VARCHAR ('free'/'premium')</span></div>
+                                <div class="erd-field"><span>plan_type</span><span>VARCHAR ('free'/'premium')</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -932,7 +1293,8 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-4">
-                            <div class="text-xs font-bold text-blue-400 uppercase tracking-wider text-center">Tài khoản & Phân quyền</div>
+                            <div class="text-xs font-bold text-blue-400 uppercase tracking-wider text-center">Tài khoản
+                                & Phân quyền</div>
                             <div class="erd-box bg-slate-800/90 border-blue-500/60">
                                 <div class="erd-header text-blue-300 border-slate-700">👤 user_profiles</div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
@@ -948,7 +1310,8 @@
                         </div>
 
                         <div class="space-y-4">
-                            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider text-center">Quản lý Tài sản Bất động sản</div>
+                            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider text-center">Quản lý
+                                Tài sản Bất động sản</div>
                             <div class="erd-box bg-slate-800/90 border-amber-500/80 shadow-lg shadow-amber-950/20">
                                 <div class="erd-header text-amber-300 border-slate-700">🏬 buildings</div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
@@ -960,14 +1323,16 @@
                             <div class="erd-box bg-slate-800/90 border-amber-500/80 shadow-lg shadow-amber-950/20">
                                 <div class="erd-header text-amber-300 border-slate-700">🚪 rooms</div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
-                                <div class="erd-field"><span class="erd-fk">🔗 building_id (FK)</span><span>UUID</span></div>
+                                <div class="erd-field"><span class="erd-fk">🔗 building_id (FK)</span><span>UUID</span>
+                                </div>
                                 <div class="erd-field"><span>room_number</span><span>VARCHAR</span></div>
                                 <div class="erd-field"><span>status</span><span>'vacant'|'occupied'</span></div>
                             </div>
                         </div>
 
                         <div class="space-y-4">
-                            <div class="text-xs font-bold text-purple-400 uppercase tracking-wider text-center">Hồ sơ Cư dân</div>
+                            <div class="text-xs font-bold text-purple-400 uppercase tracking-wider text-center">Hồ sơ Cư
+                                dân</div>
                             <div class="erd-box bg-slate-800/90 border-purple-500/60">
                                 <div class="erd-header text-purple-300 border-slate-700">🙋‍♂️ tenants</div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
@@ -978,7 +1343,8 @@
                             <div class="erd-box bg-slate-800/90 border-purple-500/60">
                                 <div class="erd-header text-purple-300 border-slate-700">📝 service_prices</div>
                                 <div class="erd-field"><span class="erd-pk">🔑 id (PK)</span><span>UUID</span></div>
-                                <div class="erd-field"><span class="erd-fk">🔗 building_id (FK)</span><span>UUID</span></div>
+                                <div class="erd-field"><span class="erd-fk">🔗 building_id (FK)</span><span>UUID</span>
+                                </div>
                                 <div class="erd-field"><span>unit_price</span><span>NUMERIC</span></div>
                             </div>
                         </div>
@@ -1018,12 +1384,15 @@
             <!-- SECTION 7: CẤU TRÚC DỰ ÁN (CẢI TIẾN HIỂN THỊ CỰC KỲ RÕ RÀNG) -->
             <section id="cau-truc-du-an" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
                 <h2 class="section-title">7. Cấu trúc Mã nguồn & Thư mục (Source Code Tree)</h2>
-                <p class="text-slate-600 mb-6">Thư mục dự án được tổ chức theo chuẩn kiến trúc Next.js 14 App Router (Modular & Clean Architecture) cực kỳ rõ ràng:</p>
+                <p class="text-slate-600 mb-6">Thư mục dự án được tổ chức theo chuẩn kiến trúc Next.js 14 App Router
+                    (Modular & Clean Architecture) cực kỳ rõ ràng:</p>
 
                 <div class="space-y-6">
                     <!-- Clean ASCII Tree -->
-                    <div class="bg-slate-900 text-slate-100 p-6 rounded-2xl font-mono text-xs leading-relaxed overflow-x-auto border border-slate-800 shadow-inner">
-<pre class="font-mono text-xs leading-normal text-blue-300">RentFlow-main/
+                    <div
+                        class="bg-slate-900 text-slate-100 p-6 rounded-2xl font-mono text-xs leading-relaxed overflow-x-auto border border-slate-800 shadow-inner">
+                        <pre
+                            class="font-mono text-xs leading-normal text-blue-300">RentFlow-main/
 ├── <span class="text-emerald-400">src/</span>
 │   ├── <span class="text-amber-300">app/</span>                                 <span class="text-slate-400"># App Router (Routing & Server Actions)</span>
 │   │   ├── <span class="text-purple-300">(auth)/</span>                          <span class="text-slate-400"># Xác thực người dùng (Login, Register)</span>
@@ -1052,20 +1421,31 @@
                     <!-- Explanatory Breakdown Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                         <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁 <code>src/app/(dashboard)</code></h4>
-                            <p class="text-slate-600 leading-relaxed">Chứa 13 module chức năng chính của ứng dụng. Mỗi thư mục đều sử dụng Server Actions để xử lý logic trực tiếp tại máy chủ mà không cần tạo file API riêng.</p>
+                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁
+                                <code>src/app/(dashboard)</code></h4>
+                            <p class="text-slate-600 leading-relaxed">Chứa 13 module chức năng chính của ứng dụng. Mỗi
+                                thư mục đều sử dụng Server Actions để xử lý logic trực tiếp tại máy chủ mà không cần tạo
+                                file API riêng.</p>
                         </div>
                         <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁 <code>src/app/api</code></h4>
-                            <p class="text-slate-600 leading-relaxed">Chứa các Route Handlers bảo mật: Proxy stream ảnh CCCD mã hóa trong Private Bucket và Webhook lắng nghe phản hồi thanh toán từ ngân hàng qua PayOS.</p>
+                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁
+                                <code>src/app/api</code></h4>
+                            <p class="text-slate-600 leading-relaxed">Chứa các Route Handlers bảo mật: Proxy stream ảnh
+                                CCCD mã hóa trong Private Bucket và Webhook lắng nghe phản hồi thanh toán từ ngân hàng
+                                qua PayOS.</p>
                         </div>
                         <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁 <code>src/types/database.ts</code></h4>
-                            <p class="text-slate-600 leading-relaxed">Tệp tin TypeScript định nghĩa toàn bộ các Interface và Enum khớp 100% với 19 bảng trong CSDL PostgreSQL, đảm bảo Type-safety tuyệt đối.</p>
+                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁
+                                <code>src/types/database.ts</code></h4>
+                            <p class="text-slate-600 leading-relaxed">Tệp tin TypeScript định nghĩa toàn bộ các
+                                Interface và Enum khớp 100% với 19 bảng trong CSDL PostgreSQL, đảm bảo Type-safety tuyệt
+                                đối.</p>
                         </div>
                         <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁 <code>supabase/migrations</code></h4>
-                            <p class="text-slate-600 leading-relaxed">Nơi chứa toàn bộ các tệp DDL SQL: Triggers tự động ghi log, chính sách phân quyền RLS và các chỉ mục duy nhất chống Race Condition.</p>
+                            <h4 class="font-bold text-slate-900 text-sm mb-1 flex items-center gap-2">📁
+                                <code>supabase/migrations</code></h4>
+                            <p class="text-slate-600 leading-relaxed">Nơi chứa toàn bộ các tệp DDL SQL: Triggers tự động
+                                ghi log, chính sách phân quyền RLS và các chỉ mục duy nhất chống Race Condition.</p>
                         </div>
                     </div>
                 </div>
@@ -1076,7 +1456,10 @@
                 <h2 class="section-title">8. An toàn Thông tin & Phân quyền (Security)</h2>
                 <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
                     <p>
-                        <strong>Kiểm soát Truy cập Cấp độ Dòng (Row Level Security - RLS):</strong> RentFlow mã hóa toàn bộ chính sách truy cập dưới tầng CSDL PostgreSQL. Mỗi bản ghi khi tạo ra đều gắn chặt với <code>org_id</code>. Người dùng từ Organization A hoàn toàn không thể đọc hoặc chỉnh sửa dữ liệu của Organization B, loại bỏ triệt để nguy cơ rò rỉ dữ liệu chéo giữa các nhà trọ.
+                        <strong>Kiểm soát Truy cập Cấp độ Dòng (Row Level Security - RLS):</strong> RentFlow mã hóa toàn
+                        bộ chính sách truy cập dưới tầng CSDL PostgreSQL. Mỗi bản ghi khi tạo ra đều gắn chặt với
+                        <code>org_id</code>. Người dùng từ Organization A hoàn toàn không thể đọc hoặc chỉnh sửa dữ liệu
+                        của Organization B, loại bỏ triệt để nguy cơ rò rỉ dữ liệu chéo giữa các nhà trọ.
                     </p>
                 </div>
             </section>
@@ -1098,4 +1481,5 @@
     </footer>
 
 </body>
+
 </html>

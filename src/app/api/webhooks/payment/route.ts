@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { payos } from '@/lib/payos';
 
 export async function POST(req: Request) {
@@ -13,8 +13,8 @@ export async function POST(req: Request) {
             // Lấy thông tin order code
             const orderCode = webhookData.orderCode;
             
-            // Khởi tạo Supabase client với service role key để có quyền update các bảng mà không cần session user
-            const supabase = await createClient();
+            // Sử dụng Admin client (Service Role Key) vì webhook không có user session/cookies
+            const supabase = createAdminClient();
 
             // Tìm transaction theo orderCode
             const { data: transaction, error: findError } = await supabase
@@ -75,3 +75,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: (error as Error).message || 'Internal Server Error' }, { status: 500 });
     }
 }
+

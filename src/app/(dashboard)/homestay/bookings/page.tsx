@@ -27,6 +27,7 @@ export default async function HomestayBookingsPage() {
         .from('rooms')
         .select('*, building:buildings(name)')
         .eq('buildings.org_id', orgId)
+        .is('deleted_at', null)
         .order('name');
 
     // Fetch active bookings (for the next 60 days)

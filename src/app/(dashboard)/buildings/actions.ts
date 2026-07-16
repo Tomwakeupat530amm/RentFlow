@@ -54,7 +54,8 @@ export async function getBuildings() {
     const { data: rooms } = await supabase
         .from('rooms')
         .select('building_id, status')
-        .in('building_id', buildingIds);
+        .in('building_id', buildingIds)
+        .is('deleted_at', null);
 
     // Aggregate room counts
     const countMap: Record<string, { total: number; occupied: number; vacant: number }> = {};

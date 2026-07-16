@@ -34,6 +34,7 @@ export default async function HousekeepingPage() {
         .from('rooms')
         .select('*')
         .eq('org_id', orgId)
+        .is('deleted_at', null)
         .order('name');
         
     return (

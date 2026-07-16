@@ -1,14 +1,16 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const secretKey = process.env.JWT_SECRET;
-if (!secretKey) {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET is required in production environment.');
+function getSecretKey() {
+  const secretKey = process.env.JWT_SECRET;
+  if (!secretKey) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET is required in production environment.');
+    }
+    console.warn('WARNING: JWT_SECRET is not set. Using fallback key for development.');
   }
-  console.warn('WARNING: JWT_SECRET is not set. Using fallback key for development.');
+  return new TextEncoder().encode(secretKey || 'rentflow-tenant-portal-secret-key-2026');
 }
-const key = new TextEncoder().encode(secretKey || 'rentflow-tenant-portal-secret-key-2026');
 
 export interface TenantSessionData {
   id: string;
@@ -22,11 +24,11 @@ export async function encrypt(payload: Record<string, unknown>) {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')
-    .sign(key);
+    .sign(getSecretKey());
 }
 
 export async function decrypt(input: string): Promise<Record<string, unknown>> {
-  const { payload } = await jwtVerify(input, key, {
+  const { payload } = await jwtVerify(input, getSecretKey(), {
     algorithms: ['HS256'],
   });
   return payload;

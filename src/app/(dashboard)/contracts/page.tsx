@@ -15,6 +15,7 @@ export default async function ContractsPage() {
             *,
             building:buildings(id, name)
         `)
+        .is('deleted_at', null)
         .order('building_id')
         .order('name');
 

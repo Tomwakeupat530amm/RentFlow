@@ -21,7 +21,8 @@ export async function getAllRooms() {
     const { data: buildings } = await supabase
         .from('buildings')
         .select('id, name')
-        .eq('org_id', profile.org_id);
+        .eq('org_id', profile.org_id)
+        .is('deleted_at', null);
 
     if (!buildings || buildings.length === 0) return { data: [] };
 
@@ -33,6 +34,7 @@ export async function getAllRooms() {
         .from('rooms')
         .select('*')
         .in('building_id', buildingIds)
+        .is('deleted_at', null)
         .order('building_id')
         .order('floor')
         .order('name');
