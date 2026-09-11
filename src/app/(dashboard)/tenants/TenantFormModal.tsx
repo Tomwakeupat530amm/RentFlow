@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, DatePicker, message, Upload, Button, Space, Spin } from 'antd';
+import { Modal, Form, Input, DatePicker, message, Upload, Button, Space, Spin, Tooltip } from 'antd';
 import {
     UserOutlined, PhoneOutlined, MailOutlined, IdcardOutlined,
     HomeOutlined, UploadOutlined, ScanOutlined, CrownOutlined,
@@ -232,15 +232,17 @@ export default function TenantFormModal({ open, tenant, isPremium = false, onClo
 
                         {fileList.length > 0 && fileList[0].originFileObj && (
                             isPremium ? (
-                                <Button
-                                    type="dashed"
-                                    icon={scanning ? <Spin size="small" /> : <ScanOutlined />}
-                                    onClick={handleScanCCCD}
-                                    loading={scanning}
-                                    style={{ borderColor: '#faad14', color: '#d48806', background: '#fffbe6' }}
-                                >
-                                    {scanning ? 'Đang quét...' : '✨ Quét CCCD bằng AI'}
-                                </Button>
+                                <Tooltip title="Tính năng thử nghiệm hỗ trợ nhận diện tự động từ ảnh CCCD. Vui lòng đối chiếu với ảnh gốc trước khi lưu.">
+                                    <Button
+                                        type="dashed"
+                                        icon={scanning ? <Spin size="small" /> : <ScanOutlined />}
+                                        onClick={handleScanCCCD}
+                                        loading={scanning}
+                                        style={{ borderColor: '#faad14', color: '#d48806', background: '#fffbe6' }}
+                                    >
+                                        {scanning ? 'Đang quét...' : '✨ Quét CCCD bằng AI (BETA)'}
+                                    </Button>
+                                </Tooltip>
                             ) : (
                                 <Button 
                                     type="dashed" 

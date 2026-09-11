@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import type { ContractFormData, ContractStatus } from '@/types/database';
+import type { ContractFormData, ContractStatus, SettlementData } from '@/types/database';
 import { revalidatePath } from 'next/cache';
 
 // Helper: get current user's org_id
@@ -17,6 +17,26 @@ async function getOrgId() {
         .single();
 
     return profile?.org_id || null;
+}
+
+// Helper: Tự động đồng bộ phòng hiện tại vào bảng tenants cho Tenant Portal
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function syncTenantRoom(supabase: any, tenantId: string) {
+    if (!tenantId) return;
+    const { data: activeContract } = await supabase
+        .from('contracts')
+        .select('room_id')
+        .eq('tenant_id', tenantId)
+        .eq('status', 'active')
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    await supabase
+        .from('tenants')
+        .update({ room_id: activeContract?.room_id || null })
+        .eq('id', tenantId);
 }
 
 export async function getContracts() {
@@ -54,6 +74,8 @@ export async function createContract(formData: ContractFormData) {
             end_date: formData.end_date || null,
             status: formData.status,
             notes: formData.notes || null,
+            num_occupants: formData.num_occupants || 1,
+            num_vehicles: formData.num_vehicles || 0,
         });
 
     if (error) {
@@ -61,6 +83,10 @@ export async function createContract(formData: ContractFormData) {
             return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
         }
         return { error: error.message };
+    }
+
+    if (formData.tenant_id) {
+        await syncTenantRoom(supabase, formData.tenant_id);
     }
 
     revalidatePath('/contracts');
@@ -84,6 +110,8 @@ export async function updateContract(id: string, formData: ContractFormData & { 
             status: formData.status,
             scan_url: formData.scan_url || null,
             notes: formData.notes || null,
+            num_occupants: formData.num_occupants || 1,
+            num_vehicles: formData.num_vehicles || 0,
         })
         .eq('id', id);
 
@@ -92,6 +120,10 @@ export async function updateContract(id: string, formData: ContractFormData & { 
             return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
         }
         return { error: error.message };
+    }
+
+    if (formData.tenant_id) {
+        await syncTenantRoom(supabase, formData.tenant_id);
     }
 
     revalidatePath('/contracts');
@@ -103,12 +135,22 @@ export async function updateContract(id: string, formData: ContractFormData & { 
 export async function deleteContract(id: string) {
     const supabase = await createClient();
 
+    const { data: contract } = await supabase
+        .from('contracts')
+        .select('tenant_id')
+        .eq('id', id)
+        .maybeSingle();
+
     const { error } = await supabase
         .from('contracts')
         .update({ deleted_at: new Date().toISOString() })
         .eq('id', id);
 
     if (error) return { error: error.message };
+
+    if (contract?.tenant_id) {
+        await syncTenantRoom(supabase, contract.tenant_id);
+    }
 
     revalidatePath('/contracts');
     revalidatePath('/rooms');
@@ -118,6 +160,12 @@ export async function deleteContract(id: string) {
 
 export async function updateContractStatus(id: string, status: ContractStatus) {
     const supabase = await createClient();
+
+    const { data: contract } = await supabase
+        .from('contracts')
+        .select('tenant_id')
+        .eq('id', id)
+        .maybeSingle();
 
     const { error } = await supabase
         .from('contracts')
@@ -129,6 +177,10 @@ export async function updateContractStatus(id: string, status: ContractStatus) {
             return { error: 'Phòng này đã có hợp đồng đang hoạt động. Vui lòng kiểm tra lại.' };
         }
         return { error: error.message };
+    }
+
+    if (contract?.tenant_id) {
+        await syncTenantRoom(supabase, contract.tenant_id);
     }
 
     revalidatePath('/contracts');
@@ -234,5 +286,79 @@ export async function deleteRoommate(id: string) {
 
     revalidatePath('/contracts');
     revalidatePath('/rooms');
+    return { success: true };
+}
+
+// ============================================================================
+// CHECK-OUT & DEPOSIT SETTLEMENT ACTIONS
+// ============================================================================
+
+export async function getLastMeterReadings(roomId: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('meter_records')
+        .select('service_type, new_reading, old_reading')
+        .eq('room_id', roomId)
+        .order('period', { ascending: false });
+
+    if (error || !data) return { electricity: 0, water: 0 };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const elec = data.find((r: any) => r.service_type === 'electricity');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const water = data.find((r: any) => r.service_type === 'water');
+
+    return {
+        electricity: Number(elec?.new_reading || elec?.old_reading || 0),
+        water: Number(water?.new_reading || water?.old_reading || 0),
+    };
+}
+
+export async function checkoutContract(contractId: string, settlementData: SettlementData) {
+    const supabase = await createClient();
+
+    // 1. Lấy thông tin hợp đồng hiện tại
+    const { data: contract, error: contractErr } = await supabase
+        .from('contracts')
+        .select('id, room_id, tenant_id')
+        .eq('id', contractId)
+        .single();
+
+    if (contractErr || !contract) {
+        return { error: 'Không tìm thấy hợp đồng' };
+    }
+
+    // 2. Cập nhật hợp đồng: settlement_data, status = terminated, end_date
+    const { error: updateContractErr } = await supabase
+        .from('contracts')
+        .update({
+            settlement_data: settlementData,
+            status: 'terminated',
+            end_date: settlementData.checkout_date,
+        })
+        .eq('id', contractId);
+
+    if (updateContractErr) {
+        return { error: updateContractErr.message };
+    }
+
+    // 3. Cập nhật trạng thái phòng về 'vacant'
+    if (contract.room_id) {
+        await supabase
+            .from('rooms')
+            .update({ status: 'vacant' })
+            .eq('id', contract.room_id);
+    }
+
+    // 4. Đồng bộ lại room_id cho tenant (sẽ thành null nếu không còn hợp đồng active)
+    if (contract.tenant_id) {
+        await syncTenantRoom(supabase, contract.tenant_id);
+    }
+
+    revalidatePath('/contracts');
+    revalidatePath('/rooms');
+    revalidatePath('/dashboard');
+    revalidatePath('/invoices');
+
     return { success: true };
 }

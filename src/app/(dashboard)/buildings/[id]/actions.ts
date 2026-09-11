@@ -241,7 +241,8 @@ export async function upsertServicePrices(buildingId: string, prices: ServicePri
         label: p.label,
         unit_price: p.unit_price,
         unit: p.unit || '',
-        is_metered: p.is_metered
+        is_metered: p.is_metered,
+        charging_rule: p.charging_rule || (p.is_metered ? 'metered' : 'fixed'),
     }));
 
     if (insertData.length > 0) {
@@ -254,4 +255,102 @@ export async function upsertServicePrices(buildingId: string, prices: ServicePri
 
     revalidatePath(`/buildings/${buildingId}`);
     return { success: true };
+}
+
+// ─── BATCH CREATE ROOMS ───
+
+export interface BatchRoomInput {
+    name: string;
+    floor: number;
+    default_rent: number;
+    area?: number;
+    max_occupants?: number;
+    room_type?: string;
+}
+
+export async function batchCreateRooms(
+    buildingId: string, 
+    rooms: BatchRoomInput[]
+): Promise<ActionResponse> {
+    if (!rooms || rooms.length === 0) {
+        return { error: 'Danh sách phòng trống' };
+    }
+
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: 'Chưa đăng nhập' };
+
+    // Check free tier room limit
+    const roomCheck = await canAddRoom(rooms.length);
+    if (!roomCheck.allowed) {
+        return {
+            error: `Số phòng tạo thêm (${rooms.length} phòng) vượt quá giới hạn gói Free (tối đa ${roomCheck.limit} phòng, hiện có ${roomCheck.current} phòng). Vui lòng nâng cấp Premium để không giới hạn!`,
+            requiresUpgrade: true,
+            featureName: 'Không giới hạn phòng'
+        };
+    }
+
+    // Verify building belongs to user org
+    const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('org_id')
+        .eq('id', user.id)
+        .single();
+
+    if (!profile?.org_id) return { error: 'Không tìm thấy tổ chức' };
+
+    const { data: building } = await supabase
+        .from('buildings')
+        .select('id')
+        .eq('id', buildingId)
+        .eq('org_id', profile.org_id)
+        .single();
+
+    if (!building) return { error: 'Toà nhà không hợp lệ' };
+
+    // Check existing names in this building
+    const { data: existingRooms } = await supabase
+        .from('rooms')
+        .select('name')
+        .eq('building_id', buildingId)
+        .is('deleted_at', null);
+
+    const existingNames = new Set(existingRooms?.map(r => r.name.toLowerCase()) || []);
+    const validRooms = rooms.filter(r => !existingNames.has(r.name.toLowerCase()));
+    const duplicates = rooms.filter(r => existingNames.has(r.name.toLowerCase())).map(r => r.name);
+
+    if (validRooms.length === 0) {
+        return { 
+            error: `Tất cả các phòng trong danh sách đều đã tồn tại trong toà nhà này (${duplicates.join(', ')})`,
+            duplicates
+        };
+    }
+
+    const payload = validRooms.map(r => ({
+        building_id: buildingId,
+        name: r.name,
+        floor: r.floor,
+        default_rent: r.default_rent,
+        area: r.area || 25,
+        max_occupants: r.max_occupants || 2,
+        room_type: r.room_type || 'single',
+        status: 'vacant',
+    }));
+
+    const { error: insertError } = await supabase
+        .from('rooms')
+        .insert(payload);
+
+    if (insertError) {
+        return { error: 'Lỗi khi lưu phòng: ' + insertError.message };
+    }
+
+    revalidatePath(`/buildings/${buildingId}`);
+    revalidatePath('/rooms');
+
+    return {
+        success: true,
+        count: validRooms.length,
+        duplicates: duplicates.length > 0 ? duplicates : undefined
+    };
 }

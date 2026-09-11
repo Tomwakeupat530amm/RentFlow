@@ -4,9 +4,20 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+    const pathname = request.nextUrl.pathname;
+
+    // Public API routes (webhooks, cron jobs, tenant authentication) must bypass auth session redirection
+    if (
+        pathname.startsWith('/api/webhooks/') ||
+        pathname.startsWith('/api/cron/') ||
+        pathname.startsWith('/api/tenant/login')
+    ) {
+        return NextResponse.next();
+    }
+
     // Check if accessing Tenant Portal
-    if (request.nextUrl.pathname.startsWith('/portal')) {
-        const isLoginPage = request.nextUrl.pathname === '/portal/login';
+    if (pathname.startsWith('/portal')) {
+        const isLoginPage = pathname === '/portal/login';
         const session = request.cookies.get('tenant-session')?.value;
 
         if (!session && !isLoginPage) {

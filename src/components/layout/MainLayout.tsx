@@ -17,16 +17,14 @@ import {
     UserOutlined,
     QuestionCircleOutlined,
     ToolOutlined,
-    CrownOutlined,
-    ScheduleOutlined,
-    ClearOutlined,
     WalletOutlined,
-    HistoryOutlined,
 } from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { logout } from '@/app/(auth)/actions';
 import NotificationBell from '@/components/layout/NotificationBell';
+import SidebarSubscriptionCard from '@/components/layout/SidebarSubscriptionCard';
+import type { PlanType } from '@/types/database';
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -36,9 +34,18 @@ interface MainLayoutProps {
     userId: string;
     userName: string;
     userRole: string;
+    planType?: PlanType;
+    roomCount?: number;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, userRole }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ 
+    children, 
+    userId, 
+    userName, 
+    userRole,
+    planType,
+    roomCount,
+}) => {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
     const pathname = usePathname();
@@ -116,23 +123,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
             ],
         },
         {
-            key: 'homestay-group',
-            label: 'Homestay',
-            type: 'group' as const,
-            children: [
-                {
-                    key: '/homestay/bookings',
-                    icon: <ScheduleOutlined />,
-                    label: <Link href="/homestay/bookings">Lịch đặt phòng</Link>,
-                },
-                {
-                    key: '/homestay/housekeeping',
-                    icon: <ClearOutlined />,
-                    label: <Link href="/homestay/housekeeping">Dọn dẹp</Link>,
-                },
-            ],
-        },
-        {
             key: 'ops-group',
             label: 'Vận hành',
             type: 'group' as const,
@@ -143,19 +133,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
                     label: <Link href="/incidents">Sự cố</Link>,
                 },
                 {
-                    key: '/activity-logs',
-                    icon: <HistoryOutlined />,
-                    label: <Link href="/activity-logs">Nhật ký hoạt động</Link>,
-                },
-                {
                     key: '/settings',
                     icon: <SettingOutlined />,
                     label: <Link href="/settings">Cài đặt</Link>,
-                },
-                {
-                    key: '/pricing',
-                    icon: <CrownOutlined style={{ color: '#faad14' }} />,
-                    label: <Link href="/pricing">Nâng cấp</Link>,
                 },
             ],
         },
@@ -251,7 +231,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
                     width={260}
                     collapsedWidth={76}
                     style={{
-                        overflow: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
                         height: '100vh',
                         position: 'fixed',
                         left: 0,
@@ -263,7 +244,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
                     }}
                 >
                     {LogoArea}
-                    {NavigationMenu}
+                    <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+                        {NavigationMenu}
+                    </div>
+                    <SidebarSubscriptionCard
+                        collapsed={collapsed}
+                        planType={planType}
+                        roomCount={roomCount}
+                    />
                 </Sider>
             )}
 
@@ -275,13 +263,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userId, userName, use
                 open={mobileDrawerOpen}
                 width={260}
                 styles={{
-                    body: { padding: 0, background: '#001529' },
+                    body: { 
+                        padding: 0, 
+                        background: '#001529',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                    },
                     header: { display: 'none' }
                 }}
                 closeIcon={null}
             >
                 {LogoArea}
-                {NavigationMenu}
+                <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+                    {NavigationMenu}
+                </div>
+                <SidebarSubscriptionCard
+                    collapsed={false}
+                    planType={planType}
+                    roomCount={roomCount}
+                />
             </Drawer>
 
             <Layout

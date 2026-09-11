@@ -10,9 +10,17 @@ interface Props {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    initialBuildingId?: string;
+    initialMonth?: dayjs.Dayjs;
 }
 
-export default function GenerateInvoiceModal({ open, onClose, onSuccess }: Props) {
+export default function GenerateInvoiceModal({ 
+    open, 
+    onClose, 
+    onSuccess,
+    initialBuildingId,
+    initialMonth,
+}: Props) {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [buildings, setBuildings] = useState<{ id: string, name: string }[]>([]);
@@ -21,12 +29,13 @@ export default function GenerateInvoiceModal({ open, onClose, onSuccess }: Props
         if (open) {
             fetchBuildings();
             form.setFieldsValue({
-                month: dayjs()
+                building_id: initialBuildingId || undefined,
+                month: initialMonth || dayjs()
             });
         } else {
             form.resetFields();
         }
-    }, [open, form]);
+    }, [open, form, initialBuildingId, initialMonth]);
 
     const fetchBuildings = async () => {
         const { data } = await getBuildings();

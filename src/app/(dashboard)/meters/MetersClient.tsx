@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Table, Select, DatePicker, Button, InputNumber, Typography, message, Input, Tag, Grid, Upload, Modal } from 'antd';
-import { SaveOutlined, ReloadOutlined, ScanOutlined, CrownOutlined } from '@ant-design/icons';
+import { Card, Table, Select, DatePicker, Button, InputNumber, Typography, message, Input, Tag, Grid, Upload, Modal, Tooltip } from 'antd';
+import { SaveOutlined, ReloadOutlined, ScanOutlined, CrownOutlined, FileAddOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 import { getMeterRecords, upsertMeterRecords } from './actions';
+import GenerateInvoiceModal from '@/components/invoices/GenerateInvoiceModal';
 
 
 interface MeterRow {
@@ -33,6 +34,7 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
     const [data, setData] = useState<MeterRow[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [generateModalOpen, setGenerateModalOpen] = useState(false);
 
     const screens = Grid.useBreakpoint();
     const isMobile = !screens.md;
@@ -216,14 +218,16 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                     showUploadList={false} 
                     beforeUpload={(file) => handleScanMeter(file as File, idx)}
                 >
-                    <Button 
-                        size="small" 
-                        type="dashed" 
-                        icon={isPremium ? <ScanOutlined /> : <CrownOutlined />}
-                        style={isPremium ? { borderColor: '#faad14', color: '#d48806' } : {}}
-                    >
-                        {isPremium ? 'Quét AI' : 'Quét AI'}
-                    </Button>
+                    <Tooltip title="Tính năng thử nghiệm hỗ trợ đọc số từ ảnh. Vui lòng kiểm tra lại số liệu thực tế trước khi lưu.">
+                        <Button 
+                            size="small" 
+                            type="dashed" 
+                            icon={isPremium ? <ScanOutlined /> : <CrownOutlined />}
+                            style={isPremium ? { borderColor: '#faad14', color: '#d48806' } : {}}
+                        >
+                            Quét AI (BETA)
+                        </Button>
+                    </Tooltip>
                 </Upload>
             )
         }
@@ -321,11 +325,21 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                         </div>
                     </div>
 
-                    {!isMobile && (
-                        <Button type="primary" size="large" icon={<SaveOutlined />} onClick={handleSave} loading={saving}>
-                            Lưu chỉ số Điện Nước
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <Button
+                            icon={<FileAddOutlined style={{ color: '#0d9488' }} />}
+                            size={isMobile ? "middle" : "large"}
+                            onClick={() => setGenerateModalOpen(true)}
+                            className={isMobile ? "flex-1" : ""}
+                        >
+                            Lập hoá đơn
                         </Button>
-                    )}
+                        {!isMobile && (
+                            <Button type="primary" size="large" icon={<SaveOutlined />} onClick={handleSave} loading={saving}>
+                                Lưu chỉ số Điện Nước
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </Card>
 
@@ -348,19 +362,38 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
 
             {/* Sticky Mobile Save Button */}
             {isMobile && data.length > 0 && (
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] z-50">
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] z-50 flex gap-2">
+                    <Button
+                        size="large"
+                        icon={<FileAddOutlined style={{ color: '#0d9488' }} />}
+                        onClick={() => setGenerateModalOpen(true)}
+                        className="flex-1 h-12 text-base font-semibold"
+                    >
+                        Lập hoá đơn
+                    </Button>
                     <Button
                         type="primary"
                         size="large"
                         icon={<SaveOutlined />}
                         onClick={handleSave}
                         loading={saving}
-                        className="w-full h-12 text-base font-semibold bg-teal-600 hover:bg-teal-500 border-none"
+                        className="flex-1 h-12 text-base font-semibold bg-teal-600 hover:bg-teal-500 border-none"
                     >
-                        Lưu {data.length} phòng
+                        Lưu ({data.length})
                     </Button>
                 </div>
             )}
+
+            <GenerateInvoiceModal
+                open={generateModalOpen}
+                onClose={() => setGenerateModalOpen(false)}
+                onSuccess={() => {
+                    setGenerateModalOpen(false);
+                    message.success('Đã tạo hoá đơn thành công!');
+                }}
+                initialBuildingId={buildingId || undefined}
+                initialMonth={month}
+            />
         </div>
     );
 }

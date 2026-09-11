@@ -7,7 +7,7 @@ import {
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined,
     HomeOutlined, ArrowLeftOutlined, CheckCircleOutlined,
-    ToolOutlined, DollarOutlined, AppstoreOutlined
+    ToolOutlined, DollarOutlined, AppstoreOutlined, AppstoreAddOutlined
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { Tabs } from 'antd';
@@ -15,6 +15,7 @@ import type { Building, Room, RoomStatus, RoomType, ServicePrice } from '@/types
 import { deleteRoom } from './actions';
 import RoomFormModal from './RoomFormModal';
 import CsvImportModal from './CsvImportModal';
+import BatchRoomModal from './BatchRoomModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import SearchInput from '@/components/common/SearchInput';
 import ServicePricesTable from './ServicePricesTable';
@@ -44,6 +45,7 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
     const [search, setSearch] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [csvModalOpen, setCsvModalOpen] = useState(false);
+    const [batchModalOpen, setBatchModalOpen] = useState(false);
     const [editingRoom, setEditingRoom] = useState<Room | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Room | null>(null);
     const [deleting, setDeleting] = useState(false);
@@ -206,6 +208,12 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
                     )}
                 </div>
                 <Space>
+                    <Button 
+                        icon={<AppstoreAddOutlined style={{ color: '#0d9488' }} />} 
+                        onClick={() => setBatchModalOpen(true)}
+                    >
+                        Tạo nhanh dãy phòng
+                    </Button>
                     <Button icon={<UploadOutlined />} onClick={() => setCsvModalOpen(true)}>
                         Import CSV
                     </Button>
@@ -299,6 +307,15 @@ export default function BuildingDetailClient({ building, initialRooms, initialSe
                 open={csvModalOpen}
                 buildingId={building.id}
                 onClose={() => setCsvModalOpen(false)}
+                onSuccess={handleSuccess}
+            />
+
+            {/* Batch Room Modal */}
+            <BatchRoomModal
+                open={batchModalOpen}
+                buildingId={building.id}
+                buildingName={building.name}
+                onClose={() => setBatchModalOpen(false)}
                 onSuccess={handleSuccess}
             />
 

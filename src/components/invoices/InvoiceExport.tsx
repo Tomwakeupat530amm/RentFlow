@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { Button } from 'antd';
-import { PrinterOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
+import { Button, Space } from 'antd';
+import { PrinterOutlined, MessageOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { Invoice, InvoiceItem } from '@/types/database';
+import ZaloShareModal from './ZaloShareModal';
 
 interface InvoiceExportProps {
     invoice: Invoice;
@@ -16,6 +17,7 @@ interface InvoiceExportProps {
 
 export default function InvoiceExport({ invoice, items, tenantName, roomName, buildingName }: InvoiceExportProps) {
     const componentRef = useRef<HTMLDivElement>(null);
+    const [zaloModalOpen, setZaloModalOpen] = useState(false);
 
     const handlePrint = () => {
         if (!componentRef.current) return;
@@ -65,7 +67,15 @@ export default function InvoiceExport({ invoice, items, tenantName, roomName, bu
     };
 
     return (
-        <>
+        <Space>
+            <Button
+                type="primary"
+                icon={<MessageOutlined />}
+                onClick={() => setZaloModalOpen(true)}
+                style={{ backgroundColor: '#0068ff' }}
+            >
+                Gửi Zalo
+            </Button>
             <Button
                 type="default"
                 icon={<PrinterOutlined />}
@@ -74,6 +84,12 @@ export default function InvoiceExport({ invoice, items, tenantName, roomName, bu
             >
                 In PDF
             </Button>
+
+            <ZaloShareModal
+                open={zaloModalOpen}
+                onClose={() => setZaloModalOpen(false)}
+                invoiceId={invoice.id}
+            />
 
             {/* Hidden printable component */}
             <div style={{ display: 'none' }}>
@@ -171,6 +187,6 @@ export default function InvoiceExport({ invoice, items, tenantName, roomName, bu
                     </div>
                 </div>
             </div>
-        </>
+        </Space>
     );
 }

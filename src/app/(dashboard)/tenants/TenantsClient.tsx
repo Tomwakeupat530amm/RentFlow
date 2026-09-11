@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import {
-    Card, Table, Button, Tag, Typography, Space, message,
+    Card, Table, Button, Tag, Typography, Space, Tooltip, message,
 } from 'antd';
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, PhoneOutlined,
-    MailOutlined, IdcardOutlined, UserOutlined,
+    MailOutlined, IdcardOutlined, UserOutlined, ReloadOutlined,
 } from '@ant-design/icons';
 import type { Tenant } from '@/types/database';
-import { deleteTenant, toggleTenantActive } from './actions';
+import { deleteTenant, toggleTenantActive, regenerateTenantPin } from './actions';
 import dynamic from 'next/dynamic';
 const TenantFormModal = dynamic(() => import('./TenantFormModal'), { ssr: false });
 import ConfirmModal from '@/components/common/ConfirmModal';
@@ -67,6 +67,21 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
                 )
             );
             message.success(tenant.is_active ? 'Đã vô hiệu hoá' : 'Đã kích hoạt lại');
+        }
+    };
+
+    const handleRegeneratePin = async (tenant: Tenant) => {
+        const result = await regenerateTenantPin(tenant.id);
+        if (result.error || !result.pin) {
+            message.error(result.error || 'Không thể tạo mã PIN');
+        } else {
+            message.success(`Đã tạo mã PIN mới cho ${tenant.full_name}: ${result.pin}`);
+            const newPin = result.pin;
+            setTenants((prev) =>
+                prev.map((t) =>
+                    t.id === tenant.id ? { ...t, access_code: newPin } : t
+                )
+            );
         }
     };
 
@@ -155,6 +170,30 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
                 >
                     {record.is_active ? 'Đang thuê' : 'Ngưng'}
                 </Tag>
+            ),
+        },
+        {
+            title: 'Mã PIN Portal',
+            key: 'access_code',
+            width: 150,
+            render: (_: unknown, record: Tenant) => (
+                <Space size={6}>
+                    <Typography.Text 
+                        code 
+                        copyable={record.access_code ? { text: record.access_code, tooltips: ['Sao chép PIN', 'Đã chép!'] } : false}
+                        style={{ fontWeight: 600, color: record.access_code ? '#0284c7' : '#94a3b8' }}
+                    >
+                        {record.access_code || 'Chưa cấp'}
+                    </Typography.Text>
+                    <Tooltip title="Cấp lại mã PIN mới">
+                        <Button
+                            type="text"
+                            size="small"
+                            icon={<ReloadOutlined style={{ fontSize: 12, color: '#64748b' }} />}
+                            onClick={() => handleRegeneratePin(record)}
+                        />
+                    </Tooltip>
+                </Space>
             ),
         },
         {

@@ -49,13 +49,16 @@ export async function getOrgUsage(): Promise<OrgUsage> {
 
     const { data: buildings } = await supabase
         .from('buildings')
-        .select('id', { count: 'exact' })
-        .eq('org_id', profile.org_id);
+        .select('id')
+        .eq('org_id', profile.org_id)
+        .is('deleted_at', null);
 
     const { data: rooms } = await supabase
         .from('rooms')
-        .select('id, building_id, buildings!inner(org_id)', { count: 'exact' })
-        .eq('buildings.org_id', profile.org_id);
+        .select('id, building_id, buildings!inner(org_id, deleted_at)')
+        .eq('buildings.org_id', profile.org_id)
+        .is('deleted_at', null)
+        .is('buildings.deleted_at', null);
 
     return {
         building_count: buildings?.length || 0,

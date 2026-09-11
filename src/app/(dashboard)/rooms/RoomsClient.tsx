@@ -6,8 +6,9 @@ import {
     HomeOutlined, CheckCircleOutlined, ToolOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
-import type { Room, RoomStatus, RoomType } from '@/types/database';
+import type { Room, RoomStatus, RoomType, PlanType } from '@/types/database';
 import SearchInput from '@/components/common/SearchInput';
+import QuotaProgress from '@/components/common/QuotaProgress';
 
 
 
@@ -28,9 +29,12 @@ type RoomWithBuilding = Room & { building_name: string };
 
 interface Props {
     initialRooms: RoomWithBuilding[];
+    roomCount?: number;
+    limit?: number;
+    planType?: PlanType;
 }
 
-export default function RoomsClient({ initialRooms }: Props) {
+export default function RoomsClient({ initialRooms, roomCount, limit = 10, planType = 'free' }: Props) {
     const [search, setSearch] = useState('');
 
     const filtered = initialRooms.filter(
@@ -49,9 +53,6 @@ export default function RoomsClient({ initialRooms }: Props) {
                     <Link href={`/rooms/${record.id}`} style={{ color: '#0d9488', fontWeight: 600 }}>
                         {name}
                     </Link>
-                    {record.rental_type === 'short_term' && (
-                        <Tag color="purple" className="m-0 border-purple-200 bg-purple-50">Homestay</Tag>
-                    )}
                 </div>
             ),
             sorter: (a: RoomWithBuilding, b: RoomWithBuilding) => a.name.localeCompare(b.name),
@@ -115,7 +116,17 @@ export default function RoomsClient({ initialRooms }: Props) {
     ];
 
     return (
-        <Card style={{ borderRadius: 12 }} styles={{ body: { padding: '16px 0' } }} className="shadow-sm border-gray-100">
+        <div>
+            {roomCount !== undefined && (
+                <QuotaProgress
+                    current={roomCount}
+                    limit={limit}
+                    entityName="phòng"
+                    planType={planType}
+                />
+            )}
+
+            <Card style={{ borderRadius: 12 }} styles={{ body: { padding: '16px 0' } }} className="shadow-sm border-gray-100">
             <div className="px-4 pb-4 flex flex-col md:flex-row justify-end items-end md:items-center gap-4">
                 <div className="w-full md:w-64">
                     <SearchInput
@@ -140,5 +151,6 @@ export default function RoomsClient({ initialRooms }: Props) {
                 />
             )}
         </Card>
+        </div>
     );
 }

@@ -150,6 +150,36 @@ export interface Roommate {
 
 export type ContractStatus = 'active' | 'expired' | 'terminated';
 
+export interface SettlementDeduction {
+    title: string;
+    amount: number;
+}
+
+export interface SettlementData {
+    checkout_date: string;
+    final_electric?: {
+        old: number;
+        new: number;
+        usage: number;
+        unit_price: number;
+        amount: number;
+    };
+    final_water?: {
+        old: number;
+        new: number;
+        usage: number;
+        unit_price: number;
+        amount: number;
+    };
+    unpaid_rent: number;
+    deductions: SettlementDeduction[];
+    deposit_amount: number;
+    total_deductions: number;
+    refund_amount: number; // >0: hoàn cho khách, <0: khách phải bù
+    notes?: string;
+    settled_at: string;
+}
+
 export interface Contract {
     id: string;
     org_id: string;
@@ -167,6 +197,9 @@ export interface Contract {
     tenant_signed_at: string | null;
     signature_data: unknown | null;
     notes: string | null;
+    num_occupants?: number;
+    num_vehicles?: number;
+    settlement_data?: SettlementData | null;
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
@@ -178,6 +211,7 @@ export interface Contract {
 }
 
 export type ServiceType = 'electricity' | 'water' | 'internet' | 'parking' | 'garbage' | 'other';
+export type ChargingRule = 'fixed' | 'metered' | 'per_person' | 'per_vehicle';
 
 export interface ServicePrice {
     id: string;
@@ -187,26 +221,35 @@ export interface ServicePrice {
     unit_price: number;
     unit: string;
     is_metered: boolean;
+    charging_rule?: ChargingRule;
     created_at: string;
     updated_at: string;
 }
 
+export type MeterServiceType = 'electricity' | 'water';
+
 export interface MeterRecord {
     id: string;
     room_id: string;
-    record_month: string;
-    electricity_old: number;
-    electricity_new: number;
-    electricity_usage: number;
-    water_old: number;
-    water_new: number;
-    water_usage: number;
-    image_urls: string[] | null;
+    period: string; // YYYY-MM
+    service_type: MeterServiceType;
+    old_reading: number;
+    new_reading: number;
+    usage?: number;
+    image_urls?: string[] | null;
     notes: string | null;
     created_at: string;
     updated_at: string;
     // Virtual fields
     room?: Room;
+    // Compatibility fields
+    record_month?: string;
+    electricity_old?: number;
+    electricity_new?: number;
+    electricity_usage?: number;
+    water_old?: number;
+    water_new?: number;
+    water_usage?: number;
 }
 
 // ============================================================
@@ -233,6 +276,8 @@ export interface ContractFormData {
     end_date?: string;
     status: ContractStatus;
     notes?: string;
+    num_occupants?: number;
+    num_vehicles?: number;
 }
 
 export interface RoommateFormData {
@@ -249,6 +294,7 @@ export interface ServicePriceFormData {
     unit_price: number;
     unit?: string;
     is_metered: boolean;
+    charging_rule?: ChargingRule;
 }
 
 export interface MeterRecordFormData {
@@ -283,6 +329,7 @@ export interface Invoice {
     status: InvoiceStatus;
     due_date: string | null;
     notes: string | null;
+    order_code?: number | null;
     created_at: string;
     updated_at: string;
     // Virtual fields

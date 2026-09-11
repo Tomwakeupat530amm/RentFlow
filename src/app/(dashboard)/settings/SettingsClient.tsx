@@ -6,8 +6,9 @@ import {
 } from 'antd';
 import {
     UserOutlined, PhoneOutlined, CopyOutlined, ReloadOutlined,
-    TeamOutlined, CrownOutlined,
+    TeamOutlined, CrownOutlined, HistoryOutlined,
 } from '@ant-design/icons';
+import Link from 'next/link';
 import { updateProfile, updateOrganization, regenerateInviteCode } from './actions';
 
 
@@ -272,7 +273,7 @@ export default function SettingsClient({ profile, email, members }: Props) {
                 </Card>
 
                 {/* Members Table */}
-                <Card style={{ borderRadius: 12 }} title={<span style={{ fontWeight: 700 }}>👥 Thành viên ({members.length})</span>}>
+                <Card style={{ borderRadius: 12, marginBottom: 24 }} title={<span style={{ fontWeight: 700 }}>👥 Thành viên ({members.length})</span>}>
                     <Table
                         columns={memberColumns}
                         dataSource={members}
@@ -280,6 +281,21 @@ export default function SettingsClient({ profile, email, members }: Props) {
                         pagination={false}
                         size="small"
                     />
+                </Card>
+
+                {/* System Audit Logs for Admins */}
+                <Card 
+                    style={{ borderRadius: 12 }} 
+                    title={<span style={{ fontWeight: 700 }}>📋 Nhật ký hệ thống</span>}
+                >
+                    <Typography.Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 12 }}>
+                        Theo dõi toàn bộ lịch sử thao tác thêm, sửa, xóa dữ liệu trong tổ chức của bạn.
+                    </Typography.Text>
+                    <Link href="/activity-logs">
+                        <Button icon={<HistoryOutlined />}>
+                            Xem nhật ký hoạt động
+                        </Button>
+                    </Link>
                 </Card>
             </Col>
         </Row>

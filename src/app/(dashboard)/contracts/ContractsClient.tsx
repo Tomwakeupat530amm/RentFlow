@@ -6,15 +6,16 @@ import {
 } from 'antd';
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, FileTextOutlined,
-    StopOutlined, CheckCircleOutlined, SyncOutlined
+    StopOutlined, CheckCircleOutlined, SyncOutlined, EyeOutlined, CalculatorOutlined,
+    MessageOutlined,
 } from '@ant-design/icons';
 import type { Contract, Room, Tenant, ContractStatus } from '@/types/database';
 import { deleteContract, updateContractStatus } from './actions';
 import dynamic from 'next/dynamic';
 const ContractFormModal = dynamic(() => import('./ContractFormModal'), { ssr: false });
 import ConfirmModal from '@/components/common/ConfirmModal';
-import { Drawer, Descriptions, Divider, Grid } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+import CheckoutModal from './CheckoutModal';
+import { Drawer, Descriptions, Divider, Grid, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 
 const { useBreakpoint } = Grid;
@@ -36,15 +37,42 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
     const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<Contract | null>(null);
     const [deleting, setDeleting] = useState(false);
+    const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
+    const [checkoutTarget, setCheckoutTarget] = useState<Contract | null>(null);
 
     if (serverError) {
         message.error(serverError);
     }
 
+    const isExpiringSoon = (c: Contract) => {
+        if (c.status !== 'active') return false;
+        if (!c.end_date) return false;
+        const end = dayjs(c.end_date);
+        const today = dayjs().startOf('day');
+        const diffDays = end.diff(today, 'day');
+        return diffDays >= 0 && diffDays <= 30;
+    };
+
+    const expiringSoonCount = contracts.filter(isExpiringSoon).length;
+
     const filtered = contracts.filter((c) => {
         if (filterStatus === 'all') return true;
+        if (filterStatus === 'expiring_soon') return isExpiringSoon(c);
         return c.status === filterStatus;
     });
+
+    const handleRemindRenewal = (c: Contract) => {
+        const tenant = tenants.find(t => t.id === c.tenant_id);
+        const room = rooms.find(r => r.id === c.room_id);
+        const diff = c.end_date ? dayjs(c.end_date).diff(dayjs().startOf('day'), 'day') : 0;
+        const msg = `Dạ chào bạn ${tenant?.full_name || 'khách thuê'} (Phòng ${room?.name || '---'}),\n\nBan quản lý xin phép gửi thông báo: Hợp đồng thuê phòng của bạn sẽ hết hạn vào ngày ${dayjs(c.end_date).format('DD/MM/YYYY')} (còn khoảng ${diff} ngày nữa).\n\nBạn có dự định tiếp tục gia hạn hợp đồng thuê phòng không ạ? Vui lòng phản hồi sớm để ban quản lý hỗ trợ thủ tục giữ phòng nhé! Cảm ơn bạn rất nhiều!`;
+
+        navigator.clipboard.writeText(msg);
+        message.success(`Đã sao chép tin nhắn nhắc gia hạn cho phòng ${room?.name}!`);
+        if (tenant?.phone) {
+            window.open(`https://zalo.me/${tenant.phone}`, '_blank');
+        }
+    };
 
     const handleDelete = async () => {
         if (!deleteTarget) return;
@@ -135,14 +163,23 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
         {
             title: 'Thời hạn',
             key: 'period',
-            render: (_: unknown, record: Contract) => (
-                <div>
-                    <div>Từ: <Typography.Text>{dayjs(record.start_date).format('DD/MM/YYYY')}</Typography.Text></div>
-                    <div style={{ fontSize: 12, color: '#64748b' }}>
-                        Đến: {record.end_date ? dayjs(record.end_date).format('DD/MM/YYYY') : 'Vô thời hạn'}
+            render: (_: unknown, record: Contract) => {
+                const expiring = isExpiringSoon(record);
+                const diffDays = record.end_date ? dayjs(record.end_date).diff(dayjs().startOf('day'), 'day') : null;
+                return (
+                    <div>
+                        <div>Từ: <Typography.Text>{dayjs(record.start_date).format('DD/MM/YYYY')}</Typography.Text></div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>
+                            Đến: {record.end_date ? dayjs(record.end_date).format('DD/MM/YYYY') : 'Vô thời hạn'}
+                        </div>
+                        {expiring && diffDays !== null && (
+                            <Tag color="orange" className="mt-1 font-medium">
+                                Còn {diffDays} ngày
+                            </Tag>
+                        )}
                     </div>
-                </div>
-            ),
+                );
+            },
         },
         {
             title: 'Trạng thái',
@@ -189,6 +226,29 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
             align: 'right' as const,
             render: (_: unknown, record: Contract) => (
                 <Space size="small">
+                    {isExpiringSoon(record) && (
+                        <Tooltip title="Gửi Zalo nhắc gia hạn">
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<MessageOutlined style={{ color: '#0068ff', fontSize: 15 }} />}
+                                onClick={() => handleRemindRenewal(record)}
+                            />
+                        </Tooltip>
+                    )}
+                    {record.status === 'active' && (
+                        <Tooltip title="Trả phòng & Quyết toán cọc">
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<CalculatorOutlined style={{ color: '#0d9488', fontSize: 15 }} />}
+                                onClick={() => {
+                                    setCheckoutTarget(record);
+                                    setCheckoutModalOpen(true);
+                                }}
+                            />
+                        </Tooltip>
+                    )}
                     <Button
                         type="text"
                         size="small"
@@ -228,11 +288,15 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
                     <Select
                         value={filterStatus}
                         onChange={setFilterStatus}
-                        className="w-full md:w-[150px]"
+                        className="w-full md:w-[220px]"
                         options={[
                             { value: 'all', label: 'Tất cả trạng thái' },
                             { value: 'active', label: 'Đang hiệu lực' },
-                            { value: 'expired', label: 'Hết hạn' },
+                            { 
+                                value: 'expiring_soon', 
+                                label: `⚡ Sắp hết hạn (≤ 30 ngày)${expiringSoonCount > 0 ? ` (${expiringSoonCount})` : ''}` 
+                            },
+                            { value: 'expired', label: 'Đã hết hạn' },
                             { value: 'terminated', label: 'Đã thanh lý' },
                         ]}
                     />
@@ -253,13 +317,14 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                 {[
-                    { label: 'Tổng', value: contracts.length, color: '#1e293b' },
-                    { label: 'Đang hiệu lực', value: contracts.filter((c) => c.status === 'active').length, color: '#0d9488' },
-                    { label: 'Sắp hết hạn', value: contracts.filter((c) => c.status === 'expired').length, color: '#f59e0b' },
+                    { label: 'Tổng hợp đồng', value: contracts.length, color: '#1e293b', key: 'all' },
+                    { label: 'Đang hiệu lực', value: contracts.filter((c) => c.status === 'active').length, color: '#0d9488', key: 'active' },
+                    { label: 'Sắp hết hạn (≤ 30 ngày)', value: expiringSoonCount, color: '#f59e0b', key: 'expiring_soon' },
                 ].map((stat) => (
                     <Card
                         key={stat.label}
-                        className="rounded-xl shadow-sm border-gray-100"
+                        className="rounded-xl shadow-sm border-gray-100 cursor-pointer hover:border-teal-400 transition-colors"
+                        onClick={() => setFilterStatus(stat.key)}
                         styles={{ body: { padding: '16px', textAlign: 'center' } }}
                     >
                         <div style={{ fontSize: 24, fontWeight: 700, color: stat.color }}>{stat.value}</div>
@@ -378,6 +443,18 @@ export default function ContractsClient({ initialContracts, rooms, tenants, serv
                     </div>
                 )}
             </Drawer>
+
+            <CheckoutModal
+                open={checkoutModalOpen}
+                onClose={() => {
+                    setCheckoutModalOpen(false);
+                    setCheckoutTarget(null);
+                }}
+                onSuccess={() => {
+                    window.location.reload();
+                }}
+                contract={checkoutTarget}
+            />
         </div>
     );
 }

@@ -18,7 +18,7 @@ export default async function DashboardPage({ params }: any) {
     if (session.room_id) {
         const { data: room } = await supabase
             .from('rooms')
-            .select('name, price')
+            .select('name, default_rent')
             .eq('id', session.room_id)
             .single();
         roomInfo = room;

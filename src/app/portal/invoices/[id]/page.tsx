@@ -30,9 +30,22 @@ export default async function PortalInvoiceDetailPage({ params }: { params: Prom
 
     if (!invoice) return <div className="p-4">Không tìm thấy hoá đơn.</div>;
 
-    // TODO: Tích hợp PayOS để lấy link VietQR thực tế
-    // Đây là URL giả lập mã VietQR bằng một API public để demo
-    const vietQrUrl = `https://img.vietqr.io/image/970415-113366668888-compact2.png?amount=${invoice.total_amount}&addInfo=Thanh toan HD ${invoice.id.substring(0,6)}&accountName=RENTFLOW HOST`;
+    // Lấy thông tin thanh toán cấu hình của chủ nhà (tổ chức)
+    const { data: paymentSettings } = await supabase
+        .from('payment_settings')
+        .select('bank_bin, bank_account, account_name, qr_template')
+        .eq('org_id', invoice.org_id)
+        .maybeSingle();
+
+    const bankBin = paymentSettings?.bank_bin || '970415';
+    const bankAccount = paymentSettings?.bank_account || '113366668888';
+    const accountName = paymentSettings?.account_name || 'RENTFLOW HOST';
+    const qrTemplate = paymentSettings?.qr_template || 'compact2';
+
+    const remainingAmount = Math.max(0, Number(invoice.total_amount || 0) - Number(invoice.paid_amount || 0));
+    const transferContent = invoice.order_code ? `RF ${invoice.order_code}` : `HD ${invoice.id.substring(0, 6).toUpperCase()}`;
+
+    const vietQrUrl = `https://img.vietqr.io/image/${bankBin}-${bankAccount}-${qrTemplate}.png?amount=${remainingAmount}&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(accountName)}`;
 
     return (
         <div className="p-4 space-y-4 pb-20">
@@ -100,6 +113,25 @@ export default async function PortalInvoiceDetailPage({ params }: { params: Prom
                             className="w-48 h-48 object-contain"
                         />
                     </div>
+
+                    <div className="mt-4 p-3 bg-white rounded-lg text-left text-xs space-y-1 text-slate-700 border border-slate-100">
+                        <div className="flex justify-between">
+                            <span className="text-slate-400">Số tài khoản:</span>
+                            <span className="font-mono font-semibold">{bankAccount}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-slate-400">Chủ tài khoản:</span>
+                            <span className="font-semibold uppercase">{accountName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-slate-400">Số tiền:</span>
+                            <span className="font-semibold text-blue-600">{remainingAmount.toLocaleString()} đ</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-slate-400">Nội dung CK:</span>
+                            <span className="font-mono font-bold text-red-600">{invoice.order_code ? `RF ${invoice.order_code}` : `HD ${invoice.id.substring(0, 6).toUpperCase()}`}</span>
+                        </div>
+                    </div>
                     
                     <Button 
                         type="primary" 
@@ -107,7 +139,7 @@ export default async function PortalInvoiceDetailPage({ params }: { params: Prom
                         className="w-full mt-4" 
                         size="large"
                     >
-                        Đã thanh toán
+                        Tôi đã chuyển khoản
                     </Button>
                 </Card>
             )}

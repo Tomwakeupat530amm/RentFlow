@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, InputNumber, Switch, Button, message, Select } from 'antd';
 import { DeleteOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ServicePrice, ServicePriceFormData, ServiceType } from '@/types/database';
+import type { ServicePrice, ServicePriceFormData, ServiceType, ChargingRule } from '@/types/database';
 import { upsertServicePrices } from './actions';
 
 interface Props {
@@ -11,12 +11,12 @@ interface Props {
     initialPrices: ServicePrice[];
 }
 
-const defaultServices: { type: ServiceType; label: string; unit: string; is_metered: boolean }[] = [
-    { type: 'electricity', label: 'Điện', unit: 'kWh', is_metered: true },
-    { type: 'water', label: 'Nước', unit: 'm3', is_metered: true },
-    { type: 'internet', label: 'Internet', unit: 'phòng/tháng', is_metered: false },
-    { type: 'garbage', label: 'Rác', unit: 'phòng/tháng', is_metered: false },
-    { type: 'parking', label: 'Gửi xe', unit: 'xe/tháng', is_metered: false },
+const defaultServices: { type: ServiceType; label: string; unit: string; is_metered: boolean; charging_rule: ChargingRule }[] = [
+    { type: 'electricity', label: 'Điện', unit: 'kWh', is_metered: true, charging_rule: 'metered' },
+    { type: 'water', label: 'Nước', unit: 'm3', is_metered: true, charging_rule: 'metered' },
+    { type: 'internet', label: 'Internet', unit: 'phòng/tháng', is_metered: false, charging_rule: 'fixed' },
+    { type: 'garbage', label: 'Rác', unit: 'người/tháng', is_metered: false, charging_rule: 'per_person' },
+    { type: 'parking', label: 'Gửi xe', unit: 'xe/tháng', is_metered: false, charging_rule: 'per_vehicle' },
 ];
 
 export default function ServicePricesTable({ buildingId, initialPrices }: Props) {
@@ -31,7 +31,8 @@ export default function ServicePricesTable({ buildingId, initialPrices }: Props)
                 label: p.label,
                 unit_price: p.unit_price,
                 unit: p.unit,
-                is_metered: p.is_metered
+                is_metered: p.is_metered,
+                charging_rule: p.charging_rule || (p.is_metered ? 'metered' : 'fixed')
             })));
         } else {
             // Populate defaults if empty
@@ -41,7 +42,8 @@ export default function ServicePricesTable({ buildingId, initialPrices }: Props)
                 label: ds.label,
                 unit_price: 0,
                 unit: ds.unit,
-                is_metered: ds.is_metered
+                is_metered: ds.is_metered,
+                charging_rule: ds.charging_rule
             })));
         }
     }, [initialPrices, buildingId]);
@@ -134,6 +136,48 @@ export default function ServicePricesTable({ buildingId, initialPrices }: Props)
             render: (val: string, record: ServicePriceFormData, index: number) => (
                 <Input value={val} onChange={(e) => handleChange(index, 'unit', e.target.value)} placeholder="kWh, m3, tháng..." />
             )
+        },
+        {
+            title: 'Quy tắc tính phí',
+            dataIndex: 'charging_rule',
+            width: 160,
+            render: (val: ChargingRule | undefined, record: ServicePriceFormData, index: number) => {
+                const currentRule = val || (record.is_metered ? 'metered' : 'fixed');
+                return (
+                    <Select
+                        value={currentRule}
+                        onChange={(rule: ChargingRule) => {
+                            let newUnit = record.unit;
+                            let isMetered = record.is_metered;
+                            if (rule === 'metered') {
+                                isMetered = true;
+                                if (record.service_type === 'water') newUnit = 'm3';
+                                else newUnit = 'kWh';
+                            } else {
+                                isMetered = false;
+                                if (rule === 'per_person') newUnit = 'người/tháng';
+                                else if (rule === 'per_vehicle') newUnit = 'xe/tháng';
+                                else if (rule === 'fixed') newUnit = 'phòng/tháng';
+                            }
+                            const newData = [...prices];
+                            newData[index] = {
+                                ...newData[index],
+                                charging_rule: rule,
+                                is_metered: isMetered,
+                                unit: newUnit,
+                            };
+                            setPrices(newData);
+                        }}
+                        style={{ width: '100%' }}
+                        options={[
+                            { value: 'fixed', label: 'Cố định / Phòng' },
+                            { value: 'per_person', label: 'Theo đầu người' },
+                            { value: 'per_vehicle', label: 'Theo số lượng xe' },
+                            { value: 'metered', label: 'Theo số công tơ' },
+                        ]}
+                    />
+                );
+            }
         },
         {
             title: 'Ghi số công tơ',

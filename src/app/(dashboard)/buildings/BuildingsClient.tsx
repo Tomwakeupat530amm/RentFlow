@@ -10,20 +10,29 @@ import {
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { Building } from '@/types/database';
+import type { Building, PlanType } from '@/types/database';
 import { deleteBuilding } from './actions';
 import dynamic from 'next/dynamic';
 const BuildingFormModal = dynamic(() => import('./BuildingFormModal'), { ssr: false });
 import ConfirmModal from '@/components/common/ConfirmModal';
 import SearchInput from '@/components/common/SearchInput';
-
+import QuotaProgress from '@/components/common/QuotaProgress';
 
 interface BuildingsClientProps {
     initialBuildings: Building[];
     serverError?: string;
+    buildingCount?: number;
+    limit?: number;
+    planType?: PlanType;
 }
 
-export default function BuildingsClient({ initialBuildings, serverError }: BuildingsClientProps) {
+export default function BuildingsClient({ 
+    initialBuildings, 
+    serverError,
+    buildingCount,
+    limit,
+    planType,
+}: BuildingsClientProps) {
     const router = useRouter();
     const [buildings, setBuildings] = useState(initialBuildings);
     const [search, setSearch] = useState('');
@@ -79,6 +88,15 @@ export default function BuildingsClient({ initialBuildings, serverError }: Build
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {limit !== undefined && (
+                <QuotaProgress
+                    current={buildingCount ?? buildings.length}
+                    limit={limit}
+                    entityName="tòa nhà"
+                    planType={planType}
+                />
+            )}
+
             {/* Toolbar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <SearchInput

@@ -65,8 +65,12 @@ export async function POST(req: Request) {
 
         const paymentLinkData = await dynamicPayos.createPaymentLink(bodyData);
 
-        // Here we could potentially update the invoice in DB to save the `orderCode` for tracking
-        // For simplicity, we just return the checkoutUrl
+        // Lưu order_code vào CSDL để Webhook PayOS đối soát tự động
+        await adminSupabase
+            .from('invoices')
+            .update({ order_code: orderCode })
+            .eq('id', invoiceId);
+
         return NextResponse.json({ 
             checkoutUrl: paymentLinkData.checkoutUrl,
             orderCode 

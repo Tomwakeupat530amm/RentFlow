@@ -45,11 +45,17 @@ export async function getTenantById(id: string) {
     return { data, error: null };
 }
 
+function generatePinCode(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 export async function createTenant(formData: TenantFormData) {
     const supabase = await createClient();
     const orgId = await getOrgId();
 
     if (!orgId) return { error: 'Không tìm thấy tổ chức. Vui lòng đăng nhập lại.' };
+
+    const pin = generatePinCode();
 
     const { error } = await supabase
         .from('tenants')
@@ -63,10 +69,24 @@ export async function createTenant(formData: TenantFormData) {
             date_of_birth: formData.date_of_birth || null,
             permanent_address: formData.permanent_address || null,
             notes: formData.notes || null,
+            access_code: pin,
         });
 
     if (error) return { error: error.message };
     return { success: true };
+}
+
+export async function regenerateTenantPin(id: string) {
+    const supabase = await createClient();
+    const newPin = generatePinCode();
+
+    const { error } = await supabase
+        .from('tenants')
+        .update({ access_code: newPin })
+        .eq('id', id);
+
+    if (error) return { error: error.message };
+    return { success: true, pin: newPin };
 }
 
 export async function updateTenant(id: string, formData: TenantFormData) {

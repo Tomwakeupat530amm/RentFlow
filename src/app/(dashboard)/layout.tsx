@@ -1,6 +1,7 @@
 import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { createClient } from '@/lib/supabase/server';
+import { getOrgPlan, getOrgUsage } from '@/lib/subscription/actions';
 
 export default async function DashboardLayout({
     children,
@@ -8,7 +9,11 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const [{ data: { user } }, { planType }, usage] = await Promise.all([
+        supabase.auth.getUser(),
+        getOrgPlan(),
+        getOrgUsage(),
+    ]);
 
     let profile = { full_name: 'User', role: 'member' };
     if (user) {
@@ -27,6 +32,8 @@ export default async function DashboardLayout({
             userId={user?.id || ''}
             userName={profile.full_name || 'User'}
             userRole={profile.role || 'member'}
+            planType={planType}
+            roomCount={usage.room_count}
         >
             {children}
         </MainLayout>

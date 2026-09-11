@@ -19,44 +19,63 @@ export async function POST(req: Request) {
         }
 
         const data = body.data;
-        const amount = data.amount;
+        const amount = Number(data.amount || 0);
         const description = data.description || '';
+        const orderCode = data.orderCode ? Number(data.orderCode) : null;
         
-        // Trong môi trường thực tế, PayOS cho phép truyền orderCode (số).
-        // Tuy nhiên hoá đơn của chúng ta dùng UUID.
-        // Mock này sử dụng addInfo/description chứa chuỗi invoice.id
-        // Ví dụ: description chứa UUID của hoá đơn
-        const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
-        const match = description.match(uuidRegex);
+        let invoice: { id: string; paid_amount: number; total_amount: number; status: string; org_id: string } | null = null;
 
-        let invoiceId = null;
-        if (match) {
-            invoiceId = match[0];
-        } else {
-            console.log('⚠️ [Webhook PayOS] Không tìm thấy UUID hoá đơn trong description:', description);
-            return NextResponse.json({ success: true, message: 'Invoice ID not found in description' });
+        // 1. Ưu tiên đối soát theo orderCode số (do PayOS trả về chuẩn)
+        if (orderCode) {
+            const { data: invByCode, error: errByCode } = await supabase
+                .from('invoices')
+                .select('id, paid_amount, total_amount, status, org_id')
+                .eq('order_code', orderCode)
+                .maybeSingle();
+
+            if (!errByCode && invByCode) {
+                invoice = invByCode;
+                console.log(`🎯 [Webhook PayOS] Khớp hoá đơn qua order_code: ${orderCode} -> ID: ${invoice.id}`);
+            }
         }
 
-        console.log(`🚀 [Webhook PayOS] Đang xử lý thanh toán cho Hoá Đơn: ${invoiceId}, Số tiền: ${amount}`);
+        // 2. Fallback: Nếu không tìm thấy qua orderCode, trích xuất UUID từ description
+        if (!invoice && description) {
+            const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+            const match = description.match(uuidRegex);
+            if (match) {
+                const { data: invById, error: errById } = await supabase
+                    .from('invoices')
+                    .select('id, paid_amount, total_amount, status, org_id')
+                    .eq('id', match[0])
+                    .maybeSingle();
 
-        // Lấy thông tin hoá đơn hiện tại và org_id
-        const { data: invoice, error: fetchError } = await supabase
-            .from('invoices')
-            .select('paid_amount, org_id')
-            .eq('id', invoiceId)
-            .single();
-
-        if (fetchError || !invoice) {
-            console.error('❌ [Webhook PayOS] Lỗi lấy thông tin hoá đơn:', fetchError?.message);
-            return NextResponse.json({ success: false, error: 'Invoice not found' }, { status: 404 });
+                if (!errById && invById) {
+                    invoice = invById;
+                    console.log(`🎯 [Webhook PayOS] Khớp hoá đơn qua UUID trong description: ${invoice.id}`);
+                }
+            }
         }
 
-        // Lấy cấu hình PayOS của tổ chức để xác thực Webhook Signature
+        if (!invoice) {
+            console.log('⚠️ [Webhook PayOS] Không tìm thấy hoá đơn tương ứng (orderCode / description):', { orderCode, description });
+            return NextResponse.json({ success: true, message: 'Invoice not found in system, ignored.' });
+        }
+
+        console.log(`🚀 [Webhook PayOS] Đang xử lý thanh toán cho Hoá Đơn: ${invoice.id}, Số tiền: ${amount}`);
+
+        // 3. Kiểm tra tính Idempotent: Nếu hoá đơn đã thanh toán đủ từ trước
+        if (invoice.status === 'paid' && Number(invoice.paid_amount) >= Number(invoice.total_amount)) {
+            console.log(`ℹ️ [Webhook PayOS] Hoá đơn ${invoice.id} đã hoàn tất thanh toán trước đó.`);
+            return NextResponse.json({ success: true, message: 'Invoice already marked as paid' });
+        }
+
+        // 4. Lấy cấu hình PayOS của tổ chức để xác thực Webhook Signature (nếu có cấu hình)
         const { data: settings } = await supabase
             .from('payment_settings')
             .select('payos_client_id, payos_api_key, payos_checksum_key')
             .eq('org_id', invoice.org_id)
-            .single();
+            .maybeSingle();
 
         if (settings?.payos_client_id && settings?.payos_api_key && settings?.payos_checksum_key) {
             try {
@@ -68,23 +87,34 @@ export async function POST(req: Request) {
                 return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
             }
         } else {
-            console.log('⚠️ [Webhook PayOS] Tổ chức chưa cấu hình PayOS Key, bỏ qua bước verify (có thể không an toàn).');
+            console.log('⚠️ [Webhook PayOS] Tổ chức chưa cấu hình PayOS Key đầy đủ, bỏ qua bước verify.');
         }
 
-        const newPaidAmount = Number(invoice.paid_amount) + Number(amount);
+        const newPaidAmount = Number(invoice.paid_amount || 0) + amount;
+        const totalAmount = Number(invoice.total_amount || 0);
+        const newStatus = newPaidAmount >= totalAmount ? 'paid' : (newPaidAmount > 0 ? 'partial' : invoice.status);
 
-        // Cập nhật số tiền đã thanh toán (Database Trigger sẽ tự cập nhật status)
+        // 5. Cập nhật số tiền đã thanh toán và trạng thái hoá đơn
+        const updatePayload: Record<string, unknown> = { 
+            paid_amount: newPaidAmount,
+            status: newStatus,
+        };
+
+        if (newStatus === 'paid') {
+            updatePayload.paid_at = new Date().toISOString();
+        }
+
         const { error: updateError } = await supabase
             .from('invoices')
-            .update({ paid_amount: newPaidAmount })
-            .eq('id', invoiceId);
+            .update(updatePayload)
+            .eq('id', invoice.id);
 
         if (updateError) {
             console.error('❌ [Webhook PayOS] Lỗi cập nhật hoá đơn:', updateError.message);
             return NextResponse.json({ success: false, error: updateError.message }, { status: 500 });
         }
 
-        console.log(`✅ [Webhook PayOS] Cập nhật thành công! Tổng đã trả: ${newPaidAmount}`);
+        console.log(`✅ [Webhook PayOS] Cập nhật thành công hoá đơn ${invoice.id}! Tổng đã trả: ${newPaidAmount} / ${totalAmount}, Trạng thái: ${newStatus}`);
         return NextResponse.json({ success: true, message: 'Payment recorded successfully' });
 
     } catch (error) {

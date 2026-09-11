@@ -109,6 +109,8 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
             end_date: values.end_date ? values.end_date.format('YYYY-MM-DD') : undefined,
             status: values.status,
             notes: values.notes || undefined,
+            num_occupants: Number(values.num_occupants || 1),
+            num_vehicles: Number(values.num_vehicles || 0),
             scan_url: uploadedUrl,
         };
 
@@ -159,10 +161,14 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
                             end_date: contract.end_date ? dayjs(contract.end_date) : null,
                             status: contract.status,
                             notes: contract.notes,
+                            num_occupants: contract.num_occupants || 1,
+                            num_vehicles: contract.num_vehicles || 0,
                         }
                         : {
                             status: 'active',
                             deposit: 0,
+                            num_occupants: 1,
+                            num_vehicles: 0,
                         }
                 }
                 style={{ marginTop: 16 }}
@@ -249,6 +255,32 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
                             formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             parser={(value) => value ? Number(value.replace(/\$\s?|(,*)/g, '')) : 0}
                             min={0}
+                        />
+                    </Form.Item>
+                </div>
+
+                <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
+                    <Form.Item
+                        name="num_occupants"
+                        label="Số người ở thực tế"
+                        tooltip="Dùng để tự động tính các dịch vụ thu theo đầu người (vd: Tiền rác, tiền nước...)"
+                    >
+                        <InputNumber<number>
+                            style={{ width: '100%' }}
+                            min={1}
+                            placeholder="Mặc định: 1 người"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="num_vehicles"
+                        label="Số lượng xe máy gửi"
+                        tooltip="Dùng để tự động tính phí gửi xe theo số lượng xe của phòng"
+                    >
+                        <InputNumber<number>
+                            style={{ width: '100%' }}
+                            min={0}
+                            placeholder="Mặc định: 0 xe"
                         />
                     </Form.Item>
                 </div>

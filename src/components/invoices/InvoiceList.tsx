@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Table, Tag, Button, Space, Typography, Tooltip, Popconfirm, Select, DatePicker, Card, notification } from 'antd';
-import { EyeOutlined, DollarOutlined, DeleteOutlined, SyncOutlined } from '@ant-design/icons';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Table, Tag, Button, Space, Typography, Tooltip, Popconfirm, Select, DatePicker, Card, notification, Progress } from 'antd';
+import { EyeOutlined, DollarOutlined, DeleteOutlined, SyncOutlined, MessageOutlined } from '@ant-design/icons';
 import { getInvoices, deleteInvoice } from '@/app/(dashboard)/invoices/actions';
 import { getBuildings } from '@/app/(dashboard)/buildings/actions';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import type { Invoice } from '@/types/database';
 
 import PaymentModal from './PaymentModal';
+import ZaloShareModal from './ZaloShareModal';
 
 
 export default function InvoiceList() {
@@ -25,11 +26,41 @@ export default function InvoiceList() {
     // Modals
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+    const [zaloModalOpen, setZaloModalOpen] = useState(false);
+    const [zaloInvoiceId, setZaloInvoiceId] = useState('');
 
     const fetchBuildings = useCallback(async () => {
         const { data } = await getBuildings();
         if (data) setBuildings(data);
     }, []);
+
+    const stats = useMemo(() => {
+        let totalAmount = 0;
+        let totalPaid = 0;
+        let unpaidCount = 0;
+
+        invoices.forEach((inv) => {
+            const total = Number(inv.total_amount) || 0;
+            const paid = Number(inv.paid_amount) || 0;
+            totalAmount += total;
+            totalPaid += paid;
+            if (inv.status !== 'paid') {
+                unpaidCount++;
+            }
+        });
+
+        const totalDebt = Math.max(0, totalAmount - totalPaid);
+        const percentCollected = totalAmount > 0 ? Math.min(100, Math.round((totalPaid / totalAmount) * 100)) : 0;
+
+        return {
+            totalAmount,
+            totalPaid,
+            totalDebt,
+            unpaidCount,
+            percentCollected,
+            invoiceCount: invoices.length,
+        };
+    }, [invoices]);
 
     const fetchInvoices = useCallback(async () => {
         setLoading(true);
@@ -150,6 +181,16 @@ export default function InvoiceList() {
                                 className={isPaid ? "" : "bg-teal-600 hover:bg-teal-500"}
                             />
                         </Tooltip>
+                        <Tooltip title="Gửi Zalo">
+                            <Button
+                                size="small"
+                                icon={<MessageOutlined style={{ color: '#0068ff' }} />}
+                                onClick={() => {
+                                    setZaloInvoiceId(record.id);
+                                    setZaloModalOpen(true);
+                                }}
+                            />
+                        </Tooltip>
                         <Tooltip title="Xem chi tiết">
                             <Link href={`/invoices/${record.id}`}>
                                 <Button size="small" icon={<EyeOutlined />} />
@@ -176,6 +217,60 @@ export default function InvoiceList() {
 
     return (
         <Space direction="vertical" size="large" className="w-full">
+            {/* Financial KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                <Card 
+                    className="rounded-xl shadow-sm border-gray-100"
+                    styles={{ body: { padding: '16px 20px' } }}
+                >
+                    <div className="text-xs text-gray-500 font-medium">Tổng tiền kỳ này</div>
+                    <div className="text-2xl font-bold text-slate-800 mt-1">
+                        {stats.totalAmount.toLocaleString('vi-VN')} đ
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                        {stats.invoiceCount} hóa đơn phát sinh
+                    </div>
+                </Card>
+
+                <Card 
+                    className="rounded-xl shadow-sm border-gray-100"
+                    styles={{ body: { padding: '16px 20px' } }}
+                >
+                    <div className="flex justify-between items-center">
+                        <span className="text-xs text-teal-600 font-medium">Đã thu thực tế</span>
+                        <Tag color="green" className="m-0 font-semibold">{stats.percentCollected}%</Tag>
+                    </div>
+                    <div className="text-2xl font-bold text-teal-600 mt-1">
+                        {stats.totalPaid.toLocaleString('vi-VN')} đ
+                    </div>
+                    <Progress 
+                        percent={stats.percentCollected} 
+                        size="small" 
+                        showInfo={false} 
+                        strokeColor="#0d9488"
+                        className="m-0 mt-2" 
+                    />
+                </Card>
+
+                <Card 
+                    className="rounded-xl shadow-sm border-gray-100"
+                    styles={{ body: { padding: '16px 20px' } }}
+                >
+                    <div className="flex justify-between items-center">
+                        <span className="text-xs text-red-500 font-medium">Chưa thu / Nợ đọng</span>
+                        {stats.unpaidCount > 0 && (
+                            <Tag color="red" className="m-0 font-semibold">{stats.unpaidCount} phòng chưa đóng</Tag>
+                        )}
+                    </div>
+                    <div className="text-2xl font-bold text-red-500 mt-1">
+                        {stats.totalDebt.toLocaleString('vi-VN')} đ
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                        {stats.unpaidCount === 0 ? 'Đã thu đủ 100% tiền phòng' : 'Cần nhắc thu tiền sớm'}
+                    </div>
+                </Card>
+            </div>
+
             <Card size="small" className="bg-white shadow-sm border-gray-100 mb-4">
                 <div className="flex flex-col md:flex-row gap-4 md:items-end">
                     <div className="flex-1 min-w-[200px]">
@@ -237,6 +332,15 @@ export default function InvoiceList() {
                 open={paymentModalOpen}
                 onClose={() => setPaymentModalOpen(false)}
                 onSuccess={fetchInvoices}
+            />
+
+            <ZaloShareModal
+                open={zaloModalOpen}
+                onClose={() => {
+                    setZaloModalOpen(false);
+                    setZaloInvoiceId('');
+                }}
+                invoiceId={zaloInvoiceId}
             />
         </Space>
     );
