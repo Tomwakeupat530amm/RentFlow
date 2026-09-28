@@ -285,14 +285,18 @@
       display: flex;
       gap: 8px;
       background: var(--border-subtle);
-      padding: 4px;
+      padding: 6px;
       border-radius: var(--radius-md);
       margin-bottom: 32px;
       border: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab-btn {
-      flex: 1;
+      flex: 1 0 auto;
+      white-space: nowrap;
       padding: 11px 18px;
       border-radius: var(--radius-sm);
       border: none;
@@ -861,6 +865,160 @@
       border: 1px solid rgba(13, 148, 136, 0.2);
     }
 
+    
+    /* Project Folder Tree & Schema Styling */
+    .folder-tree {
+      background: #0f172a;
+      color: #94a3b8;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+      margin: 18px 0;
+    }
+
+    .folder-tree .dir-name {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .folder-tree .file-name {
+      color: #cbd5e1;
+    }
+
+    .folder-tree .comment {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .folder-tree .highlight-file {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .schema-cluster {
+      margin-bottom: 28px;
+    }
+
+    .schema-cluster-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      background: var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .schema-cluster-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .schema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .table-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .table-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .table-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    [data-theme="dark"] .table-name {
+      color: #2dd4bf;
+    }
+
+    .table-badge {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--border-subtle);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .table-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .column-list {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      background: var(--border-subtle);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .col-pk { color: #f59e0b; font-weight: 700; }
+    .col-fk { color: #3b82f6; font-weight: 600; }
+    .col-unique { color: #10b981; }
+    .col-jsonb { color: #ec4899; }
+
+    .table-meta-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .meta-pill {
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(13, 148, 136, 0.1);
+      color: var(--primary-dark);
+      border: 1px solid rgba(13, 148, 136, 0.2);
+    }
+
+    [data-theme="dark"] .meta-pill {
+      background: rgba(45, 212, 191, 0.15);
+      color: #5eead4;
+      border-color: rgba(45, 212, 191, 0.3);
+    }
+
     /* Print Styles */
     @media print {
       .sidebar, .top-bar, .tab-nav, .btn, .search-box {
@@ -928,24 +1086,28 @@
       </a>
       <a class="nav-item" onclick="switchTab('defense')">
         <span class="icon">🎯</span> Phản Biện Hội Đồng (Q&A)
-        <span class="badge">10 Câu</span>
+        <span class="badge">31 Câu</span>
       </a>
       <a class="nav-item" onclick="switchTab('architecture')">
-        <span class="icon">🏗️</span> Kiến Trúc & Công Nghệ
-        <span class="badge">Tech</span>
+        <span class="icon">🏗️</span> Kiến Trúc & Cấu Trúc Mã
+        <span class="badge">Src</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('database')">
+        <span class="icon">🗄️</span> Cấu Trúc CSDL (22 Bảng)
+        <span class="badge">SQL</span>
       </a>
 
       <div class="nav-group-title">Danh Mục 10 Module</div>
-      <a class="nav-item" href="#mod-1"><span class="icon">⚙️</span> 1. Settings & RBAC</a>
-      <a class="nav-item" href="#mod-2"><span class="icon">🏢</span> 2. Toà Nhà & Biểu Phí</a>
-      <a class="nav-item" href="#mod-3"><span class="icon">🚪</span> 3. Phòng & Batch Generator</a>
-      <a class="nav-item" href="#mod-4"><span class="icon">👥</span> 4. Khách Thuê & Mã PIN</a>
-      <a class="nav-item" href="#mod-5"><span class="icon">📑</span> 5. Hợp Đồng & Quyết Toán</a>
-      <a class="nav-item" href="#mod-6"><span class="icon">⚡</span> 6. Chốt Điện Nước (Meters)</a>
-      <a class="nav-item" href="#mod-7"><span class="icon">💳</span> 7. Hoá Đơn & VietQR Động</a>
-      <a class="nav-item" href="#mod-8"><span class="icon">🛠️</span> 8. Sự Cố (Kanban Board)</a>
-      <a class="nav-item" href="#mod-9"><span class="icon">🏨</span> 9. Homestay & Buồng Phòng</a>
-      <a class="nav-item" href="#mod-10"><span class="icon">📱</span> 10. Tenant Portal (Khách)</a>
+      <a class="nav-item" onclick="scrollToModule('mod-1')"><span class="icon">⚙️</span> 1. Settings & RBAC</a>
+      <a class="nav-item" onclick="scrollToModule('mod-2')"><span class="icon">🏢</span> 2. Toà Nhà & Biểu Phí</a>
+      <a class="nav-item" onclick="scrollToModule('mod-3')"><span class="icon">🚪</span> 3. Phòng & Batch Generator</a>
+      <a class="nav-item" onclick="scrollToModule('mod-4')"><span class="icon">👥</span> 4. Khách Thuê & Mã PIN</a>
+      <a class="nav-item" onclick="scrollToModule('mod-5')"><span class="icon">📑</span> 5. Hợp Đồng & Quyết Toán</a>
+      <a class="nav-item" onclick="scrollToModule('mod-6')"><span class="icon">⚡</span> 6. Chốt Điện Nước (Meters)</a>
+      <a class="nav-item" onclick="scrollToModule('mod-7')"><span class="icon">💳</span> 7. Hoá Đơn & VietQR Động</a>
+      <a class="nav-item" onclick="scrollToModule('mod-8')"><span class="icon">🛠️</span> 8. Sự Cố (Kanban Board)</a>
+      <a class="nav-item" onclick="scrollToModule('mod-9')"><span class="icon">🏨</span> 9. Homestay & Buồng Phòng</a>
+      <a class="nav-item" onclick="scrollToModule('mod-10')"><span class="icon">📱</span> 10. Tenant Portal (Khách)</a>
     </nav>
   </aside>
 
@@ -981,16 +1143,16 @@
           <p>Tốc độ chuyển trang tức thì</p>
         </div>
         <div class="hero-stat-card">
-          <h3>100% RLS</h3>
-          <p>Bảo mật Multi-Tenant Database</p>
+          <h3>22 Bảng SQL</h3>
+          <p>CSDL PostgreSQL & RLS</p>
         </div>
         <div class="hero-stat-card">
           <h3>VietQR</h3>
           <p>Thanh toán & Đối soát tự động</p>
         </div>
         <div class="hero-stat-card">
-          <h3>2 Cổng</h3>
-          <p>Dashboard Chủ & Portal Khách</p>
+          <h3>31 Câu Q&A</h3>
+          <p>Phản biện hội đồng 7 vòng</p>
         </div>
       </div>
     </div>
@@ -1007,7 +1169,10 @@
         🎯 Bộ Câu Hỏi Phản Biện Hội Đồng (Q&A)
       </button>
       <button class="tab-btn" id="tabBtn-architecture" onclick="switchTab('architecture')">
-        🏗️ Kiến Trúc Hệ Thống & Điểm Sáng Kỹ Thuật
+        🏗️ Kiến Trúc Hệ Thống & Cấu Trúc Mã Nguồn
+      </button>
+      <button class="tab-btn" id="tabBtn-database" onclick="switchTab('database')">
+        🗄️ Cấu Trúc CSDL (22 Bảng Dữ Liệu)
       </button>
     </div>
 
@@ -2434,6 +2599,646 @@
           </div>
         </div>
       </div>
+
+      <!-- MỤC 4.2: CẤU TRÚC THƯ MỤC & MÃ NGUỒN CHI TIẾT -->
+      <div class="module-card" style="margin-top: 24px;">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num" style="background: linear-gradient(135deg, #0284c7, #0369a1);">SRC</div>
+            <div>
+              <h3 class="module-title">Giải Thích Chi Tiết Cấu Trúc Thư Mục & Phân Tách Mã Nguồn (Project Structure)</h3>
+              <div class="module-route-tag">Mô hình phân tầng chuẩn Next.js 15 App Router & React 19</div>
+            </div>
+          </div>
+        </div>
+
+        <p>RentFlow áp dụng nguyên tắc kiến trúc <strong>Strict Boundary Separation (Phân tách ngữ cảnh nghiêm ngặt)</strong> giữa 3 vùng: Trình duyệt Client (chỉ giữ UI tương tác), Máy chủ Server (nơi duy nhất giữ secrets và thực thi Server Actions), và Trạm kiểm soát Edge (kiểm tra JWT trước mọi request). Dưới đây là phân bổ chi tiết cây thư mục dự án:</p>
+
+        <div class="folder-tree">
+<span class="dir-name">RentFlow/</span>
+├── <span class="dir-name">src/</span>
+│   ├── <span class="dir-name">app/</span>                               <span class="comment"># Next.js 15 App Router (Routing, Server Components & Actions)</span>
+│   │   ├── <span class="dir-name">(auth)/</span>                          <span class="comment"># Route group xác thực: /login, /register, /forgot-password</span>
+│   │   │   └── <span class="highlight-file">actions.ts</span>                     <span class="comment"># Server Actions đăng ký, đăng nhập theo mã mời tổ chức (registerAndJoinOrg)</span>
+│   │   ├── <span class="dir-name">(dashboard)/</span>                     <span class="comment"># Route group Quản Trị của Chủ nhà & Quản lý (Được bảo vệ bởi Supabase Auth)</span>
+│   │   │   ├── <span class="dir-name">buildings/</span>                     <span class="comment"># Quản lý tòa nhà, số tầng, biểu phí dịch vụ & Modal tạo phòng</span>
+│   │   │   │   └── <span class="dir-name">[id]/</span>
+│   │   │   │       ├── <span class="highlight-file">BatchRoomModal.tsx</span>        <span class="comment"># Ma trận sinh phòng tự động (tầng, phòng/tầng, prefix, preview, lọc trùng)</span>
+│   │   │   │       └── <span class="file-name">actions.ts</span>                <span class="comment"># Server Action batchCreateRooms, updateBuilding, createBuilding</span>
+│   │   │   ├── <span class="dir-name">rooms/</span>                         <span class="comment"># Danh mục phòng, lọc trạng thái (vacant, occupied, maintenance)</span>
+│   │   │   ├── <span class="dir-name">tenants/</span>                       <span class="comment"># Quản lý khách thuê, CCCD, cấp và đổi mã PIN Portal 6 số (TenantsClient.tsx)</span>
+│   │   │   ├── <span class="dir-name">contracts/</span>                     <span class="comment"># Hợp đồng thuê, tiền cọc, chữ ký và quyết toán trả phòng</span>
+│   │   │   │   ├── <span class="highlight-file">CheckoutModal.tsx</span>         <span class="comment"># Modal quyết toán hoàn cọc: chốt điện nước ngày cuối, nợ lẻ, trừ đồ đạc, Zalo text</span>
+│   │   │   │   └── <span class="file-name">actions.ts</span>                <span class="comment"># Server Actions: createContract, checkoutContract (Atomicity ACID)</span>
+│   │   │   ├── <span class="dir-name">meters/</span>                        <span class="comment"># Ghi nhận chỉ số điện/nước hàng tháng, tự tính sản lượng tiêu thụ delta</span>
+│   │   │   │   └── <span class="file-name">actions.ts</span>                <span class="comment"># Validation chặn nhập lùi chỉ số & ghi nhận an toàn</span>
+│   │   │   ├── <span class="dir-name">invoices/</span>                      <span class="comment"># Hóa đơn hàng tháng, sinh bill hàng loạt, tạo mã VietQR động, gửi Zalo</span>
+│   │   │   ├── <span class="dir-name">incidents/</span>                     <span class="comment"># Bảng Kanban kéo thả trạng thái sự cố 60fps dùng @dnd-kit/core</span>
+│   │   │   ├── <span class="dir-name">expenses/</span>                      <span class="comment"># Ghi nhận chi phí vận hành toà nhà, phân loại danh mục</span>
+│   │   │   ├── <span class="dir-name">homestay/</span>                      <span class="comment"># Phân hệ Homestay: bookings (đặt phòng), calendar (lịch), housekeeping (dọn phòng)</span>
+│   │   │   ├── <span class="dir-name">settings/</span>                      <span class="comment"># Thiết lập tổ chức, mã mời thành viên, cấu hình ngân hàng PayOS</span>
+│   │   │   ├── <span class="file-name">layout.tsx</span>                    <span class="comment"># Layout thanh bên (MainLayout) với menu điều hướng, chuông thông báo</span>
+│   │   │   └── <span class="file-name">error.tsx</span>                     <span class="comment"># Next.js Error Boundary bắt lỗi kết nối Supabase, hiển thị UI thân thiện</span>
+│   │   ├── <span class="dir-name">portal/</span>                            <span class="comment"># Phân hệ Cổng Khách Thuê di động (Mobile-first, không mật khẩu)</span>
+│   │   │   ├── <span class="dir-name">login/</span>                         <span class="comment"># Đăng nhập nhanh bằng SĐT + Mã PIN 6 số</span>
+│   │   │   ├── <span class="dir-name">dashboard/</span>                     <span class="comment"># Trang chủ khách: thông tin phòng, hợp đồng, tóm tắt công nợ</span>
+│   │   │   ├── <span class="dir-name">invoices/</span>                      <span class="comment"># Xem danh sách hóa đơn, quét mã VietQR Napas247 thanh toán tức thì</span>
+│   │   │   ├── <span class="dir-name">incidents/</span>                     <span class="comment"># Báo cáo sự cố phòng, đính kèm ảnh thực tế</span>
+│   │   │   ├── <span class="dir-name">profile/</span>                       <span class="comment"># Thông tin cá nhân khách thuê và danh sách người ở cùng</span>
+│   │   │   └── <span class="highlight-file">PortalLayoutClient.tsx</span>        <span class="comment"># Khung giao diện mobile với thanh điều hướng 4 tab cố định ở chân trang</span>
+│   │   └── <span class="dir-name">api/</span>                               <span class="comment"># Route Handlers (API Endpoints & Webhooks)</span>
+│   │       ├── <span class="dir-name">webhooks/payos/</span>                <span class="comment"># Webhook đối soát tự động hóa đơn phòng (dual-matching order_code/UUID)</span>
+│   │       ├── <span class="dir-name">webhooks/payment/</span>              <span class="comment"># Webhook gia hạn gói SaaS Premium cho tổ chức</span>
+│   │       ├── <span class="dir-name">tenant/login/</span>                  <span class="comment"># API xác thực mã PIN và cấp cookie JWT tenant-session</span>
+│   │       ├── <span class="dir-name">ocr/</span>                           <span class="comment"># API nhận diện thông tin CCCD tự động</span>
+│   │       └── <span class="dir-name">cron/</span>                          <span class="comment"># Tác vụ định kỳ kiểm tra hạn hợp đồng & nhắc nợ</span>
+│   ├── <span class="dir-name">components/</span>                        <span class="comment"># Kho linh kiện UI tái sử dụng (Ant Design v5 + TailwindCSS)</span>
+│   │   ├── <span class="dir-name">layout/</span>                            <span class="comment"># MainLayout, Sidebar, NotificationBell</span>
+│   │   ├── <span class="dir-name">invoices/</span>                          <span class="comment"># InvoiceDetailModal, ZaloShareModal, VietQRCode</span>
+│   │   ├── <span class="dir-name">incidents/</span>                         <span class="comment"># KanbanBoard, IncidentCard, IncidentFormModal</span>
+│   │   └── <span class="dir-name">expenses/</span>                          <span class="comment"># ExpenseFormModal, CategoryPieChart</span>
+│   ├── <span class="dir-name">lib/</span>                               <span class="comment"># Thư viện dùng chung & Tích hợp dịch vụ ngoài</span>
+│   │   ├── <span class="dir-name">supabase/</span>                          <span class="comment"># 3 cấp độ Supabase Client</span>
+│   │   │   ├── <span class="highlight-file">server.ts</span>                      <span class="comment"># Client mặc định có Cookie session, tuân thủ nghiêm ngặt RLS</span>
+│   │   │   ├── <span class="highlight-file">admin.ts</span>                       <span class="comment"># Client Service-Role Key bypass RLS (chỉ dùng cho Webhooks & Auth)</span>
+│   │   │   └── <span class="file-name">client.ts</span>                      <span class="comment"># Client trình duyệt cho các tác vụ công khai</span>
+│   │   ├── <span class="highlight-file">payos.ts</span>                           <span class="comment"># Khởi tạo SDK PayOS & tạo dynamic client theo Checksum Key từng tổ chức</span>
+│   │   ├── <span class="highlight-file">tenant-auth.ts</span>                     <span class="comment"># Ký và xác minh JWT Cookie cho Cổng Khách Thuê</span>
+│   │   └── <span class="dir-name">rbac/</span>                              <span class="comment"># Logic kiểm tra quyền hạn vai trò (owner vs member)</span>
+│   ├── <span class="dir-name">types/</span>                             <span class="comment"># Định nghĩa kiểu dữ liệu TypeScript</span>
+│   │   └── <span class="highlight-file">database.ts</span>                        <span class="comment"># Khai báo TypeScript types khớp 100% với 22 bảng CSDL Supabase</span>
+│   └── <span class="highlight-file">middleware.ts</span>                          <span class="comment"># Edge Route Guard bảo vệ /dashboard (Supabase) và /portal (Tenant JWT)</span>
+├── <span class="dir-name">supabase/</span>
+│   └── <span class="dir-name">migrations/</span>                        <span class="comment"># 19 file SQL migration versioned trong Git quản lý toàn bộ DDL, RLS & Triggers</span>
+└── <span class="file-name">package.json</span>                           <span class="comment"># Next.js 15, React 19, Ant Design v5, @dnd-kit/core, @payos/node</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
+          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 14.5px; font-weight: 700; color: #0284c7; margin-bottom: 6px;">1. Client Boundary ('use client')</h4>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              Chỉ chứa giao diện tương tác người dùng: các Modal nhập liệu, bảng Kanban kéo thả, và bộ lọc tìm kiếm. Tuyệt đối không chứa secrets hay API keys.
+            </p>
+          </div>
+          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 14.5px; font-weight: 700; color: #0d9488; margin-bottom: 6px;">2. Server Actions ('use server')</h4>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              Thay thế hoàn toàn REST CRUD endpoints. Nhận dữ liệu trực tiếp từ form, kiểm tra quyền, truy vấn CSDL qua Supabase SSR Client có RLS và gọi revalidatePath.
+            </p>
+          </div>
+          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 14.5px; font-weight: 700; color: #7c3aed; margin-bottom: 6px;">3. Edge Middleware Guard</h4>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              Chạy tại rìa mạng trước khi request chạm vào server. Phân tách rành mạch: bảo vệ /dashboard bằng Supabase Auth JWT và /portal bằng Tenant JWT cookie.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 5: CẤU TRÚC CSDL (22 BẢNG DỮ LIỆU)    -->
+    <!-- ========================================== -->
+    <div class="content-section" id="sec-database">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num" style="background: linear-gradient(135deg, #0d9488, #059669);">22</div>
+            <div>
+              <h3 class="module-title">Thiết Kế Cơ Sở Dữ Liệu Supabase PostgreSQL (22 Bảng & Quan Hệ Thực Thể)</h3>
+              <div class="module-route-tag">Mô hình Multi-Tenancy cô lập triệt để bằng Row Level Security (RLS)</div>
+            </div>
+          </div>
+        </div>
+
+        <p>Cơ sở dữ liệu của RentFlow được xây dựng trên nền tảng <strong>PostgreSQL 15</strong> (Supabase), chuẩn hóa ở mức <strong>3NF</strong>, quản lý toàn diện quy trình từ bất động sản, hợp đồng, điện nước, hóa đơn, thanh toán VietQR PayOS cho đến homestay và kiểm toán hệ thống. Mọi bảng dữ liệu nghiệp vụ đều mang khóa ngoại <code>org_id</code> để thực thi bảo mật đa người dùng (Multi-Tenancy) ngay trong nhân CSDL.</p>
+
+        <!-- 5 THIẾT KẾ CHIẾN LƯỢC -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0;">
+          <div style="background: var(--border-subtle); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--primary); font-size: 13.5px; margin-bottom: 4px;">1. Tiền Tệ Số Nguyên</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">Mọi trường tiền lưu dạng <code>NUMERIC</code> nguyên đồng VND, loại trừ 100% lỗi làm tròn số thực.</div>
+          </div>
+          <div style="background: var(--border-subtle); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--indigo); font-size: 13.5px; margin-bottom: 4px;">2. Multi-Tenancy RLS</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">Mọi bảng có <code>org_id</code>. Nhân Postgres tự động lọc <code>WHERE org_id = auth.uid()</code>.</div>
+          </div>
+          <div style="background: var(--border-subtle); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--emerald); font-size: 13.5px; margin-bottom: 4px;">3. Unique Chống Race</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">Chỉ mục duy nhất <code>(room_id, month, year, meter_type)</code> chặn đúp chỉ số điện nước.</div>
+          </div>
+          <div style="background: var(--border-subtle); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: #ec4899; font-size: 13.5px; margin-bottom: 4px;">4. Ứng Dụng JSONB</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">Lưu linh hoạt <code>settlement_data</code> quyết toán hoàn cọc và <code>signature_data</code> chữ ký số.</div>
+          </div>
+          <div style="background: var(--border-subtle); padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: #f59e0b; font-size: 13.5px; margin-bottom: 4px;">5. Xóa Mềm Soft-Delete</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">Cột <code>deleted_at</code> bảo tồn toàn vẹn dữ liệu cho các hóa đơn cũ trong quá khứ.</div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 1 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">🏢</span>
+            <div class="schema-cluster-title">Cụm 1: Multi-Tenancy, Tổ Chức & Người Dùng (3 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- organizations -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">📁 organizations</span>
+                <span class="table-badge">Gốc Tổ Chức</span>
+              </div>
+              <div class="table-desc">Thực thể gốc cao nhất của mô hình Multi-Tenancy. Mỗi chủ trọ sở hữu 1 organization, quản lý gói SaaS và tài khoản ngân hàng thụ hưởng.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                name (text, NOT NULL)<br>
+                <span class="col-unique">invite_code (text, UNIQUE)</span> ➔ Mã mời nhân viên<br>
+                plan_type ('free' | 'premium')<br>
+                bank_name, bank_account_number, bank_account_name, bank_bin<br>
+                created_at, updated_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Root Tenant</span>
+                <span class="meta-pill">Auto md5 invite_code</span>
+              </div>
+            </div>
+
+            <!-- user_profiles -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">👤 user_profiles</span>
+                <span class="table-badge">Hồ Sơ Nhân Sự</span>
+              </div>
+              <div class="table-desc">Hồ sơ người dùng kết nối với <code>auth.users</code> của Supabase Auth, gán vai trò vận hành trong tổ chức.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK ➔ auth.users.id)</span><br>
+                <span class="col-fk">org_id (uuid, FK ➔ organizations.id)</span><br>
+                full_name, phone, avatar_url<br>
+                role ('owner' | 'member' | 'accountant' | 'guard' | 'viewer')<br>
+                created_at, updated_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">RBAC Roles</span>
+                <span class="meta-pill">Supabase Auth Binding</span>
+              </div>
+            </div>
+
+            <!-- role_permissions -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🛡️ role_permissions</span>
+                <span class="table-badge">Ma Trận Quyền</span>
+              </div>
+              <div class="table-desc">Bảng định nghĩa ma trận phân quyền chi tiết cho từng vai trò trong hệ thống (owner, accountant, guard...).</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                role (text, NOT NULL)<br>
+                permission (text, NOT NULL)<br>
+                created_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Granular Permissions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 2 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">🚪</span>
+            <div class="schema-cluster-title">Cụm 2: Tài Sản, Danh Mục Phòng & Bảng Giá Dịch Vụ (3 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- buildings -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🏢 buildings</span>
+                <span class="table-badge">Toà Nhà</span>
+              </div>
+              <div class="table-desc">Đại diện cho khu nhà trọ hoặc toà chung cư mini thuộc sở hữu của tổ chức.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id (uuid, FK ➔ organizations.id)</span><br>
+                name (text), address (text), num_floors (int)<br>
+                rental_type ('long_term' | 'short_term' | 'mixed')<br>
+                status ('active' | 'inactive')<br>
+                deleted_at (soft delete)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Multi-Building</span>
+                <span class="meta-pill">Rental Type</span>
+              </div>
+            </div>
+
+            <!-- rooms -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🚪 rooms</span>
+                <span class="table-badge">Phòng Cho Thuê</span>
+              </div>
+              <div class="table-desc">Căn phòng hoặc căn hộ cho thuê, chứa thông tin giá thuê niêm yết, tầng, diện tích và trạng thái.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">building_id (uuid, FK ➔ buildings.id)</span><br>
+                name (text, UNIQUE per building)<br>
+                floor, area_m2, default_rent (numeric)<br>
+                room_type ('single' | 'double' | 'studio' | 'other')<br>
+                status ('vacant' | 'occupied' | 'maintenance')<br>
+                deleted_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Batch Generated</span>
+                <span class="meta-pill">Status FSM</span>
+              </div>
+            </div>
+
+            <!-- service_prices -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">⚡ service_prices</span>
+                <span class="table-badge">Biểu Phí Dịch Vụ</span>
+              </div>
+              <div class="table-desc">Đơn giá các dịch vụ tính theo từng tòa nhà (điện, nước, internet, gửi xe, vệ sinh).</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">building_id (uuid, FK ➔ buildings.id)</span><br>
+                service_type ('electricity' | 'water' | 'internet' | 'parking' | 'garbage' | 'other')<br>
+                label, unit_price (numeric), unit<br>
+                is_metered (boolean) ➔ true nếu tính theo công tơ<br>
+                charging_rule ('fixed', 'per_person', 'per_room')
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Per-Building Rates</span>
+                <span class="meta-pill">Metered Flag</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 3 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">📑</span>
+            <div class="schema-cluster-title">Cụm 3: Khách Thuê, Hợp Đồng Dài Hạn & Quyết Toán (3 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- tenants -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">👥 tenants</span>
+                <span class="table-badge">Khách Thuê</span>
+              </div>
+              <div class="table-desc">Hồ sơ khách thuê, lưu số CCCD, ảnh giấy tờ cá nhân và mã PIN 6 số để đăng nhập Cổng Khách Thuê.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id (uuid, FK ➔ organizations.id)</span><br>
+                full_name, phone, email, id_number, id_image_url<br>
+                permanent_address, is_active<br>
+                <span class="col-unique">access_code (varchar)</span> ➔ Mã PIN 6 số Portal<br>
+                deleted_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Tenant Portal Login</span>
+                <span class="meta-pill">Private Storage RLS</span>
+              </div>
+            </div>
+
+            <!-- contracts -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">📜 contracts</span>
+                <span class="table-badge">Hợp Đồng Thuê</span>
+              </div>
+              <div class="table-desc">Trọng tâm ràng buộc pháp lý giữa Khách thuê và Phòng. Quản lý tiền cọc, chữ ký và dữ liệu quyết toán khi trả phòng.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, room_id, tenant_id</span><br>
+                rent_amount (numeric), deposit (numeric)<br>
+                start_date, end_date<br>
+                status ('active' | 'expired' | 'terminated')<br>
+                signed_by_owner, signed_by_tenant<br>
+                <span class="col-jsonb">signature_data (jsonb)</span> ➔ Tọa độ chữ ký số<br>
+                <span class="col-jsonb">settlement_data (jsonb)</span> ➔ Biên bản quyết toán cọc<br>
+                num_occupants, num_vehicles, deleted_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Atomicity Flow</span>
+                <span class="meta-pill">Settlement JSONB</span>
+              </div>
+            </div>
+
+            <!-- roommates -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">👨‍👩‍👧 roommates</span>
+                <span class="table-badge">Người Ở Cùng</span>
+              </div>
+              <div class="table-desc">Danh sách các cư dân ở cùng phòng dưới một hợp đồng chính để quản lý nhân khẩu và tạm trú.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, contract_id</span><br>
+                full_name, phone, id_number, id_image_url<br>
+                created_at, updated_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Tạm Trú / Khai Báo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 4 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">⚡</span>
+            <div class="schema-cluster-title">Cụm 4: Chỉ Số Điện Nước, Hóa Đơn & Thanh Toán PayOS (5 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- meter_records -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🔌 meter_records</span>
+                <span class="table-badge">Chỉ Số Công Tơ</span>
+              </div>
+              <div class="table-desc">Nhật ký chốt số điện nước hàng tháng. Đảm bảo tính nhất quán và chống nhập lùi hoặc ghi đúp chỉ số.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">room_id (uuid ➔ rooms.id)</span><br>
+                service_type ('electricity' | 'water')<br>
+                period (YYYY-MM), old_reading, new_reading<br>
+                usage = (new_reading - old_reading)<br>
+                <span class="col-unique">INDEX: (room_id, period, service_type)</span><br>
+                recorded_by (uuid ➔ auth.users.id)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Race-Free Unique Index</span>
+                <span class="meta-pill">Auto Usage Delta</span>
+              </div>
+            </div>
+
+            <!-- invoices -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🧾 invoices</span>
+                <span class="table-badge">Hóa Đơn Thu Tiền</span>
+              </div>
+              <div class="table-desc">Hóa đơn tiền thuê hàng tháng, liên kết trực tiếp với cổng PayOS qua mã <code>order_code</code> để thanh toán VietQR.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, building_id, room_id, contract_id, tenant_id</span><br>
+                month (YYYY-MM), title (text)<br>
+                total_amount (numeric), paid_amount (numeric)<br>
+                status ('unpaid' | 'partial' | 'paid')<br>
+                <span class="col-unique">order_code (bigint, UNIQUE)</span> ➔ PayOS Order Code<br>
+                due_date, paid_at, notes
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">PayOS Dynamic QR</span>
+                <span class="meta-pill">Dual-Matched Webhook</span>
+              </div>
+            </div>
+
+            <!-- invoice_items -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">📋 invoice_items</span>
+                <span class="table-badge">Chi Tiết Hóa Đơn</span>
+              </div>
+              <div class="table-desc">Từng dòng chi tiết phí trong hóa đơn (tiền phòng, tiền điện tiêu thụ, tiền nước, phí dịch vụ).</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">invoice_id (uuid ➔ invoices.id)</span><br>
+                type ('rent' | 'electricity' | 'water' | 'service' | 'other')<br>
+                description, quantity, unit_price, amount<br>
+                reference_id (uuid)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Itemized Breakdown</span>
+              </div>
+            </div>
+
+            <!-- payment_settings -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">⚙️ payment_settings</span>
+                <span class="table-badge">Cấu Hình Ngân Hàng</span>
+              </div>
+              <div class="table-desc">Lưu thông tin tài khoản ngân hàng nhận tiền và khóa API PayOS của từng chủ nhà để xác thực Webhook chữ ký số.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id (uuid, UNIQUE ➔ organizations.id)</span><br>
+                bank_name, bank_bin, bank_account, account_name<br>
+                payos_client_id, payos_api_key, payos_checksum_key
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">HMAC-SHA256 Secret</span>
+                <span class="meta-pill">VietQR Config</span>
+              </div>
+            </div>
+
+            <!-- payment_transactions -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">💳 payment_transactions</span>
+                <span class="table-badge">Giao Dịch Cổng</span>
+              </div>
+              <div class="table-desc">Nhật ký giao dịch tạo link thanh toán qua PayOS phục vụ nâng cấp gói phần mềm SaaS.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id (uuid ➔ organizations.id)</span><br>
+                amount, status ('PENDING' | 'PAID')<br>
+                checkout_url, <span class="col-unique">order_code (bigint, UNIQUE)</span><br>
+                paid_at, created_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">SaaS Payment Link</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 5 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">🛠️</span>
+            <div class="schema-cluster-title">Cụm 5: Vận Hành, Chi Phí, Sự Cố & Kiểm Toán Hệ Thống (4 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- incidents -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🚨 incidents</span>
+                <span class="table-badge">Quản Lý Sự Cố</span>
+              </div>
+              <div class="table-desc">Yêu cầu bảo trì, báo hỏng thiết bị do khách hoặc chủ nhà tạo, hỗ trợ bảng Kanban kéo thả 3 cột.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, building_id, room_id</span><br>
+                reporter_type ('owner' | 'tenant'), reported_by<br>
+                title, description, image_urls (text[])<br>
+                status ('open' | 'in_progress' | 'resolved')<br>
+                priority ('low' | 'medium' | 'high' | 'urgent')<br>
+                admin_notes
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Kanban Board DND</span>
+                <span class="meta-pill">Image Array</span>
+              </div>
+            </div>
+
+            <!-- expenses -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">💸 expenses</span>
+                <span class="table-badge">Chi Phí Vận Hành</span>
+              </div>
+              <div class="table-desc">Các khoản chi tiêu của tòa nhà (sửa chữa, bảo dưỡng, thuế, vệ sinh) để tính lợi nhuận ròng trên Dashboard.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, building_id</span><br>
+                category (enum), amount (numeric, >= 0)<br>
+                date (date), description, receipt_url<br>
+                created_at, updated_at
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Net Profit Feeder</span>
+              </div>
+            </div>
+
+            <!-- reminders -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🔔 reminders</span>
+                <span class="table-badge">Nhắc Nhở & Cảnh Báo</span>
+              </div>
+              <div class="table-desc">Lưu trữ các thông báo hệ thống tự động: hợp đồng sắp hết hạn, hóa đơn trễ hạn và lịch hẹn bảo trì.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id (uuid ➔ organizations.id)</span><br>
+                entity_type ('contract' | 'invoice' | 'other'), entity_id<br>
+                message (text), due_date, is_read (boolean)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Auto Notification</span>
+              </div>
+            </div>
+
+            <!-- activity_logs -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">📝 activity_logs</span>
+                <span class="table-badge">Nhật Ký Kiểm Toán</span>
+              </div>
+              <div class="table-desc">Lưu vết toàn bộ hành vi quan trọng của người dùng (tạo phòng, xóa hợp đồng, cập nhật thanh toán) để bảo mật.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, actor_id (➔ user_profiles.id)</span><br>
+                action (varchar), entity_type, entity_id<br>
+                <span class="col-jsonb">old_data (jsonb)</span>, <span class="col-jsonb">new_data (jsonb)</span><br>
+                created_at (timestamp)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Security Audit Trail</span>
+                <span class="meta-pill">Diff JSONB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLUSTER 6 -->
+        <div class="schema-cluster">
+          <div class="schema-cluster-header">
+            <span style="font-size: 20px;">🏨</span>
+            <div class="schema-cluster-title">Cụm 6: Homestay Ngắn Hạn & Gói Thuê Bao Nền Tảng (4 Bảng)</div>
+          </div>
+          <div class="schema-grid">
+            <!-- bookings -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🛎️ bookings</span>
+                <span class="table-badge">Đặt Phòng Homestay</span>
+              </div>
+              <div class="table-desc">Sổ đặt phòng ngắn hạn theo ngày, có cơ chế kiểm tra giao thoa ngày để chống trùng phòng (Double-booking).</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, building_id, room_id</span><br>
+                guest_name, guest_phone, guest_email, guest_id_number<br>
+                check_in_date, check_out_date<br>
+                total_amount, paid_amount<br>
+                status (booking_status), payment_status (payment_status)
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Double-booking Safe</span>
+                <span class="meta-pill">Timeline Calendar</span>
+              </div>
+            </div>
+
+            <!-- housekeeping_tasks -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🧹 housekeeping_tasks</span>
+                <span class="table-badge">Buồng Phòng</span>
+              </div>
+              <div class="table-desc">Lịch phân công dọn dẹp, thay ga giường và kiểm tra vệ sinh phòng homestay sau khi khách check-out.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, building_id, room_id</span><br>
+                <span class="col-fk">assigned_to (uuid ➔ user_profiles.id)</span><br>
+                task_type (enum), status (task_status)<br>
+                scheduled_date, completed_at, notes
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Task Assignment</span>
+              </div>
+            </div>
+
+            <!-- subscriptions -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">💎 subscriptions</span>
+                <span class="table-badge">Thuê Bao SaaS</span>
+              </div>
+              <div class="table-desc">Quản lý trạng thái gói phần mềm Premium của chủ trọ (Free vs Premium 99.000 đ/tháng).</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, transaction_id</span><br>
+                plan_type ('free' | 'premium')<br>
+                starts_at, expires_at<br>
+                status ('active' | 'expired' | 'cancelled')<br>
+                amount_paid, payment_ref
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">SaaS Monetization</span>
+              </div>
+            </div>
+
+            <!-- bank_transactions -->
+            <div class="table-card">
+              <div class="table-card-header">
+                <span class="table-name">🏦 bank_transactions</span>
+                <span class="table-badge">Đối Soát Ngân Hàng</span>
+              </div>
+              <div class="table-desc">Bản sao nhật ký biến động số dư ngân hàng phục vụ đối chiếu và kiểm tra tính toàn vẹn tài chính.</div>
+              <div class="column-list">
+                <span class="col-pk">id (uuid, PK)</span><br>
+                <span class="col-fk">org_id, invoice_id</span><br>
+                transaction_id, amount, bank_code, description<br>
+                status ('pending' | 'matched' | 'unmatched' | 'manual')<br>
+                matched_at, <span class="col-jsonb">raw_data (jsonb)</span>
+              </div>
+              <div class="table-meta-pills">
+                <span class="meta-pill">Audit Reconciliation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </main>
@@ -2452,6 +3257,14 @@
 
     if (targetSec) targetSec.classList.add('active');
     if (targetBtn) targetBtn.classList.add('active');
+
+    // Highlight matching sidebar nav item
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+      const onclickAttr = item.getAttribute('onclick') || '';
+      if (onclickAttr.includes("switchTab('" + tabId + "')")) {
+        item.classList.add('active');
+      }
+    });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -2505,10 +3318,23 @@
     });
   }
 
-  // Live Search Filter
+  // Scroll smoothly to specific module and activate Guide tab
+  function scrollToModule(modId) {
+    switchTab('guide');
+    setTimeout(() => {
+      const el = document.getElementById(modId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.borderColor = 'var(--primary)';
+        setTimeout(() => { el.style.borderColor = ''; }, 2000);
+      }
+    }, 60);
+  }
+
+  // Live Search Filter with Smart Cross-Tab Discovery
   function filterContent() {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.module-card, .timeline-node, .accordion-item');
+    const cards = document.querySelectorAll('.module-card, .timeline-node, .accordion-item, .table-card');
 
     cards.forEach(card => {
       const text = card.innerText.toLowerCase();
@@ -2526,6 +3352,24 @@
           item.classList.add('open');
         }
       });
+
+      // If active section has 0 visible cards, switch to the first section that has matches
+      const activeSec = document.querySelector('.content-section.active');
+      const activeHasMatches = activeSec && Array.from(activeSec.querySelectorAll('.module-card, .timeline-node, .accordion-item, .table-card'))
+        .some(el => el.style.display !== 'none');
+
+      if (!activeHasMatches) {
+        const sections = document.querySelectorAll('.content-section');
+        for (const sec of sections) {
+          const hasMatches = Array.from(sec.querySelectorAll('.module-card, .timeline-node, .accordion-item, .table-card'))
+            .some(el => el.style.display !== 'none');
+          if (hasMatches) {
+            const tabId = sec.id.replace('sec-', '');
+            switchTab(tabId);
+            break;
+          }
+        }
+      }
     }
   }
 
