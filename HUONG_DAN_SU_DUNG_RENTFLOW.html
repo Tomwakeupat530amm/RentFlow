@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RentFlow - Cẩm Nang Sử Dụng & Kịch Bản Thuyết Trình Đồ Án</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --primary-glow: rgba(13, 148, 136, 0.15);
+      --indigo: #4f46e5;
+      --indigo-light: #e0e7ff;
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      --rose: #e11d48;
+      --rose-light: #ffe4e6;
+      --emerald: #10b981;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #0f172a;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #f8fafc;
+      --border: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 30px -4px rgba(0,0,0,0.12);
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-sidebar: #070a12;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #1e293b;
+      --border-subtle: #17223b;
+      --primary-glow: rgba(13, 148, 136, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 310px;
+      background: var(--bg-sidebar);
+      color: var(--text-light);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+    }
+
+    .brand-info h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+    }
+
+    .brand-info p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #64748b;
+      font-weight: 700;
+      padding: 12px 12px 6px 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+    }
+
+    .nav-item .icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.15);
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 310px;
+      flex: 1;
+      padding: 36px 48px;
+      max-width: 1320px;
+    }
+
+    /* Top Sticky Control Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(248, 250, 252, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 14px 0 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    [data-theme="dark"] .top-bar {
+      background: rgba(11, 15, 25, 0.85);
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 480px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    }
+
+    .btn-outline {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--border-subtle);
+    }
+
+    /* Tab Switcher */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      background: var(--border-subtle);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #134e4a 60%, #0d9488 100%);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 36px;
+      box-shadow: 0 10px 30px -5px rgba(13, 148, 136, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .hero-desc {
+      font-size: 15.5px;
+      color: #ccfbf1;
+      max-width: 860px;
+      line-height: 1.6;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .hero-stat-card h3 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #5eead4;
+    }
+
+    .hero-stat-card p {
+      font-size: 12.5px;
+      color: #99f6e4;
+      font-weight: 500;
+    }
+
+    /* Section Content */
+    .content-section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Module Card */
+    .module-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .module-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(13, 148, 136, 0.4);
+    }
+
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .module-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .module-num {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    [data-theme="dark"] .module-num {
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+    }
+
+    .module-title {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.4px;
+    }
+
+    .module-route-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--border-subtle);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* Workflow Stepper */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin: 20px 0;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 16px;
+      background: var(--border-subtle);
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--primary);
+    }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .step-content p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* UI Simulation Mockup Box */
+    .ui-mockup {
+      background: #0f172a;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin: 18px 0;
+      color: #e2e8f0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+      border: 1px solid #1e293b;
+    }
+
+    .ui-mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .ui-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ui-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .ui-dot.red { background: #ef4444; }
+    .ui-dot.yellow { background: #f59e0b; }
+    .ui-dot.green { background: #10b981; }
+
+    /* Callout Boxes */
+    .callout {
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      margin: 16px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 14px;
+    }
+
+    .callout.tip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .callout.warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .callout.pro {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #3730a3;
+    }
+
+    [data-theme="dark"] .callout.tip {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+    }
+
+    [data-theme="dark"] .callout.warning {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+    }
+
+    [data-theme="dark"] .callout.pro {
+      background: rgba(79, 70, 229, 0.15);
+      border-color: rgba(79, 70, 229, 0.35);
+      color: #a5b4fc;
+    }
+
+    .callout-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Presentation Timeline (Script) */
+    .timeline {
+      position: relative;
+      padding-left: 36px;
+      margin: 28px 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      bottom: 20px;
+      width: 2px;
+      background: #cbd5e1;
+    }
+
+    [data-theme="dark"] .timeline::before {
+      background: #334155;
+    }
+
+    .timeline-node {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .timeline-badge {
+      position: absolute;
+      left: -36px;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px var(--bg-body);
+    }
+
+    .timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .timeline-time {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timeline-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .script-box {
+      background: var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin: 12px 0;
+      border-left: 3px solid var(--indigo);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .script-box-label {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--indigo);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .action-box {
+      background: rgba(13, 148, 136, 0.06);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: var(--primary-dark);
+      border: 1px dashed var(--primary);
+      margin-top: 10px;
+    }
+
+    [data-theme="dark"] .action-box {
+      color: #5eead4;
+      background: rgba(13, 148, 136, 0.12);
+    }
+
+    /* Accordion (Q&A) */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 24px 0;
+    }
+
+    .accordion-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .accordion-header {
+      padding: 18px 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      user-select: none;
+      background: var(--bg-card);
+    }
+
+    .accordion-header:hover {
+      background: var(--border-subtle);
+    }
+
+    .accordion-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .accordion-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+    }
+
+    [data-theme="dark"] .accordion-tag {
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+    }
+
+    .accordion-icon {
+      font-size: 16px;
+      transition: transform 0.25s ease;
+      color: var(--text-muted);
+    }
+
+    .accordion-item.open .accordion-icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 22px;
+      border-top: 1px solid var(--border);
+      background: var(--border-subtle);
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text-main);
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    .qa-highlight {
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-top: 14px;
+      border-left: 3px solid var(--emerald);
+    }
+
+    /* Print Styles */
+    @media print {
+      .sidebar, .top-bar, .tab-nav, .btn, .search-box {
+        display: none !important;
+      }
+      .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .content-section {
+        display: block !important;
+        page-break-after: always;
+      }
+      .accordion-body {
+        display: block !important;
+      }
+      .module-card, .timeline-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 24px;
+      }
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">RF</div>
+      <div class="brand-info">
+        <h1>RentFlow Guide</h1>
+        <p>Cẩm Nang & Thuyết Trình Đồ Án</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Điều Hướng Chính</div>
+      <a class="nav-item active" onclick="switchTab('guide')">
+        <span class="icon">📖</span> Cẩm Nang 10 Module
+        <span class="badge">10</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('script')">
+        <span class="icon">⏱️</span> Kịch Bản Demo (10 Phút)
+        <span class="badge">Live</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('defense')">
+        <span class="icon">🎯</span> Phản Biện Hội Đồng (Q&A)
+        <span class="badge">10 Câu</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('architecture')">
+        <span class="icon">🏗️</span> Kiến Trúc & Công Nghệ
+        <span class="badge">Tech</span>
+      </a>
+
+      <div class="nav-group-title">Danh Mục 10 Module</div>
+      <a class="nav-item" href="#mod-1"><span class="icon">⚙️</span> 1. Settings & RBAC</a>
+      <a class="nav-item" href="#mod-2"><span class="icon">🏢</span> 2. Toà Nhà & Biểu Phí</a>
+      <a class="nav-item" href="#mod-3"><span class="icon">🚪</span> 3. Phòng & Batch Generator</a>
+      <a class="nav-item" href="#mod-4"><span class="icon">👥</span> 4. Khách Thuê & Mã PIN</a>
+      <a class="nav-item" href="#mod-5"><span class="icon">📑</span> 5. Hợp Đồng & Quyết Toán</a>
+      <a class="nav-item" href="#mod-6"><span class="icon">⚡</span> 6. Chốt Điện Nước (Meters)</a>
+      <a class="nav-item" href="#mod-7"><span class="icon">💳</span> 7. Hoá Đơn & VietQR Động</a>
+      <a class="nav-item" href="#mod-8"><span class="icon">🛠️</span> 8. Sự Cố (Kanban Board)</a>
+      <a class="nav-item" href="#mod-9"><span class="icon">🏨</span> 9. Homestay & Buồng Phòng</a>
+      <a class="nav-item" href="#mod-10"><span class="icon">📱</span> 10. Tenant Portal (Khách)</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="main-content">
+    <!-- Top Control Bar -->
+    <header class="top-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm tính năng, thao tác, hoặc câu hỏi phản biện..." oninput="filterContent()">
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-outline" onclick="toggleTheme()" title="Chuyển chế độ Sáng / Tối">
+          <span id="themeIcon">🌙</span> Giao Diện
+        </button>
+        <button class="btn btn-primary" onclick="window.print()" title="In ra bản giấy hoặc xuất file PDF">
+          🖨️ Xuất PDF / In
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-badge">🚀 Đồ Án Tốt Nghiệp / Dự Án Khởi Nghiệp SaaS</div>
+      <h2 class="hero-title">RentFlow - Hệ Thống Quản Trị Nhà Trọ & Homestay Toàn Diện</h2>
+      <p class="hero-desc">
+        Nền tảng chuyển đổi số toàn diện cho chuỗi nhà trọ và căn hộ homestay: Tự động hoá ghi điện nước, sinh hoá đơn hàng loạt 1-click tích hợp mã VietQR động nạp sẵn số tiền, quyết toán cọc trả phòng minh bạch, và cổng tương tác không mật khẩu dành cho khách thuê.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hero-stat-card">
+          <h3>&lt; 500ms</h3>
+          <p>Tốc độ chuyển trang tức thì</p>
+        </div>
+        <div class="hero-stat-card">
+          <h3>100% RLS</h3>
+          <p>Bảo mật Multi-Tenant Database</p>
+        </div>
+        <div class="hero-stat-card">
+          <h3>VietQR</h3>
+          <p>Thanh toán & Đối soát tự động</p>
+        </div>
+        <div class="hero-stat-card">
+          <h3>2 Cổng</h3>
+          <p>Dashboard Chủ & Portal Khách</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tabBtn-guide" onclick="switchTab('guide')">
+        📖 Cẩm Nang Chi Tiết 10 Module
+      </button>
+      <button class="tab-btn" id="tabBtn-script" onclick="switchTab('script')">
+        ⏱️ Kịch Bản Demo Thuyết Trình (10 Phút)
+      </button>
+      <button class="tab-btn" id="tabBtn-defense" onclick="switchTab('defense')">
+        🎯 Bộ Câu Hỏi Phản Biện Hội Đồng (Q&A)
+      </button>
+      <button class="tab-btn" id="tabBtn-architecture" onclick="switchTab('architecture')">
+        🏗️ Kiến Trúc Hệ Thống & Điểm Sáng Kỹ Thuật
+      </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CẨM NANG CHI TIẾT 10 MODULE -->
+    <!-- ========================================== -->
+    <div class="content-section active" id="sec-guide">
+
+      <!-- MODULE 1 -->
+      <article class="module-card" id="mod-1">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">01</div>
+            <div>
+              <h3 class="module-title">Thiết Lập Tổ Chức, Phân Quyền & Cấu Hình VietQR PayOS</h3>
+              <div class="module-route-tag">URL: /dashboard/settings & /dashboard/settings/payment</div>
+            </div>
+          </div>
+        </div>
+        <p>Khởi tạo môi trường kinh doanh cho chuỗi nhà trọ. Hỗ trợ mô hình phân quyền chặt chẽ giữa Chủ sở hữu (Owner) và Nhân viên vận hành (Member), tích hợp cổng thanh toán tự động.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Cấu hình Tổ chức & Mã mời nhân viên (Invite Code)</h4>
+              <p>Vào <strong>Settings > Thông tin tổ chức</strong>. Đổi tên thương hiệu (VD: <em>Hệ Thống Nhà Trọ An Bình</em>). Hệ thống tự sinh một <strong>Invite Code</strong> độc nhất. Chủ trọ gửi mã này cho nhân viên để họ đăng ký và tự động gia nhập vào tổ chức quản lý mà không cần cấp quyền thủ công qua database.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Cấu hình Tài khoản Ngân hàng nhận tiền & PayOS Webhook</h4>
+              <p>Vào <strong>Settings > Cấu hình Thanh toán</strong>. Chọn Ngân hàng từ danh mục VietQR API (Vietcombank, MBBank, Techcombank...), nhập Số tài khoản và Tên chủ tài khoản. Khi bật chế độ <strong>Thanh toán tự động PayOS</strong>, nhập Client ID, API Key và Checksum Key từ cổng PayOS. Webhook URL sẽ tự động lắng nghe giao dịch chuyển khoản để gạch nợ hoá đơn trong 3 giây.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <span class="callout-icon">💡</span>
+          <div><strong>Mẹo Thuyết Trình:</strong> Nhấn mạnh cơ chế phân quyền RBAC: Nhân viên (Member) chỉ được thao tác ghi điện nước và tiếp nhận sự cố, tuyệt đối không thể xóa toà nhà hay sửa tài khoản ngân hàng nhận tiền.</div>
+        </div>
+      </article>
+
+      <!-- MODULE 2 -->
+      <article class="module-card" id="mod-2">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">02</div>
+            <div>
+              <h3 class="module-title">Quản Lý Toà Nhà & Biểu Phí Dịch Vụ Động</h3>
+              <div class="module-route-tag">URL: /dashboard/buildings & /dashboard/buildings/[id]</div>
+            </div>
+          </div>
+        </div>
+        <p>Quản lý đa cơ sở toà nhà độc lập. Mỗi toà nhà có thể áp dụng biểu phí điện, nước, rác, wifi riêng biệt phù hợp theo từng quận huyện hoặc loại hình phòng.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Tạo cơ sở toà nhà mới</h4>
+              <p>Nhấn <strong>Thêm toà nhà</strong>. Điền Tên toà (VD: <em>Cơ Sở 1 - 25 Lê Văn Sỹ</em>), Địa chỉ, Số tầng và Mô tả toà nhà. Thẻ toà nhà sẽ hiển thị tỷ lệ lấp đầy phòng thời gian thực.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Cấu hình Biểu phí Dịch vụ (Dynamic Pricing)</h4>
+              <p>Mở chi tiết toà nhà, chuyển sang tab <strong>Dịch vụ & Biểu phí</strong>. RentFlow hỗ trợ 4 cách tính phí linh hoạt:
+                <br>• <strong>Theo số đo (Metered):</strong> Điện (3.800 đ/kWh), Nước (25.000 đ/m³).
+                <br>• <strong>Cố định theo phòng (Fixed):</strong> Phí rác (50.000 đ/tháng), Internet wifi (100.000 đ/tháng).
+                <br>• <strong>Theo đầu người (Per Person):</strong> Nước khoán (80.000 đ/người/tháng).
+                <br>• <strong>Theo số xe (Per Vehicle):</strong> Giữ xe máy (120.000 đ/xe/tháng).
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 3 -->
+      <article class="module-card" id="mod-3">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">03</div>
+            <div>
+              <h3 class="module-title">Quản Lý Phòng & Bộ Sinh Dãy Phòng Tự Động (Batch Generator)</h3>
+              <div class="module-route-tag">URL: /dashboard/rooms & /dashboard/buildings/[id] (Batch Modal)</div>
+            </div>
+          </div>
+        </div>
+        <p>Giải quyết triệt để nỗi đau nhập liệu thủ công hàng chục phòng trọ khi chủ nhà bắt đầu sử dụng phần mềm. Tạo tự động cả dãy phòng theo tầng chỉ trong 10 giây.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Sử dụng Batch Room Generator (Tạo phòng hàng loạt)</h4>
+              <p>Trong trang chi tiết Toà nhà, nhấn nút <strong>⚡ Tạo phòng tự động</strong>. Điền các tham số:
+                <br>• <em>Tầng bắt đầu & Tầng kết thúc:</em> Ví dụ từ Tầng 1 đến Tầng 3.
+                <br>• <em>Số phòng mỗi tầng:</em> Ví dụ 4 phòng/tầng.
+                <br>• <em>Quy tắc đặt tên (Naming Style):</em> Chuẩn <code>101, 102</code> | Tiền tố P <code>P101, P102</code> | Dấu chấm <code>P.101, P.102</code>.
+                <br>• <em>Diện tích & Giá thuê mặc định:</em> 25 m², 3.500.000 đ/tháng.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Bảng Preview xem trước & Chống trùng lặp thông minh</h4>
+              <p>Hệ thống lập tức hiển thị bảng xem trước 12 phòng. Bạn có thể bỏ tích những phòng không muốn tạo hoặc chỉnh sửa giá riêng từng phòng. Khi nhấn <strong>Xác nhận tạo</strong>, hệ thống tự động kiểm tra trùng lặp với các phòng đã có sẵn trong toà nhà và bỏ qua để tránh lỗi dữ liệu.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-mockup">
+          <div class="ui-mockup-header">
+            <div class="ui-dots"><div class="ui-dot red"></div><div class="ui-dot yellow"></div><div class="ui-dot green"></div></div>
+            <span>Mô Phỏng Batch Room Generator UI</span>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+            <span style="background: #1e293b; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Từ tầng: 1 ➜ Đến tầng: 3</span>
+            <span style="background: #1e293b; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Phòng/tầng: 4</span>
+            <span style="background: #134e4a; color: #5eead4; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">Định dạng: P101, P102...</span>
+            <span style="background: #1e293b; padding: 4px 10px; border-radius: 4px; font-size: 12px;">Giá: 3.500.000 đ</span>
+          </div>
+          <p style="font-size: 12.5px; color: #94a3b8;">✨ Đã tạo thành công 12 phòng cho toà nhà Cơ Sở 1! (Thời gian thực thi: 0.18s)</p>
+        </div>
+      </article>
+
+      <!-- MODULE 4 -->
+      <article class="module-card" id="mod-4">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">04</div>
+            <div>
+              <h3 class="module-title">Quản Lý Khách Thuê, Khách Ở Cùng & Cấp Mã PIN Portal</h3>
+              <div class="module-route-tag">URL: /dashboard/tenants & /dashboard/rooms/[id]</div>
+            </div>
+          </div>
+        </div>
+        <p>Lưu trữ hồ sơ cư dân chuẩn quy chuẩn hành chính: CCCD 2 mặt, số điện thoại, quê quán, người ở cùng để khai báo tạm trú và cấp mã PIN truy cập cổng khách thuê.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Thêm Khách thuê đại diện (Tenant Profile)</h4>
+              <p>Nhấn <strong>Thêm khách thuê</strong>. Nhập Họ tên, Số điện thoại, Số CCCD, Ngày sinh, Quê quán và tải lên ảnh chụp 2 mặt CCCD. Hệ thống lưu trữ bảo mật trên Supabase Storage.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Cấp Mã PIN 6 Số Cho Khách Thuê (Tenant Access PIN)</h4>
+              <p>Mỗi khách thuê được cấp một <strong>mã PIN 6 chữ số</strong> (VD: <code>123456</code>). Khách chỉ cần mở đường dẫn Portal, nhập SĐT và mã PIN là có thể tra cứu toàn bộ hợp đồng, hoá đơn và thanh toán ngay mà không cần tạo tài khoản hay ghi nhớ mật khẩu phức tạp.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">3</div>
+            <div class="step-content">
+              <h4>Quản lý Khách ở ghép (Roommates)</h4>
+              <p>Một phòng trọ thường có 2 - 4 người ở cùng. Trong chi tiết phòng, tab <strong>Thành viên</strong>, nhấn <strong>Thêm người ở ghép</strong> để lưu CCCD và nhân khẩu từng người nhằm xuất danh sách khai báo tạm trú cho công an phường.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 5 -->
+      <article class="module-card" id="mod-5">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">05</div>
+            <div>
+              <h3 class="module-title">Hợp Đồng & Quy Trình Quyết Toán Trả Phòng (Settlement)</h3>
+              <div class="module-route-tag">URL: /dashboard/contracts & /dashboard/contracts/[id]</div>
+            </div>
+          </div>
+        </div>
+        <p>Quản lý vòng đời hợp đồng: từ lúc khách dọn vào đặt cọc, cảnh báo sắp hết hạn 30 ngày, đến quy trình trả phòng - quyết toán cọc hoàn toàn tự động.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Ký Hợp đồng & Bàn giao chỉ số ban đầu</h4>
+              <p>Nhấn <strong>Tạo hợp đồng</strong>. Chọn Khách thuê, Toà nhà và Phòng (chỉ hiển thị các phòng Trống). Nhập Tiền cọc (VD: 1 tháng tiền phòng), Ngày bắt đầu - Ngày kết thúc, và <em>Chỉ số điện nước ban đầu</em> (VD: Điện 1050 kWh, Nước 120 m³). Sau khi lưu, trạng thái phòng tự động chuyển sang <strong>Đang thuê (Occupied)</strong>.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Quy trình Trả phòng & Quyết toán cọc (Check-out Modal)</h4>
+              <p>Khi khách dọn đi, nhấn nút <strong>Quyết toán trả phòng</strong>. Modal sẽ hướng dẫn 4 bước rõ ràng:
+                <br>• <strong>Bước 1: Chốt điện nước ngày cuối:</strong> Nhập số điện/nước lúc bàn giao chìa khoá. Hệ thống tự tính sản lượng và nhân đơn giá để ra tiền điện nước phát sinh.
+                <br>• <strong>Bước 2: Cấn trừ nợ & Hư hại tài sản:</strong> Tự động kéo các hoá đơn cũ chưa trả + Thêm các khoản phạt hỏng hóc (VD: Mất chìa khoá cổng: 100.000 đ, Làm bẩn tường: 200.000 đ).
+                <br>• <strong>Bước 3: Tự động tính tiền hoàn cọc:</strong> <code>Tiền cọc ban đầu - Tổng các khoản trừ = Số tiền hoàn trả khách</code> (hoặc số tiền khách phải trả thêm nếu âm).
+                <br>• <strong>Bước 4: Sinh tin nhắn Zalo gửi khách:</strong> 1-click tạo biên bản quyết toán chi tiết để copy gửi Zalo cho khách thuê, chấm dứt hợp đồng và trả phòng về trạng thái <strong>Trống</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 6 -->
+      <article class="module-card" id="mod-6">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">06</div>
+            <div>
+              <h3 class="module-title">Ghi Chỉ Số Điện Nước Định Kỳ (Meters)</h3>
+              <div class="module-route-tag">URL: /dashboard/meters</div>
+            </div>
+          </div>
+        </div>
+        <p>Bảng ghi chỉ số tập trung cho toàn bộ toà nhà vào ngày cuối tháng. Thiết kế tối ưu cho điện thoại di động giúp chủ nhà cầm điện thoại đi đọc số đồng hồ cực nhanh.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Chọn Kỳ chốt số & Nhập chỉ số</h4>
+              <p>Chọn Tháng/Năm chốt số (VD: Tháng 09/2026) và Toà nhà. Màn hình liệt kê toàn bộ các phòng đang có người ở kèm chỉ số kỳ trước (Old reading). Chủ nhà chỉ việc nhập <strong>Chỉ số mới (New reading)</strong>.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Cơ chế Chống nhập sai số & Tự tính sản lượng</h4>
+              <p>Hệ thống tự động tính toán <code>Sản lượng = Số mới - Số cũ</code> theo thời gian thực. Nếu người nhập vô tình gõ số mới thấp hơn số cũ (do nhìn nhầm đồng hồ), hệ thống lập tức hiển thị cảnh báo đỏ và chặn lưu để bảo vệ dữ liệu.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 7 -->
+      <article class="module-card" id="mod-7">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">07</div>
+            <div>
+              <h3 class="module-title">Hoá Đơn, Mã VietQR Động & Chia Sẻ Zalo 1-Click</h3>
+              <div class="module-route-tag">URL: /dashboard/invoices & /dashboard/invoices/[id]</div>
+            </div>
+          </div>
+        </div>
+        <p>Trọng tâm tài chính của RentFlow: Sinh hoá đơn hàng loạt tự động cộng dồn tiền phòng + điện + nước + dịch vụ, tạo mã VietQR động nạp sẵn số tiền và tích hợp webhook đối soát.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Sinh Hoá Đơn Hàng Loạt (Batch Generate Invoices)</h4>
+              <p>Sau khi chốt điện nước, nhấn <strong>Sinh hoá đơn tháng này</strong>. Chỉ mất 1 giây, RentFlow quét toàn bộ hợp đồng đang hoạt động và số đo điện nước vừa chốt để tạo hoá đơn hoàn chỉnh cho tất cả các phòng.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Tạo Mã VietQR Động Chính Xác Số Tiền Còn Nợ</h4>
+              <p>Mỗi hoá đơn tự sinh một mã <strong>VietQR QuickLink động</strong> chuẩn Napas247:
+                <br>• Nạp sẵn số tài khoản ngân hàng của chủ trọ.
+                <br>• Nạp chính xác số tiền cần thanh toán (nếu khách trả trước 1 nửa, mã QR tự giảm số tiền còn nợ).
+                <br>• Cú pháp nội dung: <code>Thanh toan HD [Mã_HĐ] [Số_phòng]</code>. Khách chỉ cần mở app ngân hàng quét mã là xong, không thể gõ nhầm số tiền hay số tài khoản.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">3</div>
+            <div class="step-content">
+              <h4>Modal Chia sẻ Zalo (Zalo Share Modal)</h4>
+              <p>Cung cấp 2 mẫu tin nhắn soạn sẵn cực kỳ chuyên nghiệp:
+                <br>• <strong>Mẫu 1 - Thông báo tiền phòng:</strong> Bảng kê chi tiết từng dòng (Tiền phòng, chỉ số điện cũ/mới, tiền nước, rác, wifi) và đính kèm link VietQR động.
+                <br>• <strong>Mẫu 2 - Nhắc nợ lịch sự:</strong> Nhắc nhở hoá đơn trễ hạn kèm cảnh báo ngày hết hạn. Chủ trọ chỉ cần bấm <strong>Sao chép nội dung</strong> và dán vào Zalo/Messenger của khách.
+              </p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">4</div>
+            <div class="step-content">
+              <h4>Gạch Nợ Tự Động Qua PayOS Webhook</h4>
+              <p>Khi khách quét mã chuyển khoản thành công, PayOS bắn Webhook tức thì về RentFlow. Hệ thống tự động chuyển trạng thái hoá đơn từ <strong>Chưa thanh toán (Unpaid)</strong> sang <strong>Đã thanh toán (Paid)</strong> và lưu dấu thời gian <code>paid_at</code> mà chủ nhà không cần phải kiểm tra số dư sao kê thủ công.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 8 -->
+      <article class="module-card" id="mod-8">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">08</div>
+            <div>
+              <h3 class="module-title">Quản Lý Sự Cố & Bảo Trì Theo Bảng Kanban</h3>
+              <div class="module-route-tag">URL: /dashboard/incidents</div>
+            </div>
+          </div>
+        </div>
+        <p>Bảng theo dõi sự cố trực quan giúp chủ nhà và thợ bảo trì không bao giờ bỏ sót các phản ánh hỏng hóc từ khách thuê (cháy bóng đèn, rò rỉ nước, hỏng điều hoà).</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Tiếp nhận sự cố từ Khách thuê hoặc Chủ nhà tạo</h4>
+              <p>Sự cố có thể được khách thuê gửi trực tiếp từ Cổng Tenant Portal (kèm ảnh chụp) hoặc do chủ nhà tự nhập khi đi kiểm tra phòng. Thiết lập mức độ ưu tiên: <em>Thấp, Trung bình, Khẩn cấp</em>.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Bảng Kanban Kéo Thả Trực Quan</h4>
+              <p>Theo dõi luồng xử lý qua 3 cột:
+                <br>• <strong>Chờ tiếp nhận (Open):</strong> Khách mới báo hỏng.
+                <br>• <strong>Đang xử lý (In Progress):</strong> Đã gọi thợ hoặc đang sửa chữa.
+                <br>• <strong>Đã giải quyết (Resolved):</strong> Đã sửa xong và nghiệm thu.
+                <br>Hỗ trợ nhập chi phí sửa chữa để tự động hạch toán vào mục Chi phí (Expenses) của toà nhà.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 9 -->
+      <article class="module-card" id="mod-9">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">09</div>
+            <div>
+              <h3 class="module-title">Vận Hành Homestay & Điều Phối Buồng Phòng (Housekeeping)</h3>
+              <div class="module-route-tag">URL: /dashboard/homestay/bookings & /dashboard/homestay/housekeeping</div>
+            </div>
+          </div>
+        </div>
+        <p>Mở rộng mô hình từ phòng trọ dài hạn sang Căn hộ dịch vụ & Homestay cho thuê ngắn hạn theo ngày. Tích hợp thuật toán chặn trùng phòng (Double-booking Prevention) và bảng phân công dọn phòng.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Lịch Đặt Phòng Ngắn Hạn & Chống Trùng Lịch</h4>
+              <p>Quản lý lịch check-in/check-out của khách theo ngày. Khi tạo booking mới, RentFlow tự động kiểm tra giao thoa thời gian (Date overlap): Nếu căn phòng đã có khách đặt trong khoảng ngày đó, hệ thống lập tức chặn lại và báo lỗi xung đột lịch đặt.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Bảng Phân Công Buồng Phòng (Housekeeping Tasks)</h4>
+              <p>Sau khi khách homestay check-out, phòng tự động được gắn cờ <strong>Cần dọn dẹp (Dirty)</strong>. Nhân viên buồng phòng theo dõi danh sách, bấm nhận phòng chuyển sang <strong>Đang dọn (In Progress)</strong>, và khi hoàn tất kiểm tra ga giường, khăn tắm thì chuyển sang <strong>Đã sạch (Clean)</strong> để sẵn sàng đón khách tiếp theo.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MODULE 10 -->
+      <article class="module-card" id="mod-10">
+        <div class="module-header">
+          <div class="module-title-wrap">
+            <div class="module-num">10</div>
+            <div>
+              <h3 class="module-title">Cổng Khách Thuê Không Cần Mật Khẩu (Tenant Portal)</h3>
+              <div class="module-route-tag">URL: /portal/login, /portal, /portal/invoices, /portal/incidents</div>
+            </div>
+          </div>
+        </div>
+        <p>Trải nghiệm người dùng vượt trội dành cho người thuê trọ. Loại bỏ 100% rào cản tạo tài khoản phức tạp, giúp khách tra cứu và thanh toán chỉ trong 10 giây.</p>
+
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-circle">1</div>
+            <div class="step-content">
+              <h4>Đăng Nhập Bằng Số Điện Thoại & Mã PIN 6 Chữ Số</h4>
+              <p>Khách thuê truy cập <code>/portal/login</code>. Nhập <strong>Số điện thoại</strong> và <strong>Mã PIN</strong> do chủ trọ cấp trong hợp đồng. Phiên đăng nhập được duy trì an toàn qua HTTP-only cookies.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-content">
+              <h4>Xem Chi Tiết Hoá Đơn & Quét VietQR Nạp Sẵn</h4>
+              <p>Khách thấy ngay hoá đơn tháng hiện tại với bảng chiết tính tiền điện, nước, dịch vụ kèm hình ảnh chỉ số đồng hồ để đối chứng minh bạch. Mã VietQR hiện ngay trên màn hình, khách chỉ việc bấm quét hoặc mở app ngân hàng chuyển khoản.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">3</div>
+            <div class="step-content">
+              <h4>Gửi Yêu Cầu Báo Hỏng Kèm Ảnh Hiện Trường</h4>
+              <p>Khi vòi sen bị gãy hoặc mất điện, khách vào mục <strong>Báo sự cố</strong>, chụp ảnh trực tiếp bằng camera điện thoại và gửi đi. Sự cố lập tức xuất hiện trên bảng Kanban của Chủ nhà.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: KỊCH BẢN DEMO THUYẾT TRÌNH (10 PHÚT) -->
+    <!-- ========================================== -->
+    <div class="content-section" id="sec-script">
+      <div class="callout pro">
+        <span class="callout-icon">🎯</span>
+        <div>
+          <strong>Chiến Lược Thuyết Trình Ghi Điểm:</strong> Kịch bản được phân bổ theo <strong>Vòng đời thực tế của một phòng trọ</strong> (Khởi tạo ➜ Đón khách ➜ Thu tiền hàng tháng ➜ Khách trải nghiệm Portal ➜ Trả phòng quyết toán). Bạn chỉ cần thực hiện đúng các thao tác chuột bên dưới và đọc lời thoại gợi ý.
+        </div>
+      </div>
+
+      <div class="timeline">
+        <!-- Node 1 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">1</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 00:00 - 01:00 (1 Phút)</span>
+              <span class="timeline-title">Đặt Vấn Đề & Giới Thiệu Tổng Quan RentFlow</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Kính thưa Thầy/Cô trong Hội đồng phản biện, hiện nay việc quản lý nhà trọ và căn hộ dịch vụ tại Việt Nam vẫn chủ yếu dựa vào sổ sách giấy tờ hoặc các file Excel rời rạc. Chủ nhà mất hàng giờ cuối tháng để đi chốt điện nước, tính toán thủ công dễ sai sót, và khách thuê thì không có kênh minh bạch để kiểm tra tiền phòng hay báo hỏng hóc thiết bị. Để giải quyết triệt để vấn đề này, nhóm chúng em đã phát triển <strong>RentFlow</strong> - Nền tảng quản lý phòng trọ và homestay toàn diện, kết nối 2 cổng truy cập độc lập: Cổng Quản lý cho chủ nhà và Cổng Portal không cần mật khẩu cho khách thuê, tích hợp tự động hoá thanh toán qua VietQR."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Mở trang chủ <code>/dashboard</code>, chỉ tay vào các thẻ KPI thống kê doanh thu, tỷ lệ phòng trống và thanh điều hướng bên trái.
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 2 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">2</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 01:00 - 02:30 (1.5 Phút)</span>
+              <span class="timeline-title">Khởi Tạo Toà Nhà & Sinh Dãy 12 Phòng Trong 10 Giây</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Điểm nổi bật đầu tiên khi chủ nhà bắt đầu sử dụng RentFlow là tốc độ khởi tạo dữ liệu. Thay vì phải nhập từng phòng một cách nhàm chán, em xin phép demo tính năng <strong>Batch Room Generator</strong>. Tại Toà nhà Cơ Sở 1, em chỉ cần chọn khoảng tầng từ 1 đến 3, mỗi tầng 4 phòng, định dạng tiền tố P101, diện tích 25m2 và giá thuê 3.5 triệu. Bảng Preview tự động sinh danh sách và ngay khi nhấn 'Tạo phòng', toàn bộ 12 phòng đã sẵn sàng hoạt động trong chưa đầy 1 giây."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Vào <code>/buildings/[id]</code> ➜ Bấm nút <strong>⚡ Tạo phòng tự động</strong> ➜ Nhập Tầng 1 đến 3, 4 phòng/tầng ➜ Bấm <strong>Tạo hàng loạt</strong> ➜ Xem thông báo thành công màu xanh lá.
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 3 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">3</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 02:30 - 04:00 (1.5 Phút)</span>
+              <span class="timeline-title">Đón Khách Thuê, Ký Hợp Đồng & Cấp Mã PIN Portal</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Bây giờ có một khách hàng mới đến thuê phòng P101. Em vào phân hệ <strong>Hợp đồng</strong> để tạo hợp đồng mới. Hệ thống sẽ liên kết khách thuê, nhận số tiền cọc 3.5 triệu và quan trọng nhất là ghi nhận <em>Chỉ số điện nước bàn giao ban đầu</em>. Ngay khi hợp đồng được kích hoạt, phòng P101 tự động đổi sang trạng thái 'Đang thuê'. Đồng thời, khách thuê được cấp mã PIN 6 chữ số để tự truy cập vào Cổng khách thuê."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Vào <code>/contracts</code> ➜ Bấm <strong>Tạo hợp đồng</strong> ➜ Chọn khách, chọn phòng P101 ➜ Nhập tiền cọc & chỉ số đầu ➜ Bấm Lưu ➜ Mở chi tiết phòng xem trạng thái chuyển sang màu xanh (Occupied).
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 4 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">4</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 04:00 - 06:00 (2 Phút)</span>
+              <span class="timeline-title">Chốt Điện Nước & Sinh Hoá Đơn VietQR Động + Zalo</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Đến ngày 30 cuối tháng, chủ nhà vào mục <strong>Meters</strong>. Ứng dụng đã hiển thị số cũ, em chỉ cần gõ số điện nước mới. Thuật toán tự động tính sản lượng và chặn nếu em gõ nhầm số nhỏ hơn số cũ. Tiếp theo, em sang mục <strong>Invoices</strong> và bấm 'Sinh hoá đơn hàng loạt'. Toàn bộ hoá đơn được tính toán tự động. Đặc biệt, khi mở chi tiết hoá đơn, mã <strong>VietQR động</strong> đã được nạp sẵn đúng số tiền 4.120.000 đ và nội dung chuyển khoản. Em bấm 'Chia sẻ Zalo' để copy ngay mẫu tin nhắn kèm link ảnh QR gửi cho khách trong 3 giây."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Vào <code>/meters</code> nhập số điện nước ➜ Vào <code>/invoices</code> bấm <strong>Sinh hoá đơn</strong> ➜ Mở hoá đơn vừa tạo ➜ Xem mã VietQR ➜ Bấm nút <strong>Chia sẻ Zalo</strong> để mở modal xem trước tin nhắn.
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 5 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">5</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 06:00 - 07:30 (1.5 Phút)</span>
+              <span class="timeline-title">Trải Nghiệm Cổng Khách Thuê (Tenant Portal) & Báo Sự Cố</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Bây giờ, em xin chuyển sang góc nhìn của người thuê trọ. Khách mở đường link <code>/portal</code>, chỉ cần nhập số điện thoại và mã PIN 6 số. Giao diện Portal hiển thị hợp đồng của họ, hoá đơn tháng này và mã VietQR để thanh toán ngay trên điện thoại. Nếu trong phòng bị hỏng vòi nước, khách bấm 'Báo sự cố', đính kèm ảnh và gửi đi. Ngay lập tức trên màn hình Chủ nhà, sự cố xuất hiện trên bảng Kanban để điều thợ sửa chữa."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Mở tab ẩn danh (Incognito) vào <code>/portal/login</code> ➜ Nhập SĐT & PIN ➜ Xem hoá đơn ➜ Vào Báo sự cố tạo 1 phiếu báo hỏng vòi nước ➜ Quay lại tab Chủ nhà vào <code>/incidents</code> kéo thẻ sự cố từ 'Chờ xử lý' sang 'Đang sửa'.
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 6 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">6</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 07:30 - 09:00 (1.5 Phút)</span>
+              <span class="timeline-title">Quy Trình Quyết Toán Trả Phòng (Settlement) & Vận Hành Homestay</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Khi khách hết hạn hợp đồng hoặc dọn đi, RentFlow cung cấp quy trình <strong>Quyết toán trả phòng (Check-out)</strong> chuyên nghiệp nhất: Chủ nhà chốt điện nước ngày cuối, nhập các khoản cấn trừ hư hại, hệ thống tự động trừ vào tiền cọc 3.5 triệu ban đầu và tính ra chính xác số tiền cần hoàn lại cho khách. Sau khi xác nhận, hợp đồng thanh lý và phòng tự động trả về trạng thái Trống. Bên cạnh đó, với các phòng Homestay ngắn hạn, hệ thống tích hợp thuật toán chống trùng lịch đặt phòng và bảng phân công dọn phòng buồng phòng."</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Vào <code>/contracts</code> ➜ Bấm nút <strong>Quyết toán trả phòng</strong> ➜ Nhập tiền phạt hư hại 200.000 đ ➜ Xem số tiền hoàn cọc tự tính ➜ Bấm hoàn tất ➜ Xem phòng trở lại trạng thái Trống.
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 7 -->
+        <div class="timeline-node">
+          <div class="timeline-badge">7</div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <span class="timeline-time">Phút 09:00 - 10:00 (1 Phút)</span>
+              <span class="timeline-title">Điểm Sáng Kỹ Thuật & Lời Kết</span>
+            </div>
+            <div class="script-box">
+              <div class="script-box-label">
+                <span>Lời Thoại Mẫu (Speech)</span>
+                <button class="btn btn-outline" style="padding: 2px 8px; font-size: 11px;" onclick="copyScript(this)">📋 Copy Lời Thoại</button>
+              </div>
+              <p>"Về mặt kỹ thuật, dự án được xây dựng trên nền tảng <strong>Next.js 15 App Router, React 19 và Supabase PostgreSQL</strong>. Dữ liệu giữa các chủ trọ được cô lập tuyệt đối nhờ cơ chế <strong>Row Level Security (RLS)</strong>. Đồng thời, toàn bộ hệ thống được tối ưu hoá thời gian phản hồi dưới 500ms nhờ cơ chế Server Component, memoization <code>React.cache()</code> và kỹ thuật Prefetching trước các liên kết. Em xin chân thành cảm ơn Quý Thầy/Cô đã chú ý lắng nghe và em rất mong nhận được những câu hỏi đóng góp từ Hội đồng!"</p>
+            </div>
+            <div class="action-box">
+              <strong>Thao tác màn hình:</strong> Chuyển về Dashboard, bấm chuyển qua lại giữa các menu để hội đồng thấy tốc độ tải trang tức thì dưới 500ms không hề bị giật lag hay trắng trang.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: BỘ CÂU HỎI PHẢN BIỆN HỘI ĐỒNG (Q&A) -->
+    <!-- ========================================== -->
+    <div class="content-section" id="sec-defense">
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Bí Quyết Trả Lời Phản Biện:</strong> Hãy luôn trả lời theo công thức: <strong>Khẳng định giải pháp ➜ Nêu công nghệ/cơ chế cốt lõi ➜ Dẫn chứng kết quả thực tế trong code RentFlow</strong>.
+        </div>
+      </div>
+
+      <div class="accordion">
+        <!-- Q1 -->
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 1: Dự án áp dụng mô hình Multi-Tenancy như thế nào? Làm sao đảm bảo Chủ nhà A không bao giờ xem trộm được dữ liệu của Chủ nhà B?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Bảo Mật RLS</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng kiến trúc <strong>Multi-Tenancy cấp cơ sở dữ liệu</strong> sử dụng chính sách <strong>Row Level Security (RLS)</strong> của PostgreSQL trên Supabase, thay vì lọc dữ liệu bằng câu lệnh WHERE ở tầng ứng dụng.</p>
+            <div class="qa-highlight">
+              • Mọi bảng dữ liệu (buildings, rooms, contracts, invoices...) đều bắt buộc có cột <code>organization_id</code>.
+              <br>• Khi người dùng đăng nhập qua Supabase Auth, JWT Token sẽ chứa <code>auth.uid()</code>.
+              <br>• PostgreSQL thực thi chính sách bảo mật: <code>USING (organization_id IN (SELECT organization_id FROM organization_members WHERE user_id = auth.uid()))</code>.
+              <br>• Do đó, dù hacker có cố tình sửa mã nguồn ở frontend hay gọi API trực tiếp, database engine của PostgreSQL cũng sẽ tự động chặn đứng và chỉ trả về các dòng dữ liệu thuộc quyền sở hữu của tổ chức đó.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 2: Tại sao Cổng Khách Thuê (Tenant Portal) lại dùng mã PIN 6 số mà không dùng tài khoản Email/Password truyền thống?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Trải Nghiệm UX</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, đây là một quyết định thiết kế tối ưu trải nghiệm (Frictionless UX) dựa trên nghiên cứu hành vi thực tế của đối tượng thuê trọ:</p>
+            <div class="qa-highlight">
+              • <strong>Rào cản người dùng:</strong> Khách thuê trọ thường ngại tạo tài khoản, xác thực email, và thường xuyên quên mật khẩu, dẫn đến việc họ không muốn dùng ứng dụng.
+              <br>• <strong>Bảo mật thực tế:</strong> Chỉ những khách thuê có hợp đồng đang hoạt động mới được chủ trọ cấp một mã PIN 6 chữ số ngẫu nhiên. Khi đăng nhập, hệ thống xác thực đồng thời cả <strong>Số điện thoại + Mã PIN</strong>.
+              <br>• <strong>Quản lý vòng đời:</strong> Khi khách trả phòng (Hợp đồng kết thúc), mã PIN sẽ tự động bị vô hiệu hoá, ngăn chặn việc truy cập thông tin toà nhà sau khi đã dọn đi.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 3: Làm thế nào hệ thống đạt được tốc độ chuyển trang siêu nhanh dưới 500ms?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Hiệu Năng & Cache</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow đạt được tốc độ dưới 500ms nhờ vào 4 kỹ thuật tối ưu hóa chuyên sâu:</p>
+            <div class="qa-highlight">
+              1. <strong>Next.js 15 Server Components (RSC):</strong> Render giao diện trước tại máy chủ, giảm dung lượng JavaScript tải về trình duyệt xuống mức tối thiểu.
+              <br>2. <strong>Request Deduplication với <code>React.cache()</code>:</strong> Hàm xác thực người dùng và lấy thông tin tổ chức <code>getCurrentUserOrganization()</code> được bọc trong bộ đệm nhớ memoize. Dù trong 1 trang có gọi lại nhiều lần thì database chỉ phải truy vấn đúng 1 lần duy nhất.
+              <br>3. <strong>Truy vấn song song (Parallel Fetching):</strong> Thay vì dùng <code>await</code> tuần tự gây nghẽn cổ chai (waterfall), hệ thống dùng <code>Promise.all([getRooms(), getBuildings(), getStats()])</code> để thực thi đồng thời.
+              <br>4. <strong>Next.js Link Prefetching:</strong> Thẻ chuyển trang sử dụng <code>prefetch={true}</code>, trình duyệt tự động nạp sẵn dữ liệu trang tiếp theo ngay khi người dùng rê chuột qua menu.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 4: Trong phân hệ Homestay, nếu 2 khách hàng cùng bấm đặt phòng cho cùng một khoảng ngày thì hệ thống xử lý tranh chấp (Race Condition) như thế nào?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Concurrency</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng cơ chế <strong>Phòng thủ 2 lớp</strong> để ngăn chặn triệt để hiện tượng Double-booking (trùng phòng):</p>
+            <div class="qa-highlight">
+              • <strong>Lớp 1 (Application logic):</strong> Trước khi tạo booking, Server Action kiểm tra điều kiện giao thoa ngày bằng toán tử: <code>WHERE room_id = X AND status != 'cancelled' AND (check_in &lt;= new_check_out AND check_out &gt;= new_check_in)</code>. Nếu số lượng bản ghi &gt; 0 thì lập tức từ chối và báo lỗi cho người thứ hai.
+              <br>• <strong>Lớp 2 (Database Constraint):</strong> Tầng PostgreSQL sử dụng ràng buộc loại trừ <code>EXCLUDE USING gist (room_id WITH =, daterange(check_in, check_out) WITH &amp;&amp;)</code>. Ràng buộc cấp nhân cơ sở dữ liệu này đảm bảo dù 2 request có ghi vào cùng một microsecond thì giao dịch thứ hai cũng bị rollback an toàn.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 5: Cơ chế Webhook của PayOS hoạt động ra sao? Nếu nhà mạng chập chờn gửi lại webhook nhiều lần (Retry) thì có bị lỗi dữ liệu không?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">PayOS Webhook</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow đã cài đặt cơ chế <strong>Idempotent Webhook Handler</strong> (Xử lý bất biến khi lặp):</p>
+            <div class="qa-highlight">
+              • <strong>Xác thực chữ ký số:</strong> Webhook kiểm tra <code>signature</code> gửi kèm bằng thuật toán HMAC SHA256 với <code>PAYOS_CHECKSUM_KEY</code> để chống tấn công giả mạo yêu cầu thanh toán.
+              <br>• <strong>Kiểm tra trạng thái trước khi ghi (Idempotency):</strong> Khi nhận thông báo nạp tiền, hệ thống truy vấn hoá đơn tương ứng. Nếu trạng thái hoá đơn đã là <code>status === 'paid'</code>, hệ thống phản hồi HTTP 200 ngay lập tức mà không thực hiện cộng tiền hay ghi log lần thứ hai.
+              <br>• <strong>Defensive Schema Fallback:</strong> Endpoint webhook hỗ trợ tự động nhận diện cả trường <code>paid_at</code> hoặc chuyển tiếp an toàn nếu database chưa kịp chạy migration mới nhất.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 6: Nếu khách thuê tự ý dọn đi và bùng tiền điện nước, hoặc làm hỏng thiết bị phòng thì quy trình phần mềm xử lý thế nào?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Nghiệp Vụ Thực Tế</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, đây là nghiệp vụ phổ biến và RentFlow đã chuẩn hóa thành <strong>Modal Quyết toán trả phòng (Check-out Settlement)</strong>:</p>
+            <div class="qa-highlight">
+              • Khi ký hợp đồng ban đầu, hệ thống luôn bắt buộc thu khoản <strong>Tiền cọc (Deposit)</strong>, thường tương đương 1 đến 2 tháng tiền phòng.
+              <br>• Lúc làm thủ tục trả phòng, chủ trọ nhập các khoản chi phí phát sinh: Tiền điện nước ngày cuối, tiền phòng lẻ chưa thanh toán, và các mục hư hại tài sản (mỗi mục có tên hư hại và số tiền phạt).
+              <br>• Phần mềm tự động lấy Tiền cọc trừ đi Tổng các khoản phạt. Nếu cọc còn thừa, hệ thống báo số tiền chủ trọ cần chuyển khoản trả lại khách. Nếu tiền phạt vượt quá tiền cọc, hệ thống sinh ra biên bản nợ để gửi Zalo yêu cầu khách thanh toán bù.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 7: Hình ảnh CCCD của khách thuê và hình ảnh chỉ số đồng hồ điện nước được lưu trữ ở đâu và bảo mật ra sao?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Storage & Privacy</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Toàn bộ tệp tin đa phương tiện được lưu trữ trên <strong>Supabase Storage Bucket</strong> với chính sách Private Access:</p>
+            <div class="qa-highlight">
+              • Ảnh CCCD và ảnh đồng hồ không được để Public URL ngoài Internet.
+              <br>• Chỉ những người dùng đã xác thực và có quyền trong cùng một <code>organization_id</code> mới được cấp <strong>Signed URL</strong> (đường link có chữ ký bảo mật và tự hết hạn sau 60 phút) để hiển thị trên trình duyệt.
+              <br>• Điều này đảm bảo tuân thủ Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân tại Việt Nam.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <span>Câu 8: Điểm khác biệt lớn nhất giữa RentFlow và các phần mềm quản lý trọ hiện có trên thị trường là gì?</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Lợi Thế Cạnh Tranh</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow sở hữu 3 lợi thế cạnh tranh vượt trội:</p>
+            <div class="qa-highlight">
+              1. <strong>Tương tác 2 chiều khép kín:</strong> Đa số phần mềm chỉ phục vụ riêng chủ nhà. RentFlow cung cấp Cổng Khách Thuê chuyên biệt không cần mật khẩu giúp cư dân quét mã VietQR và gửi phản ánh sự cố tức thì.
+              <br>2. <strong>VietQR Động chuẩn Napas247:</strong> Tự động tính đúng số tiền nợ còn lại và nạp sẵn nội dung, kết hợp webhook gạch nợ tự động trong 3 giây.
+              <br>3. <strong>Hiệu năng và trải nghiệm hiện đại:</strong> Giao diện thiết kế theo chuẩn SaaS quốc tế, không giật lag trang, có tính năng sinh 100 phòng trong 10 giây (Batch Generator) giúp chủ trọ bắt đầu sử dụng ngay mà không mất cả tuần nhập liệu.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: KIẾN TRÚC HỆ THỐNG & CÔNG NGHỆ -->
+    <!-- ========================================== -->
+    <div class="content-section" id="sec-architecture">
+      <div class="module-card">
+        <h3 class="module-title" style="margin-bottom: 16px;">Sơ Đồ Kiến Trúc Hệ Thống (Full-Stack Architecture)</h3>
+        <p>RentFlow được thiết kế theo mô hình kiến trúc Client-Server hiện đại trên nền tảng đám mây Serverless, đảm bảo khả năng mở rộng cao và chi phí vận hành tối ưu.</p>
+
+        <div class="ui-mockup" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8;">
+          <div class="ui-mockup-header">
+            <div class="ui-dots"><div class="ui-dot red"></div><div class="ui-dot yellow"></div><div class="ui-dot green"></div></div>
+            <span>Kiến Trúc Kỹ Thuật RentFlow</span>
+          </div>
+          <pre style="color: #38bdf8; overflow-x: auto;">
+[TRÌNH DUYỆT KHÁCH HÀNG] ──(HTTPS/WSS)──&gt; [CLOUDFLARE EDGE CDN]
+                                                  │
+                ┌─────────────────────────────────┴─────────────────────────────────┐
+                ▼                                                                   ▼
+       [CHỦ NHÀ / QUẢN LÝ]                                                 [KHÁCH THUÊ TRỌ]
+   /dashboard (Next.js 15 RSC)                                            /portal (Lightweight)
+  - RBAC: Owner vs Member                                                - SĐT + Mã PIN 6 số
+  - Ant Design v5 + TailwindCSS                                          - Xem hóa đơn & Hợp đồng
+  - Batch Generator / Kanban                                             - Quét VietQR / Báo hỏng
+                │                                                                   │
+                └─────────────────────────────────┬─────────────────────────────────┘
+                                                  ▼
+                                      [NEXT.JS 15 APP ROUTER]
+                                    - React 19 Server Actions
+                                    - React.cache() Memoization
+                                    - Parallel Promise.all()
+                                    - Edge Link Prefetching
+                                                  │
+                ┌─────────────────────────────────┼─────────────────────────────────┐
+                ▼                                 ▼                                 ▼
+       [SUPABASE POSTGRESQL]             [SUPABASE STORAGE]                 [PAYOS GATEWAY]
+      - Row Level Security (RLS)        - Bucket: Private cccd/meters      - VietQR Dynamic Link
+      - Organization isolation          - Signed URL (60 mins expiry)      - Webhook Auto-Reconciliation
+      - Concurrency safe constraints    - Image optimization               - Checksum HMAC-SHA256
+          </pre>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 24px;">
+          <div style="background: var(--border-subtle); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">🎨 Frontend Stack</h4>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              • <strong>Next.js 15 (App Router):</strong> Kiến trúc React Server Components mới nhất.
+              <br>• <strong>React 19:</strong> Hỗ trợ Actions, useTransition và tối ưu render.
+              <br>• <strong>Ant Design v5:</strong> Bộ linh kiện UI doanh nghiệp phong phú, CSS-in-JS linh hoạt.
+              <br>• <strong>TailwindCSS:</strong> Tiện ích tạo kiểu nhanh, tương thích hoàn hảo chế độ responsive.
+            </p>
+          </div>
+          <div style="background: var(--border-subtle); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 16px; font-weight: 700; color: var(--indigo); margin-bottom: 8px;">⚙️ Backend & Database Stack</h4>
+            <p style="font-size: 13.5px; color: var(--text-muted);">
+              • <strong>Supabase (PostgreSQL 15):</strong> Cơ sở dữ liệu quan hệ mạnh mẽ, ACID tuyệt đối.
+              <br>• <strong>Row Level Security (RLS):</strong> Cô lập dữ liệu đa người thuê (Multi-Tenancy) tại nhân DB.
+              <br>• <strong>PayOS & VietQR API:</strong> Tích hợp thanh toán QR ngân hàng tự động số 1 Việt Nam.
+              <br>• <strong>Dayjs & Intl:</strong> Định dạng tiền tệ VND và thời gian chuẩn Việt Nam.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+  // Tab Switcher
+  function switchTab(tabId) {
+    document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => item.classList.remove('active'));
+
+    const targetSec = document.getElementById('sec-' + tabId);
+    const targetBtn = document.getElementById('tabBtn-' + tabId);
+
+    if (targetSec) targetSec.classList.add('active');
+    if (targetBtn) targetBtn.classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Accordion Toggle
+  function toggleAccordion(header) {
+    const item = header.parentElement;
+    item.classList.toggle('open');
+  }
+
+  // Copy Speech Script
+  function copyScript(btn) {
+    const scriptBox = btn.closest('.script-box');
+    const text = scriptBox.querySelector('p').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const origText = btn.innerText;
+      btn.innerText = '✅ Đã Copy!';
+      btn.style.color = '#10b981';
+      btn.style.borderColor = '#10b981';
+      setTimeout(() => {
+        btn.innerText = origText;
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    });
+  }
+
+  // Live Search Filter
+  function filterContent() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.module-card, .timeline-node, .accordion-item');
+
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      if (!query || text.includes(query)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // If query matches inside an accordion, open it
+    if (query) {
+      document.querySelectorAll('.accordion-item').forEach(item => {
+        if (item.innerText.toLowerCase().includes(query)) {
+          item.classList.add('open');
+        }
+      });
+    }
+  }
+
+  // Dark/Light Theme Toggle
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.getElementById('themeIcon').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+  }
+</script>
+
+</body>
+</html>
