@@ -59,7 +59,14 @@ export async function POST(req: Request) {
 
         if (!invoice) {
             console.log('⚠️ [Webhook PayOS] Không tìm thấy hoá đơn tương ứng (orderCode / description):', { orderCode, description });
-            return NextResponse.json({ success: true, message: 'Invoice not found in system, ignored.' });
+            // Vẫn phải xác thực chữ ký bằng khóa nền tảng để chặn request giả mạo
+            try {
+                await payos.verifyPaymentWebhookData(body);
+                return NextResponse.json({ success: true, message: 'Invoice not found in system, ignored.' });
+            } catch {
+                console.error('🚫 [Webhook PayOS] Từ chối xử lý: Chữ ký không hợp lệ cho hoá đơn không tồn tại.');
+                return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
+            }
         }
 
         console.log(`🚀 [Webhook PayOS] Đang xử lý thanh toán cho Hoá Đơn: ${invoice.id}, Số tiền: ${amount}`);
@@ -83,7 +90,7 @@ export async function POST(req: Request) {
         if (settings?.payos_client_id && settings?.payos_api_key && settings?.payos_checksum_key) {
             try {
                 const dynamicPayos = createPayOSClient(settings.payos_client_id, settings.payos_api_key, settings.payos_checksum_key);
-                dynamicPayos.verifyPaymentWebhookData(body);
+                await dynamicPayos.verifyPaymentWebhookData(body);
                 verified = true;
                 console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công bằng khóa riêng của tổ chức.');
             } catch {
@@ -94,7 +101,7 @@ export async function POST(req: Request) {
         // b. Fallback: Nếu tổ chức chưa cấu hình hoặc verify bằng khóa riêng thất bại, xác thực bằng khóa mặc định của hệ thống
         if (!verified) {
             try {
-                payos.verifyPaymentWebhookData(body);
+                await payos.verifyPaymentWebhookData(body);
                 verified = true;
                 console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công bằng khóa hệ thống.');
             } catch (platformVerifyError) {

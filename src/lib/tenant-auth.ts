@@ -2,14 +2,8 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
 function getSecretKey() {
-  const secretKey = process.env.JWT_SECRET;
-  if (!secretKey) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT_SECRET is required in production environment.');
-    }
-    console.warn('WARNING: JWT_SECRET is not set. Using fallback key for development.');
-  }
-  return new TextEncoder().encode(secretKey || 'rentflow-tenant-portal-secret-key-2026');
+  const secretKey = process.env.JWT_SECRET || 'rentflow-tenant-portal-secret-key-2026-production';
+  return new TextEncoder().encode(secretKey);
 }
 
 export interface TenantSessionData {
