@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import { createClient } from '@/lib/supabase/server';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 import { getOrgPlan, getOrgUsage } from '@/lib/subscription/actions';
 import { getPendingActionCounts } from '@/lib/dashboard/pending-actions';
 
@@ -9,31 +9,18 @@ export default async function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const supabase = await createClient();
-    const [{ data: { user } }, { planType }, usage, pendingCounts] = await Promise.all([
-        supabase.auth.getUser(),
+    const [auth, { planType }, usage, pendingCounts] = await Promise.all([
+        requireAuthOrg().catch(() => null),
         getOrgPlan(),
         getOrgUsage(),
         getPendingActionCounts(),
     ]);
 
-    let profile = { full_name: 'User', role: 'member' };
-    if (user) {
-        const { data } = await supabase
-            .from('user_profiles')
-            .select('full_name, role')
-            .eq('id', user.id)
-            .single();
-        if (data) {
-            profile = data;
-        }
-    }
-
     return (
         <MainLayout
-            userId={user?.id || ''}
-            userName={profile.full_name || 'User'}
-            userRole={profile.role || 'member'}
+            userId={auth?.userId || ''}
+            userName={auth?.fullName || 'User'}
+            userRole={auth?.role || 'member'}
             planType={planType}
             roomCount={usage.room_count}
             pendingCounts={pendingCounts}

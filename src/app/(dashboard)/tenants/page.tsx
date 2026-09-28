@@ -4,8 +4,10 @@ import PageHeader from '@/components/common/PageHeader';
 import { getOrgPlan } from '@/lib/subscription/actions';
 
 export default async function TenantsPage() {
-    const { data: tenants, error } = await getTenants();
-    const orgPlan = await getOrgPlan();
+    const [{ data: tenants, error }, orgPlan] = await Promise.all([
+        getTenants(),
+        getOrgPlan(),
+    ]);
 
     return (
         <>

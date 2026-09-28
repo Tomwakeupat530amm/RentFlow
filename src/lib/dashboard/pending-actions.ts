@@ -2,6 +2,7 @@
 
 import dayjs from 'dayjs';
 import { requireAuthOrg } from '@/lib/rbac/guard';
+import { cache } from 'react';
 
 export interface PendingActionCounts {
     incidents: number;
@@ -15,8 +16,9 @@ export interface PendingActionCounts {
  * - Sự cố: status in ('reported', 'in_progress')
  * - Hoá đơn: status in ('sent', 'partially_paid', 'overdue')
  * - Hợp đồng: status = 'active' và sắp hết hạn trong 30 ngày
+ * Memoized per-request bằng React.cache(), sử dụng head: true để không tốn băng thông tải bảng.
  */
-export async function getPendingActionCounts(): Promise<PendingActionCounts> {
+export const getPendingActionCounts = cache(async (): Promise<PendingActionCounts> => {
     try {
         const auth = await requireAuthOrg();
         const { supabase, orgId } = auth;
@@ -31,7 +33,7 @@ export async function getPendingActionCounts(): Promise<PendingActionCounts> {
                 .in('status', ['reported', 'in_progress']),
             supabase
                 .from('invoices')
-                .select('id, total_amount, paid_amount', { count: 'exact' })
+                .select('id', { count: 'exact', head: true })
                 .eq('org_id', orgId)
                 .in('status', ['sent', 'partially_paid', 'overdue']),
             supabase
@@ -44,20 +46,13 @@ export async function getPendingActionCounts(): Promise<PendingActionCounts> {
                 .lte('end_date', thirtyDaysLater),
         ]);
 
-        let totalDebt = 0;
-        if (invRes.data) {
-            invRes.data.forEach((inv) => {
-                totalDebt += (Number(inv.total_amount) || 0) - (Number(inv.paid_amount) || 0);
-            });
-        }
-
         return {
             incidents: incRes.count || 0,
             unpaidInvoices: invRes.count || 0,
             expiringContracts: conRes.count || 0,
-            totalDebt,
+            totalDebt: 0,
         };
     } catch {
         return { incidents: 0, unpaidInvoices: 0, expiringContracts: 0, totalDebt: 0 };
     }
-}
+});

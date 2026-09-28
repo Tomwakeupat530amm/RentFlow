@@ -1,11 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 
 /**
  * Creates a Supabase client for use in Server Components,
  * Server Actions, and Route Handlers.
+ * Memoized per-request using React.cache() to prevent recreating client multiple times.
  */
-export async function createClient() {
+export const createClient = cache(async () => {
     const cookieStore = await cookies();
 
     return createServerClient(
@@ -29,4 +31,4 @@ export async function createClient() {
             },
         }
     );
-}
+});

@@ -3,69 +3,61 @@
 import { createClient } from '@/lib/supabase/server';
 import dayjs from 'dayjs';
 import { PlanType, FREE_TIER_LIMITS, PremiumFeature, OrgUsage, Subscription } from '@/types/database';
+import { cache } from 'react';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 
 /**
  * Get the current org's plan type
+ * Memoized per-request using React.cache()
  */
-export async function getOrgPlan(): Promise<{ planType: PlanType; orgId: string | null }> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { planType: 'free', orgId: null };
+export const getOrgPlan = cache(async (): Promise<{ planType: PlanType; orgId: string | null }> => {
+    try {
+        const { supabase, orgId } = await requireAuthOrg();
+        const { data: org } = await supabase
+            .from('organizations')
+            .select('plan_type')
+            .eq('id', orgId)
+            .single();
 
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    if (!profile?.org_id) return { planType: 'free', orgId: null };
-
-    const { data: org } = await supabase
-        .from('organizations')
-        .select('plan_type')
-        .eq('id', profile.org_id)
-        .single();
-
-    return {
-        planType: (org?.plan_type as PlanType) || 'free',
-        orgId: profile.org_id,
-    };
-}
+        return {
+            planType: (org?.plan_type as PlanType) || 'free',
+            orgId,
+        };
+    } catch {
+        return { planType: 'free', orgId: null };
+    }
+});
 
 /**
  * Get org usage stats (building + room count)
+ * Memoized per-request using React.cache() and parallel head: true counts
  */
-export async function getOrgUsage(): Promise<OrgUsage> {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { building_count: 0, room_count: 0 };
+export const getOrgUsage = cache(async (): Promise<OrgUsage> => {
+    try {
+        const { supabase, orgId } = await requireAuthOrg();
 
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
+        const [buildingsRes, roomsRes] = await Promise.all([
+            supabase
+                .from('buildings')
+                .select('id', { count: 'exact', head: true })
+                .eq('org_id', orgId)
+                .is('deleted_at', null),
+            supabase
+                .from('rooms')
+                .select('id, buildings!inner(org_id, deleted_at)', { count: 'exact', head: true })
+                .eq('buildings.org_id', orgId)
+                .is('deleted_at', null)
+                .is('buildings.deleted_at', null),
+        ]);
 
-    if (!profile?.org_id) return { building_count: 0, room_count: 0 };
-
-    const { data: buildings } = await supabase
-        .from('buildings')
-        .select('id')
-        .eq('org_id', profile.org_id)
-        .is('deleted_at', null);
-
-    const { data: rooms } = await supabase
-        .from('rooms')
-        .select('id, building_id, buildings!inner(org_id, deleted_at)')
-        .eq('buildings.org_id', profile.org_id)
-        .is('deleted_at', null)
-        .is('buildings.deleted_at', null);
-
-    return {
-        building_count: buildings?.length || 0,
-        room_count: rooms?.length || 0,
-    };
-}
+        return {
+            building_count: buildingsRes.count || 0,
+            room_count: roomsRes.count || 0,
+        };
+    } catch {
+        return { building_count: 0, room_count: 0 };
+    }
+});
 
 /**
  * Check if a premium feature is accessible

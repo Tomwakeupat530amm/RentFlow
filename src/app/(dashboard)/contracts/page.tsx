@@ -8,18 +8,17 @@ import type { Room } from '@/types/database';
 export default async function ContractsPage() {
     const supabase = await createClient();
 
-    // Fetch rooms with buildings info
-    const { data: rooms } = await supabase
-        .from('rooms')
-        .select(`
-            *,
-            building:buildings(id, name)
-        `)
-        .is('deleted_at', null)
-        .order('building_id')
-        .order('name');
-
-    const [contractsResult, tenantsResult] = await Promise.all([
+    // Fetch rooms, contracts, and tenants all in parallel
+    const [{ data: rooms }, contractsResult, tenantsResult] = await Promise.all([
+        supabase
+            .from('rooms')
+            .select(`
+                *,
+                building:buildings(id, name)
+            `)
+            .is('deleted_at', null)
+            .order('building_id')
+            .order('name'),
         getContracts(),
         getTenants(),
     ]);

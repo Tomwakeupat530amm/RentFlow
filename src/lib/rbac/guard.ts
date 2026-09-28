@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { cache } from 'react';
 
 export type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -24,8 +25,10 @@ export async function getOrgId(): Promise<string | null> {
 
 /**
  * Lấy thông tin tổ chức và người dùng đã xác thực (Defense-in-Depth)
+ * Memoized per-request bằng React.cache() để mọi Server Component / Action
+ * trong cùng 1 chu kỳ request chỉ query auth & user_profile đúng 1 lần duy nhất.
  */
-export async function requireAuthOrg(): Promise<GuardAuthResult> {
+export const requireAuthOrg = cache(async (): Promise<GuardAuthResult> => {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -49,7 +52,7 @@ export async function requireAuthOrg(): Promise<GuardAuthResult> {
         role: profile.role || 'member',
         fullName: profile.full_name || undefined,
     };
-}
+});
 
 /**
  * Kiểm tra quyền hạn của người dùng trước khi thực thi Server Action

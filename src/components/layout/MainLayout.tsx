@@ -67,7 +67,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         {
             key: '/dashboard',
             icon: <DashboardOutlined />,
-            label: <Link href="/dashboard">Tổng quan</Link>,
+            label: <Link href="/dashboard" prefetch={true}>Tổng quan</Link>,
         },
         {
             type: 'divider' as const,
@@ -80,12 +80,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/buildings',
                     icon: <ProjectOutlined />,
-                    label: <Link href="/buildings">Toà nhà</Link>,
+                    label: <Link href="/buildings" prefetch={true}>Toà nhà</Link>,
                 },
                 {
                     key: '/rooms',
                     icon: <HomeOutlined />,
-                    label: <Link href="/rooms">Phòng</Link>,
+                    label: <Link href="/rooms" prefetch={true}>Phòng</Link>,
                 },
             ],
         },
@@ -97,13 +97,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/tenants',
                     icon: <TeamOutlined />,
-                    label: <Link href="/tenants">Khách thuê</Link>,
+                    label: <Link href="/tenants" prefetch={true}>Khách thuê</Link>,
                 },
                 {
                     key: '/contracts',
                     icon: <FileTextOutlined />,
                     label: (
-                        <Link href="/contracts" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                        <Link href="/contracts" prefetch={true} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                             <span>Hợp đồng</span>
                             {Boolean(pendingCounts && pendingCounts.expiringContracts > 0) && (
                                 <Badge
@@ -125,12 +125,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/homestay/bookings',
                     icon: <ScheduleOutlined />,
-                    label: <Link href="/homestay/bookings">Lịch đặt phòng</Link>,
+                    label: <Link href="/homestay/bookings" prefetch={true}>Lịch đặt phòng</Link>,
                 },
                 {
                     key: '/homestay/housekeeping',
                     icon: <ClearOutlined />,
-                    label: <Link href="/homestay/housekeeping">Dọn dẹp</Link>,
+                    label: <Link href="/homestay/housekeeping" prefetch={true}>Dọn dẹp</Link>,
                 },
             ],
         },
@@ -142,13 +142,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/meters',
                     icon: <ThunderboltOutlined />,
-                    label: <Link href="/meters">Điện nước</Link>,
+                    label: <Link href="/meters" prefetch={true}>Điện nước</Link>,
                 },
                 {
                     key: '/invoices',
                     icon: <DollarOutlined />,
                     label: (
-                        <Link href="/invoices" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                        <Link href="/invoices" prefetch={true} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                             <span>Hoá đơn</span>
                             {Boolean(pendingCounts && pendingCounts.unpaidInvoices > 0) && (
                                 <Badge
@@ -163,7 +163,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/expenses',
                     icon: <WalletOutlined />,
-                    label: <Link href="/expenses">Chi phí</Link>,
+                    label: <Link href="/expenses" prefetch={true}>Chi phí</Link>,
                 },
             ],
         },
@@ -176,7 +176,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                     key: '/incidents',
                     icon: <ToolOutlined />,
                     label: (
-                        <Link href="/incidents" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                        <Link href="/incidents" prefetch={true} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                             <span>Sự cố</span>
                             {Boolean(pendingCounts && pendingCounts.incidents > 0) && (
                                 <Badge
@@ -191,7 +191,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/settings',
                     icon: <SettingOutlined />,
-                    label: <Link href="/settings">Cài đặt</Link>,
+                    label: <Link href="/settings" prefetch={true}>Cài đặt</Link>,
                 },
             ],
         },

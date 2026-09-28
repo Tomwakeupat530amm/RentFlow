@@ -10,20 +10,21 @@ export async function getBuildingsForMeters() {
     if (!auth) return { data: [], error: 'Not authenticated' };
     const { supabase, orgId } = auth;
 
-    const { data: org } = await supabase
-        .from('organizations')
-        .select('plan_type')
-        .eq('id', orgId)
-        .single();
+    const [{ data: org }, { data, error }] = await Promise.all([
+        supabase
+            .from('organizations')
+            .select('plan_type')
+            .eq('id', orgId)
+            .single(),
+        supabase
+            .from('buildings')
+            .select('id, name')
+            .eq('org_id', orgId)
+            .eq('status', 'active')
+            .is('deleted_at', null),
+    ]);
 
     const isPremium = org?.plan_type === 'premium';
-
-    const { data, error } = await supabase
-        .from('buildings')
-        .select('id, name')
-        .eq('org_id', orgId)
-        .eq('status', 'active')
-        .is('deleted_at', null);
 
     return { data: data || [], isPremium, error: error?.message };
 }
