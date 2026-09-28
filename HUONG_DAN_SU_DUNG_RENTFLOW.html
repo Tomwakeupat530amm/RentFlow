@@ -1111,8 +1111,13 @@
           <div class="step-item">
             <div class="step-circle">2</div>
             <div class="step-content">
-              <h4>Cấp Mã PIN 6 Số Cho Khách Thuê (Tenant Access PIN)</h4>
-              <p>Mỗi khách thuê được cấp một <strong>mã PIN 6 chữ số</strong> (VD: <code>123456</code>). Khách chỉ cần mở đường dẫn Portal, nhập SĐT và mã PIN là có thể tra cứu toàn bộ hợp đồng, hoá đơn và thanh toán ngay mà không cần tạo tài khoản hay ghi nhớ mật khẩu phức tạp.</p>
+              <h4>Giao diện Quản Lý & Cấp Mã PIN Portal 6 Số Cho Khách Thuê</h4>
+              <p>Hệ thống tích hợp quy trình cấp mã truy cập khép kín trực tiếp trên màn hình <strong>Quản lý Khách thuê</strong>:
+                <br>• <strong>Tự động sinh mã:</strong> Khi thêm khách mới, hệ thống tự sinh ngẫu nhiên một mã PIN 6 số an toàn và lưu vào database (migration <code>tenant_access_code.sql</code>).
+                <br>• <strong>Cột hiển thị trực quan:</strong> Danh sách khách thuê có riêng cột <em>"Mã PIN Portal"</em> hiển thị mã màu xanh nổi bật.
+                <br>• <strong>Nút 1-click sao chép thông tin gửi Zalo:</strong> Chủ trọ bấm icon Copy bên cạnh mã PIN để sao chép toàn bộ thông điệp gồm: Link truy cập <code>/portal/login</code>, Số điện thoại và Mã PIN để gửi trực tiếp cho khách.
+                <br>• <strong>Nút Đổi mã PIN mới (Regenerate PIN):</strong> Cho phép chủ trọ đổi mã PIN tức thì trong trường hợp khách quên mã hoặc cần nâng cao bảo mật.
+              </p>
             </div>
           </div>
           <div class="step-item">
@@ -1237,8 +1242,13 @@
           <div class="step-item">
             <div class="step-circle">4</div>
             <div class="step-content">
-              <h4>Gạch Nợ Tự Động Qua PayOS Webhook</h4>
-              <p>Khi khách quét mã chuyển khoản thành công, PayOS bắn Webhook tức thì về RentFlow. Hệ thống tự động chuyển trạng thái hoá đơn từ <strong>Chưa thanh toán (Unpaid)</strong> sang <strong>Đã thanh toán (Paid)</strong> và lưu dấu thời gian <code>paid_at</code> mà chủ nhà không cần phải kiểm tra số dư sao kê thủ công.</p>
+              <h4>Đối Soát & Gạch Nợ Tự Động Qua PayOS Webhook (Kèm Fallback Thủ Công)</h4>
+              <p>Hệ thống hỗ trợ cơ chế đối soát thanh toán đa tầng chuẩn doanh nghiệp tại endpoint <code>/api/webhooks/payos</code>:
+                <br>• <strong>Đối soát 2 lớp thông minh:</strong> Ưu tiên 1 khớp theo mã <code>order_code</code> số chuẩn do PayOS sinh ra. Ưu tiên 2 (Fallback) tự động trích xuất chuỗi UUID của hoá đơn từ nội dung chuyển khoản <code>description</code>.
+                <br>• <strong>Xác thực chữ ký số HMAC-SHA256:</strong> Webhook kiểm tra chữ ký với Client ID, API Key và Checksum Key riêng của tổ chức (hoặc cấu hình hệ thống), chống giả mạo giao dịch.
+                <br>• <strong>Cập nhật trạng thái tức thì:</strong> Tự động tính <code>paid_amount</code> mới, đổi trạng thái sang <strong>Đã thanh toán (Paid)</strong> (hoặc <em>Partial</em> nếu trả trước một phần), lưu dấu thời gian <code>paid_at</code> và ngăn chặn lặp dữ liệu (Idempotency).
+                <br>• <strong>Tuỳ chọn xác nhận thủ công (Manual Fallback):</strong> Trong trường hợp khách đóng tiền mặt hoặc chuyển khoản trực tiếp không qua cổng, chủ trọ vẫn có nút <em>"Cập nhật thanh toán"</em> để ghi nhận số tiền và gạch nợ thủ công linh hoạt.
+              </p>
             </div>
           </div>
         </div>
@@ -1540,12 +1550,12 @@
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng kiến trúc <strong>Multi-Tenancy cấp cơ sở dữ liệu</strong> sử dụng chính sách <strong>Row Level Security (RLS)</strong> của PostgreSQL trên Supabase, thay vì lọc dữ liệu bằng câu lệnh WHERE ở tầng ứng dụng.</p>
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng kiến trúc <strong>Multi-Tenancy cấp cơ sở dữ liệu</strong> sử dụng chính sách <strong>Row Level Security (RLS)</strong> của PostgreSQL trên Supabase, thay vì chỉ lọc dữ liệu bằng câu lệnh WHERE ở tầng ứng dụng.</p>
             <div class="qa-highlight">
-              • Mọi bảng dữ liệu (buildings, rooms, contracts, invoices...) đều bắt buộc có cột <code>organization_id</code>.
+              • Mọi bảng dữ liệu (buildings, rooms, contracts, invoices...) đều bắt buộc có cột <code>org_id</code> (hoặc <code>organization_id</code>).
               <br>• Khi người dùng đăng nhập qua Supabase Auth, JWT Token sẽ chứa <code>auth.uid()</code>.
               <br>• PostgreSQL thực thi chính sách bảo mật: <code>USING (organization_id IN (SELECT organization_id FROM organization_members WHERE user_id = auth.uid()))</code>.
-              <br>• Do đó, dù hacker có cố tình sửa mã nguồn ở frontend hay gọi API trực tiếp, database engine của PostgreSQL cũng sẽ tự động chặn đứng và chỉ trả về các dòng dữ liệu thuộc quyền sở hữu của tổ chức đó.
+              <br>• Toàn bộ cấu trúc bảng và chính sách phân quyền RLS được quản trị chặt chẽ qua <strong>19 file migration SQL trong thư mục <code>supabase/migrations/</code></strong> và lưu vết đầy đủ trong Git repo, đảm bảo chuẩn CI/CD và tính toàn vẹn khi triển khai.
             </div>
           </div>
         </div>
@@ -1554,7 +1564,7 @@
         <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 2: Tại sao Cổng Khách Thuê (Tenant Portal) lại dùng mã PIN 6 số mà không dùng tài khoản Email/Password truyền thống?</span>
+              <span>Câu 2: Tại sao Cổng Khách Thuê (Tenant Portal) lại dùng mã PIN 6 số mà không dùng tài khoản Email/Password truyền thống? Chủ nhà quản lý mã này ở đâu?</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="accordion-tag">Trải Nghiệm UX</span>
@@ -1565,7 +1575,8 @@
             <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, đây là một quyết định thiết kế tối ưu trải nghiệm (Frictionless UX) dựa trên nghiên cứu hành vi thực tế của đối tượng thuê trọ:</p>
             <div class="qa-highlight">
               • <strong>Rào cản người dùng:</strong> Khách thuê trọ thường ngại tạo tài khoản, xác thực email, và thường xuyên quên mật khẩu, dẫn đến việc họ không muốn dùng ứng dụng.
-              <br>• <strong>Bảo mật thực tế:</strong> Chỉ những khách thuê có hợp đồng đang hoạt động mới được chủ trọ cấp một mã PIN 6 chữ số ngẫu nhiên. Khi đăng nhập, hệ thống xác thực đồng thời cả <strong>Số điện thoại + Mã PIN</strong>.
+              <br>• <strong>Bảo mật thực tế:</strong> Chỉ những khách thuê có hợp đồng đang hoạt động mới được cấp mã PIN 6 chữ số ngẫu nhiên. Khi đăng nhập, hệ thống xác thực đồng thời cả <strong>Số điện thoại + Mã PIN</strong> qua HTTP-Only cookies an toàn.
+              <br>• <strong>Giao diện quản lý toàn diện trên Dashboard:</strong> Trên màn hình Quản lý Khách thuê (<code>TenantsClient.tsx</code>), chủ trọ có riêng một cột xem mã PIN, nút bấm <strong>1-click sao chép thông tin gửi Zalo</strong> (kèm sẵn link portal + SĐT + PIN), và nút <strong>"Đổi mã PIN mới"</strong> tức thì nếu khách quên hoặc cần bảo mật lại.
               <br>• <strong>Quản lý vòng đời:</strong> Khi khách trả phòng (Hợp đồng kết thúc), mã PIN sẽ tự động bị vô hiệu hoá, ngăn chặn việc truy cập thông tin toà nhà sau khi đã dọn đi.
             </div>
           </div>
@@ -1617,7 +1628,7 @@
         <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 5: Cơ chế Webhook của PayOS hoạt động ra sao? Nếu nhà mạng chập chờn gửi lại webhook nhiều lần (Retry) thì có bị lỗi dữ liệu không?</span>
+              <span>Câu 5: Cơ chế Webhook của PayOS đối soát hoá đơn như thế nào? Nếu nhà mạng chập chờn gửi lại webhook nhiều lần (Retry) thì có bị lỗi dữ liệu không?</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="accordion-tag">PayOS Webhook</span>
@@ -1625,11 +1636,12 @@
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow đã cài đặt cơ chế <strong>Idempotent Webhook Handler</strong> (Xử lý bất biến khi lặp):</p>
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, endpoint Webhook tại <code>/api/webhooks/payos</code> được thiết kế theo chuẩn đối soát 2 lớp tự động và bất biến (Idempotent):</p>
             <div class="qa-highlight">
-              • <strong>Xác thực chữ ký số:</strong> Webhook kiểm tra <code>signature</code> gửi kèm bằng thuật toán HMAC SHA256 với <code>PAYOS_CHECKSUM_KEY</code> để chống tấn công giả mạo yêu cầu thanh toán.
-              <br>• <strong>Kiểm tra trạng thái trước khi ghi (Idempotency):</strong> Khi nhận thông báo nạp tiền, hệ thống truy vấn hoá đơn tương ứng. Nếu trạng thái hoá đơn đã là <code>status === 'paid'</code>, hệ thống phản hồi HTTP 200 ngay lập tức mà không thực hiện cộng tiền hay ghi log lần thứ hai.
-              <br>• <strong>Defensive Schema Fallback:</strong> Endpoint webhook hỗ trợ tự động nhận diện cả trường <code>paid_at</code> hoặc chuyển tiếp an toàn nếu database chưa kịp chạy migration mới nhất.
+              • <strong>Khớp hoá đơn 2 lớp thông minh:</strong> Lớp 1 ưu tiên tìm theo mã số <code>order_code</code> chuẩn của PayOS được lưu trên hoá đơn. Nếu không có, Lớp 2 (Fallback) tự động dùng Regular Expression trích xuất mã UUID của hoá đơn từ nội dung thanh toán <code>description</code>.
+              <br>• <strong>Xác thực chữ ký số:</strong> Webhook kiểm tra <code>signature</code> gửi kèm bằng thuật toán HMAC SHA256 với Client ID, API Key và Checksum Key của tổ chức (hoặc khóa hệ thống) để chống giả mạo giao dịch nạp tiền.
+              <br>• <strong>Xử lý bất biến (Idempotency):</strong> Khi nhận thông báo, hệ thống kiểm tra nếu hoá đơn đã <code>status === 'paid'</code> thì phản hồi HTTP 200 ngay, không cộng dồn tiền hay ghi log trùng lặp.
+              <br>• <strong>Cập nhật trạng thái tự động:</strong> Tự động tính <code>paid_amount</code> mới, đổi trạng thái sang 'paid', và lưu dấu thời gian hoàn tất <code>paid_at</code>. Đồng thời chủ trọ vẫn có nút cập nhật thanh toán thủ công nếu khách trả bằng tiền mặt.
             </div>
           </div>
         </div>

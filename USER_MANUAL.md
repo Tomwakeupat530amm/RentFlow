@@ -70,8 +70,12 @@
 - **Đường dẫn:** `/dashboard/tenants` và `/dashboard/rooms/[id]`
 - **Các bước thực hiện:**
   1. *Thêm khách thuê đại diện:* Nhấn **Thêm khách thuê**, nhập Họ tên, SĐT, Số CCCD, quê quán, tải ảnh 2 mặt CCCD.
-  2. *Cấp mã PIN Portal:* Mỗi khách thuê có một trường mã PIN 6 số (ví dụ: `123456`) dùng để đăng nhập vào cổng `/portal`.
-  3. *Thêm người ở ghép (Roommates):* Vào chi tiết phòng, tab **Thành viên**, nhấn **Thêm người ở ghép** để lưu danh sách người ở cùng phục vụ việc khai báo tạm trú và tính tiền dịch vụ theo đầu người.
+  2. *Giao diện Quản lý & Cấp mã PIN Portal:*
+     - Khi thêm khách mới, hệ thống tự động sinh ngẫu nhiên mã PIN 6 số và lưu vào database.
+     - Trên bảng danh sách cư dân (`TenantsClient.tsx`), có riêng cột **"Mã PIN Portal"** hiển thị mã trực quan.
+     - Chủ trọ nhấn biểu tượng Copy để **1-click sao chép thông tin đăng nhập** (gồm Link `portal/login` + SĐT + Mã PIN) gửi thẳng qua Zalo cho khách.
+     - Hỗ trợ nút **"Đổi mã PIN mới"** để reset mã tức thì khi cần.
+  3. *Thêm người ở ghép (Roommates):* Vào chi tiết phòng, tab **Thành viên**, nhấn **Thêm người ở ghép** để lưu CCCD và nhân khẩu từng người nhằm xuất danh sách khai báo tạm trú cho công an phường.
 
 ### Module 5: Hợp Đồng & Quy Trình Quyết Toán Trả Phòng (Settlement)
 - **Đường dẫn:** `/dashboard/contracts`
@@ -94,12 +98,12 @@
 ### Module 7: Hoá Đơn, Mã VietQR Động & Chia Sẻ Zalo
 - **Đường dẫn:** `/dashboard/invoices` và `/dashboard/invoices/[id]`
 - **Các bước thực hiện:**
-  1. *Sinh hoá đơn hàng loạt:* Nhấn **Sinh hoá đơn tháng này**. Hệ thống tự động tổng hợp Tiền phòng + Tiền điện + Tiền nước + Dịch vụ theo hợp đồng.
+  1. *Sinh hoá đơn hàng loạt:* Nhấn **Sinh hoá đơn tháng này**. Hệ thống tự động tổng hợp Tiền phòng + Tiền điện + Tiền nước + Dịch vụ theo công thức chuẩn và số nguyên `INTEGER` trong VND.
   2. *Mã VietQR động:* Mỗi hoá đơn tự sinh một link ảnh VietQR Napas247 nạp sẵn số tiền nợ còn lại và nội dung chuyển khoản chuẩn.
   3. *Chia sẻ Zalo:* Nhấn nút **Chia sẻ Zalo** để mở modal với 2 mẫu soạn sẵn:
      - *Mẫu 1:* Bảng kê chi tiết tiền phòng + Link ảnh VietQR động.
      - *Mẫu 2:* Mẫu nhắc nợ lịch sự dành cho hoá đơn quá hạn.
-  4. *Gạch nợ PayOS Webhook:* Khi khách chuyển khoản đúng nội dung, webhook tự động đổi trạng thái sang "Đã thanh toán" (Paid).
+  4. *Đối soát tự động qua PayOS Webhook (Kèm Fallback thủ công):* Khi khách chuyển khoản, Webhook tại `/api/webhooks/payos` tự động khớp hoá đơn theo `order_code` (hoặc UUID trong description), xác thực chữ ký HMAC-SHA256, đổi trạng thái sang "Đã thanh toán" (Paid) và lưu dấu thời gian `paid_at`. Chủ trọ vẫn có nút "Cập nhật thanh toán" để gạch nợ thủ công nếu khách trả tiền mặt.
 
 ### Module 8: Quản Lý Sự Cố & Bảo Trì Theo Bảng Kanban
 - **Đường dẫn:** `/dashboard/incidents`
@@ -117,34 +121,38 @@
 ### Module 10: Cổng Khách Thuê Không Mật Khẩu (Tenant Portal)
 - **Đường dẫn:** `/portal/login`, `/portal`, `/portal/invoices`, `/portal/incidents`
 - **Các bước thực hiện:**
-  1. Khách truy cập `/portal/login`, nhập **Số điện thoại** và **Mã PIN 6 số**.
+  1. Khách truy cập `/portal/login`, nhập **Số điện thoại** và **Mã PIN 6 số** do chủ trọ cấp.
   2. Trang chủ Portal hiển thị hợp đồng thuê, thông báo toà nhà, thông tin phòng.
   3. Mục Hoá đơn: Xem chi tiết điện nước, quét mã VietQR nạp sẵn số tiền để thanh toán tức thì.
   4. Mục Báo sự cố: Chụp ảnh trực tiếp từ điện thoại gửi cho chủ nhà khi xảy ra hư hỏng thiết bị.
 
 ---
 
-## 3. KỊCH BẢN DEMO THUYẾT TRÌNH BẢO VỆ ĐỒ ÁN (10 PHÚT THỰC CHIẾN)
+## 3. KỊCH BẢN DEMO THUYẾT TRÌNH BẢO VỆ ĐỒ ÁN (9 BƯỚC THỰC CHIẾN)
 
 | Thời Gian | Phân Hệ Demo | Lời Thoại Thuyết Trình Gợi Ý | Thao Tác Chuột Trực Tiếp |
 | :--- | :--- | :--- | :--- |
-| **00:00 - 01:00**<br>(1 Phút) | **Tổng Quan & Đặt Vấn Đề** | "Kính thưa Hội đồng, quản lý nhà trọ truyền thống thường tốn nhiều giờ ghi sổ, tính nhầm tiền điện nước và thiếu minh bạch với người thuê. Hôm nay nhóm em xin trình diễn **RentFlow** - Giải pháp chuyển đổi số toàn diện kết nối Chủ nhà và Khách thuê qua 2 cổng độc lập." | Mở `/dashboard`, chỉ vào KPI doanh thu, tỷ lệ phòng trống và menu điều hướng. |
-| **01:00 - 02:30**<br>(1.5 Phút) | **Khởi Tạo Dãy Phòng Siêu Tốc** | "Khi chủ nhà mới tiếp nhận toà nhà, thay vì nhập từng phòng, em dùng tính năng **Batch Room Generator**. Chọn Tầng 1 đến 3, 4 phòng/tầng, giá 3.5 triệu. Bấm 'Tạo hàng loạt' và 12 phòng đã được khởi tạo trong 0.2 giây." | Vào `/buildings/[id]` ➜ Bấm **⚡ Tạo phòng tự động** ➜ Nhập tham số ➜ Nhấn Xác nhận tạo. |
-| **02:30 - 04:00**<br>(1.5 Phút) | **Đón Khách & Làm Hợp Đồng** | "Có khách đến thuê phòng P101, em tạo hợp đồng mới, nhập tiền cọc 3.5 triệu và chỉ số điện nước ban đầu. Phòng P101 chuyển sang màu xanh (Occupied) và hệ thống cấp mã PIN 6 số cho khách thuê." | Vào `/contracts` ➜ Bấm **Tạo hợp đồng** ➜ Chọn khách, chọn P101 ➜ Lưu ➜ Xem phòng đổi màu. |
-| **04:00 - 06:00**<br>(2 Phút) | **Chốt Điện Nước & Sinh Hoá Đơn VietQR** | "Cuối tháng, em vào mục **Meters** ghi số điện nước mới. Thuật toán tự chặn nếu em gõ số mới nhỏ hơn số cũ. Sau đó vào **Invoices** bấm 'Sinh hoá đơn hàng loạt'. Hoá đơn tự động gắn mã **VietQR động** nạp sẵn tiền nợ và nút chia sẻ Zalo 1-click." | Vào `/meters` nhập số ➜ Vào `/invoices` bấm sinh hoá đơn ➜ Mở hoá đơn xem QR ➜ Bấm **Chia sẻ Zalo**. |
-| **06:00 - 07:30**<br>(1.5 Phút) | **Trải Nghiệm Tenant Portal & Báo Hỏng** | "Bây giờ trong vai người thuê trọ, em mở tab ẩn danh vào `/portal/login`, nhập SĐT và mã PIN. Khách thấy ngay hoá đơn để quét VietQR và gửi phản ánh gãy vòi sen kèm ảnh chụp. Sự cố nhảy ngay lên bảng Kanban của chủ nhà." | Mở Tab ẩn danh vào `/portal/login` ➜ Nhập SĐT + PIN ➜ Xem hoá đơn ➜ Gửi báo hỏng ➜ Xem Kanban ở tab Chủ. |
-| **07:30 - 09:00**<br>(1.5 Phút) | **Quyết Toán Trả Phòng Hoàn Cọc** | "Khi khách dọn đi, em dùng tính năng **Quyết toán trả phòng**: chốt điện nước ngày cuối, trừ tiền bẩn tường 200.000 đ vào cọc 3.5 triệu, hệ thống tự tính tiền hoàn cọc và xuất tin nhắn Zalo, trả phòng về trạng thái Trống." | Vào `/contracts` ➜ Bấm **Quyết toán trả phòng** ➜ Nhập khoản trừ ➜ Xác nhận ➜ Xem phòng về trạng thái Trống. |
-| **09:00 - 10:00**<br>(1 Phút) | **Kiến Trúc Kỹ Thuật & Kết Luận** | "Dự án sử dụng Next.js 15, React 19, Supabase RLS Multi-tenancy và tối ưu tải trang &lt;500ms. Em xin cảm ơn Hội đồng và sẵn sàng nhận câu hỏi phản biện." | Click chuyển menu liên tục để biểu diễn tốc độ &lt;500ms mượt mà không trắng trang. |
+| **00:00 - 01:15**<br>(1.25 Phút) | **Tổng Quan & Đặt Vấn Đề** | "Kính thưa Hội đồng, quản lý nhà trọ truyền thống thường phân mảnh qua sổ tay, giấy nháp và Excel rời rạc. Hôm nay nhóm em xin trình diễn **RentFlow** - Giải pháp chuyển đổi số toàn diện kết nối Chủ nhà và Khách thuê qua 2 cổng độc lập trên chuỗi vận hành 5 mắt xích khép kín." | Mở `/dashboard`, chỉ vào tài khoản chủ nhà **Đại Hải**, KPI doanh thu, tỷ lệ phòng trống và menu điều hướng. |
+| **01:15 - 02:45**<br>(1.5 Phút) | **Khởi Tạo Toà Nhà & Sinh Nhanh 6 Phòng Trọ** | "Đầu tiên, em tạo toà nhà Cơ Sở 1 và cài giá điện (3.500 đ) + nước (25.000 đ). Thay vì nhập từng phòng, em dùng **Batch Room Generator** tạo nhanh **6 phòng trọ** (P101 đến P106, giá 3.5 triệu). Bảng Preview tự động sinh và lưu hoàn tất trong 0.2 giây." | Vào `/buildings/[id]` ➜ Cài giá điện nước ➜ Bấm **⚡ Tạo phòng tự động** ➜ Tạo 6 phòng ➜ Xem 6 thẻ phòng hiển thị. |
+| **02:45 - 04:30**<br>(1.75 Phút) | **Thêm 3 Khách & Ký 3 Hợp Đồng Đổi Trạng Thái** | "Tiếp theo, em thêm 3 khách thuê kèm ảnh CCCD và ký 3 hợp đồng cho phòng P101, P102, P103. Mỗi hợp đồng nhận cọc 3.5 triệu và chốt điện nước đầu. Ngay lập tức 3 phòng đổi sang màu xanh (Occupied), 3 phòng còn lại vẫn Trống." | Vào `/tenants` thêm khách ➜ Vào `/contracts` ký 3 hợp đồng ➜ Mở danh sách phòng xem 3 phòng xanh (Occupied). |
+| **04:30 - 06:15**<br>(1.75 Phút) | **Chốt Điện Nước & Sinh Hoá Đơn VietQR Động** | "Đến kỳ thu tiền, em vào **Meters** ghi số điện nước mới. Thuật toán tự chặn nếu em gõ số mới nhỏ hơn số cũ. Sau đó vào **Invoices** bấm 'Sinh hoá đơn hàng loạt'. Hoá đơn tự động gắn mã **VietQR động** nạp sẵn tiền nợ và nút chia sẻ Zalo 1-click." | Vào `/meters` nhập số mới ➜ Vào `/invoices` bấm sinh hoá đơn ➜ Mở hoá đơn xem QR ➜ Bấm **Chia sẻ Zalo**. |
+| **06:15 - 07:45**<br>(1.5 Phút) | **Kéo Thả Sự Cố & Ghi Nhận Chi Phí Vận Hành** | "Bên cạnh chuỗi thu tiền, hệ thống hỗ trợ vận hành bằng bảng **Incident Kanban**: Khi phòng P101 báo hỏng đèn, em kéo thẻ từ Chờ xử lý sang Đang sửa. Đồng thời vào **Expenses** thêm 1 dòng chi phí sửa chữa 150.000 đ để hạch toán lợi nhuận." | Vào `/incidents` kéo thả thẻ sự cố ➜ Vào `/expenses` thêm 1 khoản chi phí theo danh mục. |
+| **07:45 - 09:00**<br>(1.25 Phút) | **Kết Quả Dashboard Thời Gian Thực (Khớp 100% Ảnh Slide)** | "Quay lại **Dashboard**, toàn bộ số liệu tổng hợp khớp hoàn toàn với kịch bản:  
+• Tổng doanh thu dự kiến: **10.500.000 đ** (3 phòng x 3.5 triệu).  
+• Tình trạng phòng: **3 phòng đang thuê / 3 phòng trống**.  
+• **Tỷ lệ lấp đầy đạt đúng 50%**." | Mở Dashboard <code>/dashboard</code>, trỏ vào con số **10.500.000 đ** và biểu đồ tròn **50% lấp đầy (3/6 phòng)**. |
+| **09:00 - 10:00**<br>(1 Phút) | **Kiến Trúc Kỹ Thuật & Sẵn Sàng Phản Biện** | "Dự án sử dụng Next.js 15, React 19, Supabase RLS qua 19 file migration SQL, phân tách 3 môi trường thực thi và tối ưu tốc độ <500ms. Em xin chân thành cảm ơn Hội đồng và sẵn sàng nhận câu hỏi phản biện!" | Chuyển qua lại các menu để biểu diễn tốc độ tức thì <500ms không giật lag và chuyển slide sang trang Q&A. |
 
 ---
 
 ## 4. BỘ CÂU HỎI & CÂU TRẢ LỜI PHẢN BIỆN TRƯỚC HỘI ĐỒNG (Q&A CHEATSHEET)
 
 ### Câu 1: Làm sao đảm bảo dữ liệu giữa các chủ nhà không bao giờ bị lẫn lộn?
-> **Đáp án ghi điểm:** Hệ thống áp dụng **Row Level Security (RLS)** ở cấp nhân PostgreSQL của Supabase. Mọi bảng dữ liệu đều gắn `organization_id`. Khi người dùng truy vấn, PostgreSQL thực thi chính sách kiểm tra `auth.uid()` khớp với tổ chức của họ. Hacker dù có sửa mã frontend hay gọi trực tiếp REST API cũng không thể lấy được bản ghi của chủ trọ khác.
+> **Đáp án ghi điểm:** Hệ thống áp dụng **Row Level Security (RLS)** ở cấp nhân PostgreSQL của Supabase. Mọi bảng dữ liệu đều gắn `org_id`. Khi người dùng truy vấn, PostgreSQL thực thi chính sách kiểm tra `auth.uid()` khớp với tổ chức của họ. Toàn bộ cấu trúc bảng và chính sách phân quyền RLS được quản trị chặt chẽ qua **19 file migration SQL trong thư mục `supabase/migrations/`** và lưu vết đầy đủ trong Git repo, đảm bảo chuẩn CI/CD và tính toàn vẹn khi triển khai.
 
-### Câu 2: Tại sao Tenant Portal lại dùng mã PIN 6 số mà không dùng email/mật khẩu?
-> **Đáp án ghi điểm:** Khách thuê trọ thường có tâm lý ngại đăng ký tài khoản rườm rà và hay quên mật khẩu. Sử dụng Số điện thoại + Mã PIN 6 số do chủ nhà cấp tạo trải nghiệm **Frictionless UX** (tiện lợi tối đa). Khi hợp đồng kết thúc hoặc khách dọn đi, mã PIN sẽ tự động bị huỷ, đảm bảo an toàn tuyệt đối.
+### Câu 2: Tại sao Tenant Portal lại dùng mã PIN 6 số mà không dùng email/mật khẩu? Chủ nhà quản lý mã này ở đâu?
+> **Đáp án ghi điểm:** Khách thuê trọ thường ngại đăng ký tài khoản rườm rà và hay quên mật khẩu. Sử dụng Số điện thoại + Mã PIN 6 số do chủ nhà cấp tạo trải nghiệm **Frictionless UX** (tiện lợi tối đa) và bảo mật qua HTTP-Only cookies.  
+> Trên giao diện Quản lý Khách thuê (`TenantsClient.tsx`), chủ trọ có riêng cột xem mã PIN, nút **1-click sao chép thông tin gửi Zalo** (gồm link portal + SĐT + PIN), và nút **"Đổi mã PIN mới"** tức thì nếu khách quên hoặc cần bảo mật lại. Khi khách trả phòng, mã PIN sẽ tự động vô hiệu hoá.
 
 ### Câu 3: Làm thế nào để đạt được tốc độ chuyển trang dưới 500ms?
 > **Đáp án ghi điểm:** 
@@ -158,8 +166,12 @@
 > - *Lớp 1 (Application):* Kiểm tra điều kiện chồng lấn ngày `(check_in <= new_check_out AND check_out >= new_check_in)` trước khi tạo.
 > - *Lớp 2 (Database Engine):* Sử dụng ràng buộc loại trừ PostgreSQL `EXCLUDE USING gist (room_id WITH =, daterange(check_in, check_out) WITH &&)`. Ràng buộc này đảm bảo tính toàn vẹn cấp độ vi giây kể cả khi có 2 request gửi đồng thời.
 
-### Câu 5: Nếu Webhook PayOS bị gọi lặp lại (Retry) do mạng chập chờn thì sao?
-> **Đáp án ghi điểm:** Endpoint Webhook được thiết kế theo nguyên lý **Idempotent** (bất biến): Kiểm tra chữ ký HMAC SHA256 để chống giả mạo, sau đó kiểm tra trạng thái hoá đơn. Nếu hoá đơn đã là `paid`, hệ thống trả ngay HTTP 200 mà không cộng tiền hay ghi log trùng lặp.
+### Câu 5: Cơ chế Webhook của PayOS đối soát hoá đơn như thế nào? Nếu nhà mạng chập chờn gửi lại webhook nhiều lần (Retry) thì có bị lỗi dữ liệu không?
+> **Đáp án ghi điểm:** Endpoint Webhook tại `/api/webhooks/payos` được thiết kế theo chuẩn đối soát 2 lớp tự động và bất biến (Idempotent):
+> - *Khớp hoá đơn 2 lớp thông minh:* Lớp 1 ưu tiên tìm theo mã số `order_code` chuẩn của PayOS được lưu trên hoá đơn. Nếu không có, Lớp 2 (Fallback) tự động dùng Regular Expression trích xuất mã UUID của hoá đơn từ nội dung thanh toán `description`.
+> - *Xác thực chữ ký số:* Webhook kiểm tra `signature` gửi kèm bằng thuật toán HMAC SHA256 với Client ID, API Key và Checksum Key của tổ chức (hoặc khóa hệ thống) để chống giả mạo giao dịch nạp tiền.
+> - *Xử lý bất biến (Idempotency):* Khi nhận thông báo, hệ thống kiểm tra nếu hoá đơn đã `status === 'paid'` thì phản hồi HTTP 200 ngay, không cộng dồn tiền hay ghi log trùng lặp.
+> - *Cập nhật trạng thái tự động:* Tự động tính `paid_amount` mới, đổi trạng thái sang 'paid', và lưu dấu thời gian hoàn tất `paid_at`. Đồng thời chủ trọ vẫn có nút cập nhật thanh toán thủ công nếu khách trả bằng tiền mặt.
 
 ---
 *Tài liệu được biên soạn phục vụ buổi báo cáo và bảo vệ đồ án tốt nghiệp RentFlow.*
