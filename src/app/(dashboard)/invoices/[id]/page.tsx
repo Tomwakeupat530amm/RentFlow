@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import InvoiceExport from '@/components/invoices/InvoiceExport';
 import type { Invoice, InvoiceItem } from '@/types/database';
 import PaymentSection from '@/components/invoices/PaymentSection';
+import PrintInvoiceButton from '@/components/invoices/PrintInvoiceButton';
 
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -85,13 +86,16 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 title={`Chi tiết hoá đơn`}
                 subtitle={`Phòng ${room?.name || '...'} - Tháng ${invoice.month}`}
                 extra={
-                    <InvoiceExport
-                        invoice={invoice as unknown as Invoice}
-                        items={items as unknown as InvoiceItem[]}
-                        tenantName={tenant?.full_name}
-                        roomName={room?.name}
-                        buildingName={building?.name}
-                    />
+                    <div className="flex gap-2 no-print">
+                        <PrintInvoiceButton />
+                        <InvoiceExport
+                            invoice={invoice as unknown as Invoice}
+                            items={items as unknown as InvoiceItem[]}
+                            tenantName={tenant?.full_name}
+                            roomName={room?.name}
+                            buildingName={building?.name}
+                        />
+                    </div>
                 }
             />
 

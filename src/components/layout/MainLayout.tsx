@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Dropdown, Avatar, Drawer, Grid } from 'antd';
+import { Layout, Menu, Button, Dropdown, Avatar, Drawer, Grid, Badge } from 'antd';
 import {
     DashboardOutlined,
     HomeOutlined,
@@ -18,6 +18,9 @@ import {
     QuestionCircleOutlined,
     ToolOutlined,
     WalletOutlined,
+    ScheduleOutlined,
+    ClearOutlined,
+    PlusOutlined,
 } from '@ant-design/icons';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -25,6 +28,7 @@ import { logout } from '@/app/(auth)/actions';
 import NotificationBell from '@/components/layout/NotificationBell';
 import SidebarSubscriptionCard from '@/components/layout/SidebarSubscriptionCard';
 import type { PlanType } from '@/types/database';
+import type { PendingActionCounts } from '@/lib/dashboard/pending-actions';
 
 const { Header, Sider, Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -36,6 +40,7 @@ interface MainLayoutProps {
     userRole: string;
     planType?: PlanType;
     roomCount?: number;
+    pendingCounts?: PendingActionCounts;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ 
@@ -45,6 +50,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     userRole,
     planType,
     roomCount,
+    pendingCounts,
 }) => {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -96,7 +102,35 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/contracts',
                     icon: <FileTextOutlined />,
-                    label: <Link href="/contracts">Hợp đồng</Link>,
+                    label: (
+                        <Link href="/contracts" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                            <span>Hợp đồng</span>
+                            {Boolean(pendingCounts && pendingCounts.expiringContracts > 0) && (
+                                <Badge
+                                    count={pendingCounts?.expiringContracts}
+                                    style={{ backgroundColor: '#eab308', boxShadow: 'none' }}
+                                    title={`${pendingCounts?.expiringContracts} hợp đồng sắp hết hạn`}
+                                />
+                            )}
+                        </Link>
+                    ),
+                },
+            ],
+        },
+        {
+            key: 'homestay-group',
+            label: 'Homestay',
+            type: 'group' as const,
+            children: [
+                {
+                    key: '/homestay/bookings',
+                    icon: <ScheduleOutlined />,
+                    label: <Link href="/homestay/bookings">Lịch đặt phòng</Link>,
+                },
+                {
+                    key: '/homestay/housekeeping',
+                    icon: <ClearOutlined />,
+                    label: <Link href="/homestay/housekeeping">Dọn dẹp</Link>,
                 },
             ],
         },
@@ -113,7 +147,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/invoices',
                     icon: <DollarOutlined />,
-                    label: <Link href="/invoices">Hoá đơn</Link>,
+                    label: (
+                        <Link href="/invoices" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                            <span>Hoá đơn</span>
+                            {Boolean(pendingCounts && pendingCounts.unpaidInvoices > 0) && (
+                                <Badge
+                                    count={pendingCounts?.unpaidInvoices}
+                                    style={{ backgroundColor: '#f97316', boxShadow: 'none' }}
+                                    title={`${pendingCounts?.unpaidInvoices} hoá đơn chưa thanh toán / quá hạn`}
+                                />
+                            )}
+                        </Link>
+                    ),
                 },
                 {
                     key: '/expenses',
@@ -130,7 +175,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {
                     key: '/incidents',
                     icon: <ToolOutlined />,
-                    label: <Link href="/incidents">Sự cố</Link>,
+                    label: (
+                        <Link href="/incidents" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                            <span>Sự cố</span>
+                            {Boolean(pendingCounts && pendingCounts.incidents > 0) && (
+                                <Badge
+                                    count={pendingCounts?.incidents}
+                                    style={{ backgroundColor: '#ef4444', boxShadow: 'none' }}
+                                    title={`${pendingCounts?.incidents} sự cố đang chờ xử lý`}
+                                />
+                            )}
+                        </Link>
+                    ),
                 },
                 {
                     key: '/settings',
@@ -138,6 +194,70 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                     label: <Link href="/settings">Cài đặt</Link>,
                 },
             ],
+        },
+    ];
+
+    const quickCreateItems = [
+        {
+            key: 'contract',
+            icon: <FileTextOutlined style={{ color: '#0d9488', fontSize: 16 }} />,
+            label: (
+                <Link href="/contracts" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Tạo hợp đồng mới</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Lập hợp đồng cho khách thuê mới</div>
+                </Link>
+            ),
+        },
+        {
+            key: 'meter',
+            icon: <ThunderboltOutlined style={{ color: '#eab308', fontSize: 16 }} />,
+            label: (
+                <Link href="/meters" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Ghi điện nước tháng này</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Nhập chỉ số điện, nước các phòng</div>
+                </Link>
+            ),
+        },
+        {
+            key: 'invoice',
+            icon: <DollarOutlined style={{ color: '#16a34a', fontSize: 16 }} />,
+            label: (
+                <Link href="/invoices" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Lập hoá đơn hàng loạt</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Tính tiền phòng & dịch vụ hàng tháng</div>
+                </Link>
+            ),
+        },
+        { type: 'divider' as const },
+        {
+            key: 'expense',
+            icon: <WalletOutlined style={{ color: '#ef4444', fontSize: 16 }} />,
+            label: (
+                <Link href="/expenses" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Thêm khoản chi phí</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Ghi nhận chi phí vận hành, sửa chữa</div>
+                </Link>
+            ),
+        },
+        {
+            key: 'incident',
+            icon: <ToolOutlined style={{ color: '#f97316', fontSize: 16 }} />,
+            label: (
+                <Link href="/incidents" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Ghi nhận sự cố</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Tiếp nhận báo hỏng hóc từ khách</div>
+                </Link>
+            ),
+        },
+        {
+            key: 'tenant',
+            icon: <TeamOutlined style={{ color: '#3b82f6', fontSize: 16 }} />,
+            label: (
+                <Link href="/tenants" style={{ display: 'block', padding: '2px 0' }}>
+                    <div style={{ fontWeight: 600 }}>Thêm khách thuê</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Hồ sơ khách, CCCD, thông tin liên lạc</div>
+                </Link>
+            ),
         },
     ];
 
@@ -321,7 +441,34 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                         className="hover:bg-slate-100"
                     />
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
+                        {/* Quick Create Action Dropdown */}
+                        <Dropdown
+                            menu={{ items: quickCreateItems }}
+                            trigger={['click']}
+                            placement="bottomRight"
+                            overlayStyle={{ minWidth: 260 }}
+                        >
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                style={{
+                                    background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
+                                    border: 'none',
+                                    borderRadius: 8,
+                                    fontWeight: 600,
+                                    height: isMobile ? 36 : 38,
+                                    padding: isMobile ? '0 10px' : '0 14px',
+                                    boxShadow: '0 2px 6px rgba(13, 148, 136, 0.25)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                }}
+                            >
+                                {!isMobile && 'Tạo nhanh'}
+                            </Button>
+                        </Dropdown>
+
                         {userId && <NotificationBell userId={userId} />}
 
                         <Dropdown

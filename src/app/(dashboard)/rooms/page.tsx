@@ -3,12 +3,14 @@ import { getAllRooms } from './actions';
 import RoomsClient from './RoomsClient';
 import { getOrgPlan, getOrgUsage } from '@/lib/subscription/actions';
 import { FREE_TIER_LIMITS } from '@/types/database';
+import { getBuildings } from '@/app/(dashboard)/buildings/actions';
 
 export default async function RoomsPage() {
-    const [{ data: rooms }, { planType }, usage] = await Promise.all([
+    const [{ data: rooms }, { planType }, usage, { data: buildings }] = await Promise.all([
         getAllRooms(),
         getOrgPlan(),
         getOrgUsage(),
+        getBuildings(),
     ]);
 
     return (
@@ -19,6 +21,7 @@ export default async function RoomsPage() {
             />
             <RoomsClient 
                 initialRooms={rooms || []} 
+                buildings={(buildings || []).map((b) => ({ id: (b as { id: string }).id, name: (b as { name: string }).name }))}
                 roomCount={usage.room_count}
                 limit={FREE_TIER_LIMITS.MAX_ROOMS}
                 planType={planType}

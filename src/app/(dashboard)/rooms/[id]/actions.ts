@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { getOrgId } from '@/lib/rbac/guard';
 
 export async function getRoomInfo(roomId: string) {
     const supabase = await createClient();
@@ -48,8 +49,23 @@ export async function getRoomMeterHistory(roomId: string) {
     return { data: data || [], error: null };
 }
 
+
 export async function switchRoomModel(roomId: string, currentType: 'long_term' | 'short_term') {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
+
+    // Kiểm tra phòng thuộc tổ chức quản lý (Defense-in-Depth)
+    const { data: room, error: roomErr } = await supabase
+        .from('rooms')
+        .select('id, building:buildings!inner(org_id)')
+        .eq('id', roomId)
+        .eq('buildings.org_id', orgId)
+        .single();
+
+    if (roomErr || !room) {
+        return { error: 'Không tìm thấy phòng hoặc bạn không có quyền thao tác trên phòng này.' };
+    }
     
     if (currentType === 'long_term') {
         // Check for active contracts

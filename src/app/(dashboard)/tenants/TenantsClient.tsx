@@ -7,6 +7,7 @@ import {
 import {
     PlusOutlined, EditOutlined, DeleteOutlined, PhoneOutlined,
     MailOutlined, IdcardOutlined, UserOutlined, ReloadOutlined,
+    SendOutlined, CopyOutlined,
 } from '@ant-design/icons';
 import type { Tenant } from '@/types/database';
 import { deleteTenant, toggleTenantActive, regenerateTenantPin } from './actions';
@@ -175,26 +176,60 @@ export default function TenantsClient({ initialTenants, serverError, isPremium =
         {
             title: 'Mã PIN Portal',
             key: 'access_code',
-            width: 150,
-            render: (_: unknown, record: Tenant) => (
-                <Space size={6}>
-                    <Typography.Text 
-                        code 
-                        copyable={record.access_code ? { text: record.access_code, tooltips: ['Sao chép PIN', 'Đã chép!'] } : false}
-                        style={{ fontWeight: 600, color: record.access_code ? '#0284c7' : '#94a3b8' }}
-                    >
-                        {record.access_code || 'Chưa cấp'}
-                    </Typography.Text>
-                    <Tooltip title="Cấp lại mã PIN mới">
-                        <Button
-                            type="text"
-                            size="small"
-                            icon={<ReloadOutlined style={{ fontSize: 12, color: '#64748b' }} />}
-                            onClick={() => handleRegeneratePin(record)}
-                        />
-                    </Tooltip>
-                </Space>
-            ),
+            width: 200,
+            render: (_: unknown, record: Tenant) => {
+                const portalUrl = typeof window !== 'undefined' ? `${window.location.origin}/portal/login` : '/portal/login';
+                const infoText = `Thông tin đăng nhập Portal:\n- Link: ${portalUrl}\n- SĐT: ${record.phone || '(chưa có)'}\n- Mã PIN: ${record.access_code || '(chưa cấp)'}`;
+                const zaloMsg = encodeURIComponent(infoText);
+                const zaloUrl = record.phone
+                    ? `https://zalo.me/${record.phone.replace(/^0/, '84').replace(/\s/g, '')}?text=${zaloMsg}`
+                    : null;
+
+                return (
+                    <Space size={4} wrap>
+                        <Typography.Text
+                            code
+                            copyable={record.access_code ? { text: record.access_code, tooltips: ['Sao chép PIN', 'Đã chép!'] } : false}
+                            style={{ fontWeight: 600, color: record.access_code ? '#0284c7' : '#94a3b8' }}
+                        >
+                            {record.access_code || 'Chưa cấp'}
+                        </Typography.Text>
+                        <Tooltip title="Cấp lại mã PIN mới">
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<ReloadOutlined style={{ fontSize: 12, color: '#64748b' }} />}
+                                onClick={() => handleRegeneratePin(record)}
+                            />
+                        </Tooltip>
+                        {record.access_code && (
+                            <>
+                                <Tooltip title="Sao chép thông tin đăng nhập">
+                                    <Button
+                                        type="text"
+                                        size="small"
+                                        icon={<CopyOutlined style={{ fontSize: 12, color: '#64748b' }} />}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(infoText);
+                                            message.success('Đã sao chép thông tin Portal!');
+                                        }}
+                                    />
+                                </Tooltip>
+                                {zaloUrl && (
+                                    <Tooltip title="Gửi qua Zalo">
+                                        <Button
+                                            type="text"
+                                            size="small"
+                                            icon={<SendOutlined style={{ fontSize: 12, color: '#06B6D4' }} />}
+                                            onClick={() => window.open(zaloUrl, '_blank')}
+                                        />
+                                    </Tooltip>
+                                )}
+                            </>
+                        )}
+                    </Space>
+                );
+            },
         },
         {
             title: 'Ghi chú',

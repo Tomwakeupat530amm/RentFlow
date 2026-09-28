@@ -53,7 +53,7 @@ export default function RevenueChart({ data }: Props) {
             title={<span style={{ fontWeight: 700, fontSize: 15 }}>Lợi Nhuận (P&L) 6 tháng qua</span>}
         >
             <div style={{ height: 350, width: '100%', marginTop: 16 }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={350}>
                     <BarChart
                         data={formattedData}
                         margin={{

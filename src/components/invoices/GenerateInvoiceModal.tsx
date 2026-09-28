@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Modal, Form, Select, DatePicker, notification } from 'antd';
-import { generateInvoices } from '@/app/(dashboard)/invoices/actions';
+import { useState, useEffect, useCallback } from 'react';
+import { Modal, Form, Select, DatePicker, notification, Alert } from 'antd';
+import { generateInvoices, checkMeterReadiness } from '@/app/(dashboard)/invoices/actions';
 import { getBuildings } from '@/app/(dashboard)/buildings/actions';
 import dayjs from 'dayjs';
 
@@ -24,6 +24,22 @@ export default function GenerateInvoiceModal({
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [buildings, setBuildings] = useState<{ id: string, name: string }[]>([]);
+    const [readiness, setReadiness] = useState<{ total: number; entered: number; missing: string[] } | null>(null);
+    const [checkingReadiness, setCheckingReadiness] = useState(false);
+
+    // Declare checkReadiness BEFORE useEffect so it can be used in deps
+    const checkReadiness = useCallback(async (buildingId: string, month: string) => {
+        if (!buildingId || !month) { setReadiness(null); return; }
+        setCheckingReadiness(true);
+        const { data } = await checkMeterReadiness(buildingId, month);
+        if (data) setReadiness(data);
+        setCheckingReadiness(false);
+    }, []);
+
+    const fetchBuildings = async () => {
+        const { data } = await getBuildings();
+        if (data) setBuildings(data);
+    };
 
     useEffect(() => {
         if (open) {
@@ -32,14 +48,24 @@ export default function GenerateInvoiceModal({
                 building_id: initialBuildingId || undefined,
                 month: initialMonth || dayjs()
             });
+            // Auto-check readiness with initial values
+            if (initialBuildingId && initialMonth) {
+                checkReadiness(initialBuildingId, initialMonth.format('YYYY-MM'));
+            }
         } else {
             form.resetFields();
+            setReadiness(null);
         }
-    }, [open, form, initialBuildingId, initialMonth]);
+    }, [open, form, initialBuildingId, initialMonth, checkReadiness]);
 
-    const fetchBuildings = async () => {
-        const { data } = await getBuildings();
-        if (data) setBuildings(data);
+    const handleValuesChange = (_changed: Record<string, unknown>, all: { building_id?: string; month?: dayjs.Dayjs }) => {
+        const bId = all.building_id;
+        const m = all.month;
+        if (bId && m) {
+            checkReadiness(bId, m.format('YYYY-MM'));
+        } else {
+            setReadiness(null);
+        }
     };
 
     const handleSubmit = async (values: { building_id: string, month: dayjs.Dayjs }) => {
@@ -71,6 +97,32 @@ export default function GenerateInvoiceModal({
         }
     };
 
+    const renderReadinessBanner = () => {
+        if (!readiness || checkingReadiness) return null;
+        const { total, entered, missing } = readiness;
+        if (total === 0) return null;
+
+        if (entered === total) {
+            return (
+                <Alert
+                    type="success"
+                    showIcon
+                    message={`✅ Tất cả ${total} phòng đã chốt chỉ số điện/nước tháng này.`}
+                    className="mb-4"
+                />
+            );
+        }
+        const missingStr = missing.slice(0, 5).join(', ') + (missing.length > 5 ? ` và ${missing.length - 5} phòng khác` : '');
+        return (
+            <Alert
+                type="warning"
+                showIcon
+                message={`⚠️ Có ${missing.length}/${total} phòng chưa chốt chỉ số điện/nước (${missingStr}). Tiền điện/nước của các phòng này sẽ tính là 0đ.`}
+                className="mb-4"
+            />
+        );
+    };
+
     return (
         <Modal
             title="Tạo Hoá Đơn Hàng Loạt"
@@ -90,6 +142,7 @@ export default function GenerateInvoiceModal({
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
+                onValuesChange={handleValuesChange}
             >
                 <Form.Item
                     name="building_id"
@@ -115,6 +168,7 @@ export default function GenerateInvoiceModal({
                     />
                 </Form.Item>
             </Form>
+            {renderReadinessBanner()}
         </Modal>
     );
 }

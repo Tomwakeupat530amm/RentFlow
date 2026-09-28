@@ -1,24 +1,9 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 
 export async function getActivityLogs() {
-    const supabase = await createClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        throw new Error('Not authenticated');
-    }
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    if (!profile?.org_id) {
-        throw new Error('Organization not found');
-    }
+    const { supabase, orgId } = await requireAuthOrg();
 
     const { data, error } = await supabase
         .from('activity_logs')
@@ -36,7 +21,7 @@ export async function getActivityLogs() {
                 email
             )
         `)
-        .eq('org_id', profile.org_id)
+        .eq('org_id', orgId)
         .order('created_at', { ascending: false })
         .limit(100);
 

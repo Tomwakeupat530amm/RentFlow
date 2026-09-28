@@ -2,28 +2,17 @@
 
 import { createClient } from '@/lib/supabase/server';
 import type { TenantFormData } from '@/types/database';
-
-// Helper: get current user's org_id
-async function getOrgId() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    return profile?.org_id || null;
-}
+import { getOrgId } from '@/lib/rbac/guard';
 
 export async function getTenants() {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { data: null, error: 'Chưa đăng nhập' };
 
     const { data, error } = await supabase
         .from('tenants')
         .select('*')
+        .eq('org_id', orgId)
         .is('deleted_at', null)
         .order('created_at', { ascending: false });
 
@@ -33,11 +22,14 @@ export async function getTenants() {
 
 export async function getTenantById(id: string) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { data: null, error: 'Chưa đăng nhập' };
 
     const { data, error } = await supabase
         .from('tenants')
         .select('*')
         .eq('id', id)
+        .eq('org_id', orgId)
         .is('deleted_at', null)
         .single();
 
@@ -78,12 +70,16 @@ export async function createTenant(formData: TenantFormData) {
 
 export async function regenerateTenantPin(id: string) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
+
     const newPin = generatePinCode();
 
     const { error } = await supabase
         .from('tenants')
         .update({ access_code: newPin })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
     return { success: true, pin: newPin };
@@ -91,6 +87,8 @@ export async function regenerateTenantPin(id: string) {
 
 export async function updateTenant(id: string, formData: TenantFormData) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('tenants')
@@ -104,7 +102,8 @@ export async function updateTenant(id: string, formData: TenantFormData) {
             permanent_address: formData.permanent_address || null,
             notes: formData.notes || null,
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
     return { success: true };
@@ -112,11 +111,14 @@ export async function updateTenant(id: string, formData: TenantFormData) {
 
 export async function deleteTenant(id: string) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('tenants')
         .update({ deleted_at: new Date().toISOString() })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
     return { success: true };
@@ -124,11 +126,14 @@ export async function deleteTenant(id: string) {
 
 export async function toggleTenantActive(id: string, isActive: boolean) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('tenants')
         .update({ is_active: isActive })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
     return { success: true };

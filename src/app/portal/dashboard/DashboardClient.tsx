@@ -23,7 +23,9 @@ export default function DashboardClient({ session, roomInfo, unpaidInvoices, rec
                                 <FileTextOutlined className="text-2xl text-blue-500" />
                                 <div className="flex-1">
                                     <Link href={`/portal/invoices/${item.id}`} className="font-medium text-blue-600 block">
-                                        Hoá đơn tháng {new Date(item.created_at).getMonth() + 1}
+                                        {item.month
+                                            ? `Hoá đơn kỳ ${item.month.split('-').slice(0,2).reverse().join('/')}`
+                                            : `Hoá đơn tháng ${new Date(item.created_at).getMonth() + 1}`}
                                     </Link>
                                     <span className="text-red-500 font-bold">{item.total_amount?.toLocaleString()} đ</span>
                                 </div>

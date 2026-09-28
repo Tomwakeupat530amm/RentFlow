@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Table, Tag, Empty } from 'antd';
+import { Card, Table, Tag, Empty, Button, Modal, Select } from 'antd';
 import {
-    HomeOutlined, CheckCircleOutlined, ToolOutlined,
+    HomeOutlined, CheckCircleOutlined, ToolOutlined, PlusOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Room, RoomStatus, RoomType, PlanType } from '@/types/database';
 import SearchInput from '@/components/common/SearchInput';
 import QuotaProgress from '@/components/common/QuotaProgress';
@@ -27,15 +28,24 @@ const roomTypeLabels: Record<RoomType, string> = {
 
 type RoomWithBuilding = Room & { building_name: string };
 
+interface Building {
+    id: string;
+    name: string;
+}
+
 interface Props {
     initialRooms: RoomWithBuilding[];
+    buildings?: Building[];
     roomCount?: number;
     limit?: number;
     planType?: PlanType;
 }
 
-export default function RoomsClient({ initialRooms, roomCount, limit = 10, planType = 'free' }: Props) {
+export default function RoomsClient({ initialRooms, buildings = [], roomCount, limit = 10, planType = 'free' }: Props) {
     const [search, setSearch] = useState('');
+    const [addRoomOpen, setAddRoomOpen] = useState(false);
+    const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
+    const router = useRouter();
 
     const filtered = initialRooms.filter(
         (r) =>
@@ -53,6 +63,9 @@ export default function RoomsClient({ initialRooms, roomCount, limit = 10, planT
                     <Link href={`/rooms/${record.id}`} style={{ color: '#0d9488', fontWeight: 600 }}>
                         {name}
                     </Link>
+                    {record.rental_type === 'short_term' && (
+                        <Tag color="purple" className="m-0 border-purple-200 bg-purple-50">Homestay</Tag>
+                    )}
                 </div>
             ),
             sorter: (a: RoomWithBuilding, b: RoomWithBuilding) => a.name.localeCompare(b.name),
@@ -127,13 +140,24 @@ export default function RoomsClient({ initialRooms, roomCount, limit = 10, planT
             )}
 
             <Card style={{ borderRadius: 12 }} styles={{ body: { padding: '16px 0' } }} className="shadow-sm border-gray-100">
-            <div className="px-4 pb-4 flex flex-col md:flex-row justify-end items-end md:items-center gap-4">
+            <div className="px-4 pb-4 flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
                 <div className="w-full md:w-64">
                     <SearchInput
                         placeholder="Tìm phòng, toà nhà..."
                         onSearch={setSearch}
                     />
                 </div>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                        setSelectedBuilding(buildings.length === 1 ? buildings[0].id : null);
+                        setAddRoomOpen(true);
+                    }}
+                    disabled={buildings.length === 0}
+                >
+                    Thêm phòng
+                </Button>
             </div>
             {filtered.length === 0 && !search ? (
                 <div style={{ padding: '24px 16px' }}>
@@ -151,6 +175,32 @@ export default function RoomsClient({ initialRooms, roomCount, limit = 10, planT
                 />
             )}
         </Card>
+
+            {/* Quick-add room: select building → navigate to building detail */}
+            <Modal
+                title="Thêm phòng mới"
+                open={addRoomOpen}
+                onCancel={() => setAddRoomOpen(false)}
+                onOk={() => {
+                    if (selectedBuilding) {
+                        router.push(`/buildings/${selectedBuilding}`);
+                        setAddRoomOpen(false);
+                    }
+                }}
+                okText="Đi tới trang toà nhà"
+                cancelText="Huỷ"
+                okButtonProps={{ disabled: !selectedBuilding }}
+            >
+                <p className="text-gray-500 mb-3">Chọn toà nhà muốn thêm phòng:</p>
+                <Select
+                    className="w-full"
+                    placeholder="-- Chọn toà nhà --"
+                    value={selectedBuilding}
+                    onChange={setSelectedBuilding}
+                    options={buildings.map(b => ({ value: b.id, label: b.name }))}
+                />
+                <p className="text-gray-400 text-xs mt-3">Ấn &quot;Đi tới trang toà nhà&quot; để thêm phòng ngay trong giao diện chi tiết.</p>
+            </Modal>
         </div>
     );
 }

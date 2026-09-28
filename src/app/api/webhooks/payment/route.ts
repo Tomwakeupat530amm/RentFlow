@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { payos } from '@/lib/payos';
+import dayjs from 'dayjs';
 
 export async function POST(req: Request) {
     try {
@@ -44,8 +45,7 @@ export async function POST(req: Request) {
             // Xác định thời hạn (mặc định 1 tháng, nếu cần phân tích từ description hoặc price để tính số tháng)
             // Trong đồ án, mặc định là 1 tháng (99,000 VND)
             const months = Math.round(transaction.amount / 99000);
-            const expiresAt = new Date();
-            expiresAt.setMonth(expiresAt.getMonth() + months);
+            const expiresAt = dayjs().add(months, 'month').toDate();
 
             // 1. Cập nhật subscriptions
             await supabase

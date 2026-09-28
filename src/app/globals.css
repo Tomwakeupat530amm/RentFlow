@@ -119,3 +119,39 @@ h6 {
     background-position: -200% 0;
   }
 }
+
+/* ─── Print styles: hide navigation chrome when printing invoices ─── */
+@media print {
+  /* Hide sidebar, top nav, buttons */
+  .ant-layout-sider,
+  .ant-layout-header,
+  aside,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+
+  .ant-layout-content,
+  .ant-layout {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  .ant-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 15mm;
+    size: A4;
+  }
+}

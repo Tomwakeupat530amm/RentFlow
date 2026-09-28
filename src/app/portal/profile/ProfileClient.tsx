@@ -4,10 +4,10 @@
 
 import React from 'react';
 import { Typography, Card, Button, Divider } from 'antd';
-import { UserOutlined, PhoneOutlined, KeyOutlined, LogoutOutlined } from '@ant-design/icons';
+import { UserOutlined, PhoneOutlined, KeyOutlined, LogoutOutlined, HomeOutlined } from '@ant-design/icons';
 import { redirect } from 'next/navigation';
 
-export default function ProfileClient({ session, handleLogout }: any) {
+export default function ProfileClient({ session, handleLogout, roomDisplay }: any) {
     return (
         <div className="p-4 space-y-6">
             <Typography.Title level={4}>Tài khoản</Typography.Title>
@@ -33,10 +33,10 @@ export default function ProfileClient({ session, handleLogout }: any) {
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <KeyOutlined className="text-gray-400 text-lg" />
+                        <HomeOutlined className="text-gray-400 text-lg" />
                         <div>
-                            <Typography.Text type="secondary" className="block text-xs">Mã phòng</Typography.Text>
-                            <Typography.Text strong>{session.room_id || 'Chưa xếp phòng'}</Typography.Text>
+                            <Typography.Text type="secondary" className="block text-xs">Phòng đang thuê</Typography.Text>
+                            <Typography.Text strong>{roomDisplay || 'Chưa xếp phòng'}</Typography.Text>
                         </div>
                     </div>
                 </div>

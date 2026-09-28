@@ -75,16 +75,47 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
     };
 
     const handleSave = async () => {
-        setSaving(true);
-        const monthStr = month.format('YYYY-MM-01');
-        const res = await upsertMeterRecords(monthStr, data);
-        if (res.error) {
-            message.error('Lưu thất bại: ' + res.error);
+        // Check if any row has new < old (possible typo)
+        const suspiciousRows = data.filter(
+            (r) => (r.electricity_new < r.electricity_old && r.electricity_old > 0) ||
+                    (r.water_new < r.water_old && r.water_old > 0)
+        );
+
+        const doSave = async () => {
+            setSaving(true);
+            const monthStr = month.format('YYYY-MM-01');
+            const res = await upsertMeterRecords(monthStr, data);
+            if (res.error) {
+                message.error('Lưu thất bại: ' + res.error);
+            } else {
+                message.success('Đã lưu chỉ số thành công');
+                loadData();
+                Modal.confirm({
+                    title: '🎉 Đã lưu chỉ số thành công!',
+                    content: `Bạn có muốn tiến hành lập hoá đơn thu tiền cho toà nhà này trong tháng ${month.format('MM/YYYY')} ngay bây giờ không?`,
+                    okText: 'Lập hoá đơn ngay',
+                    cancelText: 'Để sau',
+                    okButtonProps: { style: { backgroundColor: '#0d9488' } },
+                    onOk: () => {
+                        setGenerateModalOpen(true);
+                    },
+                });
+            }
+            setSaving(false);
+        };
+
+        if (suspiciousRows.length > 0) {
+            const roomNames = suspiciousRows.map((r) => r.room_name).join(', ');
+            Modal.confirm({
+                title: '⚠️ Xác nhận chỉ số bất thường',
+                content: `Phòng ${roomNames} có chỉ số mới nhỏ hơn số cũ. Nếu đây là trường hợp thay đồng hồ hoặc reset chỉ số, bấm Xác nhận để tiếp tục lưu.`,
+                okText: 'Xác nhận, lưu được',
+                cancelText: 'Kiểm tra lại',
+                onOk: doSave,
+            });
         } else {
-            message.success('Đã lưu chỉ số thành công');
-            loadData(); // refresh to get new IDs
+            await doSave();
         }
-        setSaving(false);
     };
 
     const handleScanMeter = async (file: File, index: number) => {
@@ -167,10 +198,22 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                 {
                     title: 'Số mới',
                     dataIndex: 'electricity_new',
-                    width: 100,
-                    render: (val: number, _: MeterRow, idx: number) => (
-                        <InputNumber value={val} min={0} onChange={v => handleChange(idx, 'electricity_new', v || 0)} style={{ width: '100%' }} />
-                    )
+                    width: 110,
+                    render: (val: number, record: MeterRow, idx: number) => {
+                        const isLow = val < record.electricity_old && record.electricity_old > 0;
+                        return (
+                            <div>
+                                <InputNumber
+                                    value={val}
+                                    min={0}
+                                    onChange={v => handleChange(idx, 'electricity_new', v || 0)}
+                                    style={{ width: '100%', borderColor: isLow ? '#faad14' : undefined }}
+                                    status={isLow ? 'warning' : undefined}
+                                />
+                                {isLow && <div style={{ color: '#d48806', fontSize: 11, marginTop: 2 }}>⚠️ Nhỏ hơn số cũ</div>}
+                            </div>
+                        );
+                    }
                 },
                 {
                     title: 'Tiêu thụ',
@@ -195,10 +238,22 @@ export default function MetersClient({ buildings, isPremium = false }: Props) {
                 {
                     title: 'Số mới',
                     dataIndex: 'water_new',
-                    width: 100,
-                    render: (val: number, _: MeterRow, idx: number) => (
-                        <InputNumber value={val} min={0} onChange={v => handleChange(idx, 'water_new', v || 0)} style={{ width: '100%' }} />
-                    )
+                    width: 110,
+                    render: (val: number, record: MeterRow, idx: number) => {
+                        const isLow = val < record.water_old && record.water_old > 0;
+                        return (
+                            <div>
+                                <InputNumber
+                                    value={val}
+                                    min={0}
+                                    onChange={v => handleChange(idx, 'water_new', v || 0)}
+                                    style={{ width: '100%', borderColor: isLow ? '#faad14' : undefined }}
+                                    status={isLow ? 'warning' : undefined}
+                                />
+                                {isLow && <div style={{ color: '#d48806', fontSize: 11, marginTop: 2 }}>⚠️ Nhỏ hơn số cũ</div>}
+                            </div>
+                        );
+                    }
                 },
                 {
                     title: 'Tiêu thụ',

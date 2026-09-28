@@ -1,27 +1,17 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 
 export async function getAllRooms() {
-    const supabase = await createClient();
-
-    // Get user's org_id
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { error: 'Chưa đăng nhập', data: [] };
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    if (!profile?.org_id) return { error: 'Chưa thuộc tổ chức', data: [] };
+    const auth = await requireAuthOrg().catch(() => null);
+    if (!auth) return { error: 'Chưa đăng nhập', data: [] };
+    const { supabase, orgId } = auth;
 
     // Get all buildings for org
     const { data: buildings } = await supabase
         .from('buildings')
         .select('id, name')
-        .eq('org_id', profile.org_id)
+        .eq('org_id', orgId)
         .is('deleted_at', null);
 
     if (!buildings || buildings.length === 0) return { data: [] };

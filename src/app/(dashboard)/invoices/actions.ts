@@ -1,28 +1,58 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { getOrgId } from '@/lib/rbac/guard';
 
-// Helper: get current user's org_id
-async function getOrgId() {
+export async function checkMeterReadiness(buildingId: string, month: string) {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    const orgId = await getOrgId();
+    if (!orgId) return { data: null, error: 'Chưa đăng nhập' };
 
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
+    // Get all active contracts in this building
+    const { data: contracts } = await supabase
+        .from('contracts')
+        .select('room_id, room:rooms!inner(id, building_id, name)')
+        .eq('status', 'active')
+        .is('deleted_at', null)
+        .eq('rooms.building_id', buildingId);
 
-    return profile?.org_id || null;
+    if (!contracts || contracts.length === 0) {
+        return { data: { total: 0, entered: 0, missing: [] }, error: null };
+    }
+
+    const roomIds = contracts.map((c) => (c as unknown as { room_id: string }).room_id);
+
+    // Get meter records for this month (check both electricity and water)
+    const { data: meters } = await supabase
+        .from('meter_records')
+        .select('room_id')
+        .eq('period', month)
+        .in('room_id', roomIds);
+
+    const enteredRoomIds = new Set(meters?.map((m) => (m as unknown as { room_id: string }).room_id) || []);
+    const missingRooms = contracts
+        .filter((c) => !enteredRoomIds.has((c as unknown as { room_id: string }).room_id))
+        .map((c) => ((c as unknown as { room?: { name?: string }; room_id: string }).room)?.name || (c as unknown as { room_id: string }).room_id);
+
+    return {
+        data: {
+            total: contracts.length,
+            entered: enteredRoomIds.size,
+            missing: missingRooms,
+        },
+        error: null,
+    };
 }
 
 export async function getInvoices(filters?: { month?: string; building_id?: string; status?: string }) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { data: null, error: 'Chưa đăng nhập' };
 
     let query = supabase
         .from('invoices')
         .select('*, room:rooms(name), building:buildings(name), tenant:tenants(full_name)')
+        .eq('org_id', orgId)
         .order('created_at', { ascending: false });
 
     if (filters?.month) query = query.eq('month', filters.month);
@@ -96,47 +126,36 @@ export async function generateInvoices(buildingId: string, month: string) {
 
     if (metersError) return { error: `Lỗi lấy chỉ số đồng hồ: ${metersError.message}` };
 
+    // 4. Lấy danh sách toàn bộ hoá đơn đã tạo trong tháng của toà nhà (1 câu query duy nhất)
+    const { data: existingInvoices, error: existingError } = await supabase
+        .from('invoices')
+        .select('room_id')
+        .eq('building_id', buildingId)
+        .eq('month', month)
+        .eq('org_id', orgId);
+
+    if (existingError) return { error: `Lỗi kiểm tra hóa đơn: ${existingError.message}` };
+
+    const existingRoomIds = new Set(existingInvoices?.map(i => i.room_id) || []);
+    const contractsToGenerate = contracts.filter(c => !existingRoomIds.has(c.room_id));
+
+    if (contractsToGenerate.length === 0) {
+        return { success: true, message: 'Tất cả các phòng đang hoạt động đều đã có hoá đơn cho tháng này.' };
+    }
+
+    const date = new Date();
+    date.setDate(date.getDate() + 5); // Tự động set hạn thanh toán là 5 ngày sau
+    const dueDate = date.toISOString().split('T')[0];
+
     let generatedCount = 0;
 
     // Process each contract
-    for (const contract of contracts) {
-        // Kiểm tra xem phòng này đã có hoá đơn của tháng chưa
-        const { data: existing } = await supabase
-            .from('invoices')
-            .select('id')
-            .eq('room_id', contract.room_id)
-            .eq('month', month)
-            .single();
+    for (const contract of contractsToGenerate) {
+        // a. Tính toán toàn bộ các mục chi tiết trước để xác định chính xác total_amount
+        const rawItems: { type: string; description: string; quantity: number; unit_price: number; amount: number; reference_id?: string }[] = [];
 
-        if (existing) continue; // Bỏ qua nếu đã tạo
-
-        // a. Tạo bản ghi invoice
-        const date = new Date();
-        date.setDate(date.getDate() + 5); // Tự động set hạn thanh toán là 5 ngày sau
-        const dueDate = date.toISOString().split('T')[0];
-
-        const { data: invoice, error: invoiceError } = await supabase
-            .from('invoices')
-            .insert({
-                org_id: orgId,
-                building_id: buildingId,
-                room_id: contract.room_id,
-                contract_id: contract.id,
-                tenant_id: contract.tenant_id,
-                month: month,
-                title: `Hoá đơn tháng ${month} - Phòng ${contract.room.name}`,
-                due_date: dueDate,
-            })
-            .select()
-            .single();
-
-        if (invoiceError || !invoice) continue;
-
-        const invoiceItems: { invoice_id: string; type: string; description: string; quantity: number; unit_price: number; amount: number; reference_id?: string }[] = [];
-
-        // b. Thêm mục Tiền phòng
-        invoiceItems.push({
-            invoice_id: invoice.id,
+        // Tiền phòng
+        rawItems.push({
             type: 'rent',
             description: `Tiền thuê phòng tháng ${month}`,
             quantity: 1,
@@ -144,7 +163,7 @@ export async function generateInvoices(buildingId: string, month: string) {
             amount: contract.rent_amount
         });
 
-        // c. Thêm các mục dịch vụ tính theo đồng hồ (Điện, Nước)
+        // Mục dịch vụ tính theo đồng hồ (Điện, Nước)
         const meteredPrices = prices.filter(p => p.is_metered || p.charging_rule === 'metered');
         const roomMeters = meters?.filter(m => m.room_id === contract.room_id) || [];
 
@@ -156,8 +175,7 @@ export async function generateInvoices(buildingId: string, month: string) {
                 const usage = Number(meter.usage ?? (newReading - oldReading > 0 ? newReading - oldReading : 0));
                 const itemAmount = usage * Number(price.unit_price);
 
-                invoiceItems.push({
-                    invoice_id: invoice.id,
+                rawItems.push({
                     type: price.service_type,
                     description: `${price.label} (${oldReading} - ${newReading})`,
                     quantity: usage,
@@ -168,7 +186,7 @@ export async function generateInvoices(buildingId: string, month: string) {
             }
         }
 
-        // d. Thêm các mục dịch vụ cố định, theo người, hoặc theo xe
+        // Mục dịch vụ cố định, theo người, hoặc theo xe
         const nonMeteredPrices = prices.filter(p => !p.is_metered && p.charging_rule !== 'metered');
         for (const price of nonMeteredPrices) {
             let quantity = 1;
@@ -189,8 +207,7 @@ export async function generateInvoices(buildingId: string, month: string) {
 
             const itemAmount = quantity * Number(price.unit_price);
 
-            invoiceItems.push({
-                invoice_id: invoice.id,
+            rawItems.push({
                 type: 'service',
                 description: `${price.label}${qtyDescription}`,
                 quantity: quantity,
@@ -199,15 +216,36 @@ export async function generateInvoices(buildingId: string, month: string) {
             });
         }
 
-        // Lưu toàn bộ chi tiết hoá đơn và cập nhật tổng tiền
-        if (invoiceItems.length > 0) {
+        const totalAmount = rawItems.reduce((sum, item) => sum + Number(item.amount), 0);
+
+        // b. Tạo hoá đơn kèm sẵn total_amount (chống tình trạng total_amount = 0 nếu gặp sự cố giữa chừng)
+        const { data: invoice, error: invoiceError } = await supabase
+            .from('invoices')
+            .insert({
+                org_id: orgId,
+                building_id: buildingId,
+                room_id: contract.room_id,
+                contract_id: contract.id,
+                tenant_id: contract.tenant_id,
+                month: month,
+                title: `Hoá đơn tháng ${month} - Phòng ${contract.room.name}`,
+                due_date: dueDate,
+                total_amount: totalAmount,
+                paid_amount: 0,
+                status: 'unpaid',
+            })
+            .select('id')
+            .single();
+
+        if (invoiceError || !invoice) {
+            console.error('Lỗi tạo hoá đơn:', invoiceError);
+            continue;
+        }
+
+        // c. Chèn toàn bộ chi tiết hoá đơn trong 1 lượt
+        if (rawItems.length > 0) {
+            const invoiceItems = rawItems.map(item => ({ ...item, invoice_id: invoice.id }));
             await supabase.from('invoice_items').insert(invoiceItems);
-            
-            const totalAmount = invoiceItems.reduce((sum, item) => sum + Number(item.amount), 0);
-            await supabase
-                .from('invoices')
-                .update({ total_amount: totalAmount })
-                .eq('id', invoice.id);
         }
 
         generatedCount++;
@@ -225,12 +263,15 @@ export async function generateInvoices(buildingId: string, month: string) {
 
 export async function payInvoice(id: string, amount: number) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     // Lấy số tiền đã thanh toán hiện tại
     const { data: invoice, error: fetchError } = await supabase
         .from('invoices')
         .select('paid_amount, total_amount')
         .eq('id', id)
+        .eq('org_id', orgId)
         .single();
 
     if (fetchError || !invoice) return { error: 'Không tìm thấy hoá đơn' };
@@ -241,7 +282,8 @@ export async function payInvoice(id: string, amount: number) {
     const { error: updateError } = await supabase
         .from('invoices')
         .update({ paid_amount: newPaidAmount })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (updateError) return { error: updateError.message };
     return { success: true };
@@ -249,7 +291,15 @@ export async function payInvoice(id: string, amount: number) {
 
 export async function deleteInvoice(id: string) {
     const supabase = await createClient();
-    const { error } = await supabase.from('invoices').delete().eq('id', id);
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
+
+    const { error } = await supabase
+        .from('invoices')
+        .delete()
+        .eq('id', id)
+        .eq('org_id', orgId);
+
     if (error) return { error: error.message };
     return { success: true };
 }

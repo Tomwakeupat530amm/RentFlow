@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import dayjs from 'dayjs';
 import { PlanType, FREE_TIER_LIMITS, PremiumFeature, OrgUsage, Subscription } from '@/types/database';
 
 /**
@@ -150,8 +151,7 @@ export async function activatePremium(months: number = 1) {
     if (profile?.role !== 'owner') return { error: 'Chỉ owner mới có thể nâng cấp' };
     if (!profile?.org_id) return { error: 'Không tìm thấy tổ chức' };
 
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + months);
+    const expiresAt = dayjs().add(months, 'month').toDate();
 
     // Create subscription record
     const { error: subError } = await supabase

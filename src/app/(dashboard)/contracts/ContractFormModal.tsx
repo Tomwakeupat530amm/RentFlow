@@ -9,6 +9,13 @@ import { createClient } from '@/lib/supabase/client';
 import dayjs from 'dayjs';
 import type { UploadFile } from 'antd/es/upload/interface';
 
+const DURATION_PRESETS = [
+    { label: '6 tháng', months: 6 },
+    { label: '1 năm', months: 12 },
+    { label: '2 năm', months: 24 },
+    { label: 'Vô thời hạn', months: null },
+];
+
 interface Props {
     open: boolean;
     contract: Contract | null;
@@ -298,7 +305,32 @@ export default function ContractFormModal({ open, contract, rooms, tenants, onCl
                         name="end_date"
                         label="Ngày kết thúc"
                     >
-                        <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} placeholder="Vô thời hạn" />
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-wrap gap-1">
+                                {DURATION_PRESETS.map((preset) => (
+                                    <Button
+                                        key={preset.label}
+                                        size="small"
+                                        type="dashed"
+                                        onClick={() => {
+                                            if (preset.months === null) {
+                                                form.setFieldsValue({ end_date: null });
+                                            } else {
+                                                const startDate = form.getFieldValue('start_date');
+                                                if (startDate) {
+                                                    form.setFieldsValue({
+                                                        end_date: dayjs(startDate).add(preset.months, 'month'),
+                                                    });
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {preset.label}
+                                    </Button>
+                                ))}
+                            </div>
+                            <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} placeholder="Vô thời hạn" />
+                        </div>
                     </Form.Item>
 
                     <Form.Item

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callOpenRouterVision } from '@/lib/ocr/openrouter';
 
 interface OcrResult {
     full_name?: string | null;
@@ -53,65 +53,36 @@ export async function POST(request: NextRequest) {
         const base64Image = Buffer.from(buffer).toString('base64');
         const mimeType = file.type || 'image/jpeg';
 
-        const apiKey = process.env.GEMINI_API_KEY;
-
-        if (!apiKey) {
-            // Fallback: return a demo result for development
-            return NextResponse.json({
-                success: true,
-                data: {
-                    full_name: null,
-                    id_number: null,
-                    date_of_birth: null,
-                    permanent_address: null,
-                    raw_text: '[API Key chưa được cấu hình. Vui lòng thêm GEMINI_API_KEY vào .env.local]',
-                },
-                message: 'API Key chưa được cấu hình. Tính năng OCR sẽ hoạt động khi có API Key.',
-            });
-        }
-
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ 
-            model: 'gemini-1.5-flash', 
-            generationConfig: { responseMimeType: "application/json" } 
-        });
-
-        const prompt = `Bạn là một hệ thống OCR phân tích Căn cước công dân (CCCD/CMND) Việt Nam. Hãy đọc ảnh và trích xuất các thông tin sau.
+        const prompt = `Bạn là một hệ thống AI OCR chuyên phân tích Căn cước công dân (CCCD/CMND) Việt Nam. Hãy đọc ảnh và trích xuất các thông tin chính xác.
 Trả về dữ liệu dưới định dạng JSON với cấu trúc chính xác sau:
 {
-    "full_name": "Nguyễn Văn A",
+    "full_name": "NGUYỄN VĂN A",
     "id_number": "012345678912",
     "date_of_birth": "YYYY-MM-DD",
     "permanent_address": "Địa chỉ thường trú hoặc Quê quán ghi trên thẻ",
-    "raw_text": "Toàn bộ văn bản thô bạn đọc được để debug"
+    "raw_text": "Toàn bộ văn bản đọc được"
 }
-Lưu ý quan trọng: 
-- Chỉ trả về chuỗi JSON hợp lệ. 
+Lưu ý quan trọng:
+- Bắt buộc chỉ trả về JSON Object hợp lệ.
 - Chuyển đổi định dạng ngày sinh sang YYYY-MM-DD.
-- Tên viết hoa chữ cái đầu.
+- Số CCCD gồm 12 chữ số hoặc CMND 9 chữ số.
 - Nếu không thể trích xuất trường nào do ảnh mờ, hãy để giá trị null.`;
 
-        const result = await model.generateContent([
+        const parsed = await callOpenRouterVision<OcrResult>({
+            base64Image,
+            mimeType,
             prompt,
-            {
-                inlineData: {
-                    data: base64Image,
-                    mimeType: mimeType
-                }
-            }
-        ]);
-        
-        const responseText = result.response.text();
-        const parsed: OcrResult = JSON.parse(responseText);
+        });
 
         return NextResponse.json({
             success: true,
             data: parsed,
         });
     } catch (error) {
-        console.error('OCR error:', error);
+        const errMessage = error instanceof Error ? error.message : 'Đã xảy ra lỗi khi xử lý ảnh CCCD';
+        console.error('OCR CCCD error:', error);
         return NextResponse.json(
-            { error: 'Đã xảy ra lỗi khi xử lý ảnh' },
+            { error: errMessage },
             { status: 500 }
         );
     }

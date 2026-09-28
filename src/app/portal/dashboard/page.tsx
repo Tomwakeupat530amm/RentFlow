@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 export const dynamic = 'force-dynamic';
 
 import React from 'react';
@@ -7,33 +5,41 @@ import { getTenantSession } from '@/lib/tenant-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import DashboardClient from './DashboardClient';
 
-export default async function DashboardPage({ params }: any) {
+export default async function DashboardPage() {
     const session = await getTenantSession();
     if (!session) return null;
 
-    const supabase = createAdminClient();
-
-    // Lấy thông tin phòng
-    let roomInfo = null;
-    if (session.room_id) {
-        const { data: room } = await supabase
-            .from('rooms')
-            .select('name, default_rent')
-            .eq('id', session.room_id)
-            .single();
-        roomInfo = room;
+    // Trường hợp khách chưa được xếp phòng
+    if (!session.room_id) {
+        return (
+            <DashboardClient
+                session={session}
+                roomInfo={null}
+                unpaidInvoices={[]}
+                recentIncidents={[]}
+            />
+        );
     }
 
-    // Lấy hoá đơn chưa thanh toán
+    const supabase = createAdminClient();
+
+    // 1. Lấy thông tin phòng
+    const { data: room } = await supabase
+        .from('rooms')
+        .select('name, default_rent')
+        .eq('id', session.room_id)
+        .single();
+
+    // 2. Lấy hoá đơn chưa thanh toán hoặc thanh toán một phần
     const { data: unpaidInvoices } = await supabase
         .from('invoices')
         .select('*')
         .eq('room_id', session.room_id)
-        .eq('status', 'unpaid')
+        .in('status', ['unpaid', 'partial'])
         .order('created_at', { ascending: false })
         .limit(3);
 
-    // Lấy sự cố gần đây
+    // 3. Lấy sự cố gần đây
     const { data: recentIncidents } = await supabase
         .from('incidents')
         .select('*')
@@ -41,5 +47,12 @@ export default async function DashboardPage({ params }: any) {
         .order('created_at', { ascending: false })
         .limit(3);
 
-        return <DashboardClient session={session} roomInfo={roomInfo} unpaidInvoices={unpaidInvoices} recentIncidents={recentIncidents} />;
+    return (
+        <DashboardClient
+            session={session}
+            roomInfo={room}
+            unpaidInvoices={unpaidInvoices || []}
+            recentIncidents={recentIncidents || []}
+        />
+    );
 }

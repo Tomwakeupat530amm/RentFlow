@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { PaymentSettingsFormData } from '@/types/database';
 
+const MASKED_SECRET = '••••••••••••••••';
+
 export async function getPaymentSettings() {
     try {
         const supabase = await createClient();
@@ -22,9 +24,17 @@ export async function getPaymentSettings() {
             .from('payment_settings')
             .select('*')
             .eq('org_id', profile.org_id)
-            .single();
+            .maybeSingle();
 
-        return settings;
+        if (!settings) return null;
+
+        return {
+            ...settings,
+            has_payos_api_key: !!settings.payos_api_key,
+            has_payos_checksum_key: !!settings.payos_checksum_key,
+            payos_api_key: settings.payos_api_key ? MASKED_SECRET : '',
+            payos_checksum_key: settings.payos_checksum_key ? MASKED_SECRET : '',
+        };
     } catch (error) {
         console.error('Error getting payment settings:', error);
         return null;
@@ -49,11 +59,22 @@ export async function updatePaymentSettings(data: PaymentSettingsFormData) {
         // Check if exists
         const { data: existing } = await supabase
             .from('payment_settings')
-            .select('id')
+            .select('id, payos_api_key, payos_checksum_key')
             .eq('org_id', profile.org_id)
-            .single();
+            .maybeSingle();
+
+        // Xử lý giữ nguyên key cũ nếu người dùng không thay đổi chuỗi masked
+        let apiKeyToSave: string | null = data.payos_api_key || null;
+        let checksumKeyToSave: string | null = data.payos_checksum_key || null;
 
         if (existing) {
+            if (apiKeyToSave === MASKED_SECRET) {
+                apiKeyToSave = existing.payos_api_key;
+            }
+            if (checksumKeyToSave === MASKED_SECRET) {
+                checksumKeyToSave = existing.payos_checksum_key;
+            }
+
             const { error } = await supabase
                 .from('payment_settings')
                 .update({
@@ -62,11 +83,12 @@ export async function updatePaymentSettings(data: PaymentSettingsFormData) {
                     bank_account: data.bank_account,
                     account_name: data.account_name,
                     payos_client_id: data.payos_client_id || null,
-                    payos_api_key: data.payos_api_key || null,
-                    payos_checksum_key: data.payos_checksum_key || null,
+                    payos_api_key: apiKeyToSave,
+                    payos_checksum_key: checksumKeyToSave,
                     updated_at: new Date().toISOString()
                 })
-                .eq('id', existing.id);
+                .eq('id', existing.id)
+                .eq('org_id', profile.org_id);
 
             if (error) throw error;
         } else {
@@ -79,8 +101,8 @@ export async function updatePaymentSettings(data: PaymentSettingsFormData) {
                     bank_account: data.bank_account,
                     account_name: data.account_name,
                     payos_client_id: data.payos_client_id || null,
-                    payos_api_key: data.payos_api_key || null,
-                    payos_checksum_key: data.payos_checksum_key || null
+                    payos_api_key: apiKeyToSave === MASKED_SECRET ? null : apiKeyToSave,
+                    payos_checksum_key: checksumKeyToSave === MASKED_SECRET ? null : checksumKeyToSave
                 });
 
             if (error) throw error;

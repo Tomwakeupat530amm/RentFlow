@@ -10,13 +10,18 @@ const supabaseAdmin = createClient(
 
 export async function GET(request: Request) {
     try {
-        // Basic security check via API route auth header if needed
-        // (Vercel Cron requests have a special header: x-vercel-cron)
+        // Bảo vệ nghiêm ngặt: Hoặc có header Vercel Cron, hoặc khớp Bearer CRON_SECRET
         const authHeader = request.headers.get('authorization');
-        const isVercelCron = request.headers.get('x-vercel-cron');
+        const isVercelCron = !!request.headers.get('x-vercel-cron');
+        const cronSecret = process.env.CRON_SECRET;
 
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}` && !isVercelCron) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const isAuthorized = isVercelCron || Boolean(cronSecret && authHeader === `Bearer ${cronSecret}`);
+
+        if (!isAuthorized) {
+            return NextResponse.json(
+                { error: 'Unauthorized: Yêu cầu Vercel Cron hoặc Bearer CRON_SECRET hợp lệ' },
+                { status: 401 }
+            );
         }
 
         const today = dayjs().format('YYYY-MM-DD');

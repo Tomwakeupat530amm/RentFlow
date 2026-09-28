@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         // Find tenant by phone and access_code
         const { data: tenant, error } = await supabase
             .from('tenants')
-            .select('id, full_name, phone, access_code, room_id')
+            .select('id, full_name, phone, access_code')
             .eq('phone', phone)
             .eq('access_code', access_code)
             .eq('is_active', true)
@@ -32,12 +32,23 @@ export async function POST(request: Request) {
             );
         }
 
+        // Lấy room_id từ hợp đồng đang hoạt động của khách thuê
+        const { data: activeContract } = await supabase
+            .from('contracts')
+            .select('room_id')
+            .eq('tenant_id', tenant.id)
+            .eq('status', 'active')
+            .is('deleted_at', null)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
         // Set JWT session
         await setTenantSession({
             id: tenant.id,
             name: tenant.full_name,
             phone: tenant.phone,
-            room_id: tenant.room_id,
+            room_id: activeContract?.room_id || null,
         });
 
         return NextResponse.json({ success: true });

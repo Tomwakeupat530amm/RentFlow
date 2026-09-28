@@ -146,7 +146,7 @@ export default function PaymentSettingsForm({ initialData }: { initialData?: Par
                     <Typography.Text className="text-slate-500 block mb-4">
                         Nhập thông tin API từ tài khoản PayOS của bạn để bật tính năng Thanh toán tự động. Nếu để trống, hệ thống sẽ chỉ dùng mã VietQR tĩnh.
                         <br/>
-                        <strong>Quan trọng:</strong> Đảm bảo bạn đã dán Webhook URL vào PayOS Dashboard. URL của hệ thống này là: <code>https://&lt;domain-cua-ban&gt;/api/payment/webhook</code>
+                        <strong>Quan trọng:</strong> Đảm bảo bạn đã dán Webhook URL vào PayOS Dashboard. URL của hệ thống này là: <code>https://&lt;domain-cua-ban&gt;/api/webhooks/payos</code>
                     </Typography.Text>
                 </div>
 

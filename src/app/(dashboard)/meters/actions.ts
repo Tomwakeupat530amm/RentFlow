@@ -2,24 +2,18 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import dayjs from 'dayjs';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 
 export async function getBuildingsForMeters() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { data: [], error: 'Not authenticated' };
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    if (!profile?.org_id) return { data: [], error: 'Không tìm thấy tổ chức' };
+    const auth = await requireAuthOrg().catch(() => null);
+    if (!auth) return { data: [], error: 'Not authenticated' };
+    const { supabase, orgId } = auth;
 
     const { data: org } = await supabase
         .from('organizations')
         .select('plan_type')
-        .eq('id', profile.org_id)
+        .eq('id', orgId)
         .single();
 
     const isPremium = org?.plan_type === 'premium';
@@ -27,7 +21,7 @@ export async function getBuildingsForMeters() {
     const { data, error } = await supabase
         .from('buildings')
         .select('id, name')
-        .eq('org_id', profile.org_id)
+        .eq('org_id', orgId)
         .eq('status', 'active')
         .is('deleted_at', null);
 
@@ -46,23 +40,26 @@ export async function getMeterRecords(buildingId: string, monthStr: string) {
         .order('floor')
         .order('name');
 
-    if (!rooms) return { data: [], error: 'Không thể tải phòng' };
+    if (!rooms || rooms.length === 0) return { data: [], error: rooms ? null : 'Không thể tải phòng' };
 
-    // 2. Lấy danh sách record tháng hiện tại (monthStr)
+    const roomIds = rooms.map(r => r.id);
+
+    // 2. Lấy danh sách record tháng hiện tại (monthStr) chỉ cho các phòng thuộc toà nhà
     const { data: currentRecords } = await supabase
         .from('meter_records')
         .select('*')
-        .eq('period', monthStr);
+        .eq('period', monthStr)
+        .in('room_id', roomIds);
 
-    // 3. Tính tháng trước (ví dụ 2026-02-01 -> 2026-01-01)
-    const dateObj = new Date(monthStr);
-    dateObj.setMonth(dateObj.getMonth() - 1);
-    const prevMonthStr = dateObj.toISOString().split('T')[0];
+    // 3. Tính tháng trước bằng dayjs (chống lỗi ngày 31 rollover)
+    const isIsoDate = monthStr.length > 7;
+    const prevMonthStr = dayjs(monthStr).subtract(1, 'month').format(isIsoDate ? 'YYYY-MM-DD' : 'YYYY-MM');
 
     const { data: prevRecords } = await supabase
         .from('meter_records')
         .select('*')
-        .eq('period', prevMonthStr);
+        .eq('period', prevMonthStr)
+        .in('room_id', roomIds);
 
     // Group by room_id -> service_type -> record
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

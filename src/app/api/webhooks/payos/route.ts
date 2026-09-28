@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createPayOSClient } from '@/lib/payos';
+import { payos, createPayOSClient } from '@/lib/payos';
 
 // Khởi tạo Supabase client với Service Role Key để bỏ qua RLS khi xử lý webhook (từ server)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -70,24 +70,42 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: true, message: 'Invoice already marked as paid' });
         }
 
-        // 4. Lấy cấu hình PayOS của tổ chức để xác thực Webhook Signature (nếu có cấu hình)
+        // 4. Lấy cấu hình PayOS của tổ chức để xác thực Webhook Signature
         const { data: settings } = await supabase
             .from('payment_settings')
             .select('payos_client_id, payos_api_key, payos_checksum_key')
             .eq('org_id', invoice.org_id)
             .maybeSingle();
 
+        let verified = false;
+
+        // a. Thử xác thực với cấu hình riêng của tổ chức (nếu đã cấu hình)
         if (settings?.payos_client_id && settings?.payos_api_key && settings?.payos_checksum_key) {
             try {
                 const dynamicPayos = createPayOSClient(settings.payos_client_id, settings.payos_api_key, settings.payos_checksum_key);
                 dynamicPayos.verifyPaymentWebhookData(body);
-                console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công.');
-            } catch (verifyError) {
-                console.error('❌ [Webhook PayOS] Lỗi xác thực chữ ký (Invalid Signature):', verifyError);
-                return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
+                verified = true;
+                console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công bằng khóa riêng của tổ chức.');
+            } catch {
+                console.warn('⚠️ [Webhook PayOS] Xác thực bằng khóa riêng thất bại, kiểm tra khóa nền tảng...');
             }
-        } else {
-            console.log('⚠️ [Webhook PayOS] Tổ chức chưa cấu hình PayOS Key đầy đủ, bỏ qua bước verify.');
+        }
+
+        // b. Fallback: Nếu tổ chức chưa cấu hình hoặc verify bằng khóa riêng thất bại, xác thực bằng khóa mặc định của hệ thống
+        if (!verified) {
+            try {
+                payos.verifyPaymentWebhookData(body);
+                verified = true;
+                console.log('✅ [Webhook PayOS] Xác thực chữ ký thành công bằng khóa hệ thống.');
+            } catch (platformVerifyError) {
+                console.error('❌ [Webhook PayOS] Xác thực chữ ký thất bại hoàn toàn (Invalid Signature):', platformVerifyError);
+            }
+        }
+
+        // c. BẮT BUỘC: Nếu không vượt qua bước kiểm tra chữ ký -> Từ chối ngay lập tức
+        if (!verified) {
+            console.error('🚫 [Webhook PayOS] Từ chối xử lý: Chữ ký webhook không hợp lệ.');
+            return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
         }
 
         const newPaidAmount = Number(invoice.paid_amount || 0) + amount;

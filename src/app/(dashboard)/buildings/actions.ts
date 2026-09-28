@@ -1,9 +1,9 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { BuildingFormData } from '@/types/database';
 import { canAddBuilding } from '@/lib/subscription/actions';
+import { requireAuthOrg } from '@/lib/rbac/guard';
 
 export type ActionResponse<T = unknown> = {
     success?: boolean;
@@ -13,27 +13,10 @@ export type ActionResponse<T = unknown> = {
     data?: T;
 };
 
-// ─── GET USER ORG_ID (helper) ───
-
-async function getUserOrgId() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Chưa đăng nhập');
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    if (!profile?.org_id) throw new Error('Chưa thuộc tổ chức nào');
-    return { supabase, orgId: profile.org_id, userId: user.id };
-}
-
 // ─── LIST BUILDINGS ───
 
 export async function getBuildings() {
-    const { supabase, orgId } = await getUserOrgId();
+    const { supabase, orgId } = await requireAuthOrg();
 
     const { data: buildings, error } = await supabase
         .from('buildings')
@@ -45,7 +28,7 @@ export async function getBuildings() {
     if (error) return { error: error.message, data: [] };
 
     // Get room counts per building
-    const buildingIds = buildings?.map(b => b.id) || [];
+    const buildingIds = (buildings || []).map((b: { id: string }) => b.id);
 
     if (buildingIds.length === 0) {
         return { data: buildings || [] };
@@ -59,7 +42,7 @@ export async function getBuildings() {
 
     // Aggregate room counts
     const countMap: Record<string, { total: number; occupied: number; vacant: number }> = {};
-    rooms?.forEach(room => {
+    (rooms || []).forEach((room: { building_id: string; status: string }) => {
         if (!countMap[room.building_id]) {
             countMap[room.building_id] = { total: 0, occupied: 0, vacant: 0 };
         }
@@ -91,7 +74,7 @@ export async function createBuilding(formData: BuildingFormData): Promise<Action
         };
     }
 
-    const { supabase, orgId } = await getUserOrgId();
+    const { supabase, orgId } = await requireAuthOrg();
 
     const { error } = await supabase
         .from('buildings')
@@ -113,7 +96,7 @@ export async function createBuilding(formData: BuildingFormData): Promise<Action
 // ─── UPDATE BUILDING ───
 
 export async function updateBuilding(id: string, formData: BuildingFormData): Promise<ActionResponse> {
-    const { supabase } = await getUserOrgId();
+    const { supabase, orgId } = await requireAuthOrg();
 
     const { error } = await supabase
         .from('buildings')
@@ -124,7 +107,8 @@ export async function updateBuilding(id: string, formData: BuildingFormData): Pr
             description: formData.description || null,
             status: formData.status,
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
 
@@ -135,12 +119,13 @@ export async function updateBuilding(id: string, formData: BuildingFormData): Pr
 // ─── DELETE BUILDING ───
 
 export async function deleteBuilding(id: string) {
-    const { supabase } = await getUserOrgId();
+    const { supabase, orgId } = await requireAuthOrg();
 
     const { error } = await supabase
         .from('buildings')
         .update({ deleted_at: new Date().toISOString() })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
 

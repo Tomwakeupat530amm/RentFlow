@@ -10,6 +10,8 @@ import {
     DollarOutlined,
     WalletOutlined,
     WarningOutlined,
+    ToolOutlined,
+    FileTextOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
 import StatCard from '@/components/common/StatCard';
@@ -32,6 +34,12 @@ interface DashboardStats {
         totalDebt: number;
         totalExpenses: number;
         monthlyRevenue: { month: string; revenue: number; collected: number; expenses?: number; profit?: number }[];
+    };
+    actionAlerts?: {
+        incidents: number;
+        unpaidInvoices: number;
+        expiringContracts: number;
+        totalDebt: number;
     };
 }
 
@@ -193,6 +201,154 @@ export default function DashboardPage({ stats }: { stats: DashboardStats | null 
                     </Card>
                 </Col>
             </Row>
+
+            {/* Today's Focus Action Center */}
+            {(() => {
+                const alerts: {
+                    title: string;
+                    subtitle: string;
+                    href: string;
+                    btnText: string;
+                    icon: React.ReactNode;
+                    color: string;
+                    bg: string;
+                    borderColor: string;
+                }[] = [];
+
+                if (stats.actionAlerts) {
+                    if (stats.actionAlerts.incidents > 0) {
+                        alerts.push({
+                            title: `${stats.actionAlerts.incidents} sự cố đang chờ xử lý`,
+                            subtitle: 'Khách thuê đã gửi phản ánh hỏng hóc hoặc yêu cầu sửa chữa.',
+                            href: '/incidents',
+                            btnText: 'Xử lý ngay',
+                            icon: <ToolOutlined />,
+                            color: '#ef4444',
+                            bg: '#fef2f2',
+                            borderColor: '#fecaca',
+                        });
+                    }
+                    if (stats.actionAlerts.unpaidInvoices > 0) {
+                        alerts.push({
+                            title: `${stats.actionAlerts.unpaidInvoices} hoá đơn chưa thanh toán`,
+                            subtitle: `Tổng dư nợ cần thu: ${stats.actionAlerts.totalDebt.toLocaleString()} đ`,
+                            href: '/invoices',
+                            btnText: 'Xem & Thu nợ',
+                            icon: <DollarOutlined />,
+                            color: '#f97316',
+                            bg: '#fff7ed',
+                            borderColor: '#fed7aa',
+                        });
+                    }
+                    if (stats.actionAlerts.expiringContracts > 0) {
+                        alerts.push({
+                            title: `${stats.actionAlerts.expiringContracts} hợp đồng sắp hết hạn (30 ngày)`,
+                            subtitle: 'Cần liên hệ khách thuê để gia hạn hoặc chuẩn bị nhận bàn giao phòng.',
+                            href: '/contracts',
+                            btnText: 'Gia hạn / Nhắc Zalo',
+                            icon: <FileTextOutlined />,
+                            color: '#eab308',
+                            bg: '#fefce8',
+                            borderColor: '#fef08a',
+                        });
+                    }
+                }
+
+                return (
+                    <Row gutter={[16, 16]}>
+                        <Col xs={24}>
+                            <Card
+                                variant="borderless"
+                                style={{
+                                    borderRadius: 12,
+                                    border: alerts.length > 0 ? '1px solid #fed7aa' : '1px solid #ccfbf1',
+                                    background: alerts.length > 0 ? '#fffaf0' : '#f0fdfa',
+                                }}
+                                styles={{ body: { padding: '16px 20px' } }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: alerts.length > 0 ? 14 : 0 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        <span style={{ fontSize: 20 }}>{alerts.length > 0 ? '⚡' : '🎉'}</span>
+                                        <div>
+                                            <span style={{ fontWeight: 700, fontSize: 15, color: alerts.length > 0 ? '#9a3412' : '#0f766e' }}>
+                                                {alerts.length > 0 ? 'Cần xử lý hôm nay' : 'Mọi việc đều đang được xử lý ổn định!'}
+                                            </span>
+                                            <span style={{ fontSize: 12, color: alerts.length > 0 ? '#b45309' : '#14b8a6', marginLeft: 8 }}>
+                                                {alerts.length > 0
+                                                    ? `(${alerts.length} vấn đề cần chú ý)`
+                                                    : 'Không có sự cố tồn đọng hay hợp đồng nào sắp hết hạn.'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {alerts.length > 0 && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
+                                        {alerts.map((alert, i) => (
+                                            <div
+                                                key={i}
+                                                style={{
+                                                    background: '#ffffff',
+                                                    padding: '12px 16px',
+                                                    borderRadius: 10,
+                                                    border: `1px solid ${alert.borderColor}`,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    gap: 12,
+                                                    boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                    <div
+                                                        style={{
+                                                            width: 38,
+                                                            height: 38,
+                                                            borderRadius: 8,
+                                                            background: alert.bg,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            fontSize: 18,
+                                                            color: alert.color,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    >
+                                                        {alert.icon}
+                                                    </div>
+                                                    <div>
+                                                        <div style={{ fontWeight: 600, fontSize: 13, color: '#1e293b' }}>
+                                                            {alert.title}
+                                                        </div>
+                                                        <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                                                            {alert.subtitle}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <Link href={alert.href}>
+                                                    <Button
+                                                        size="small"
+                                                        type="primary"
+                                                        style={{
+                                                            backgroundColor: alert.color,
+                                                            borderColor: alert.color,
+                                                            fontSize: 12,
+                                                            fontWeight: 600,
+                                                            borderRadius: 6,
+                                                        }}
+                                                    >
+                                                        {alert.btnText}
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </Card>
+                        </Col>
+                    </Row>
+                );
+            })()}
 
             <Row gutter={[16, 16]}>
                 {/* Quick Actions */}

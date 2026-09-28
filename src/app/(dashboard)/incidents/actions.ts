@@ -3,24 +3,12 @@
 import { createClient } from '@/lib/supabase/server';
 import type { IncidentFormData, IncidentStatus } from '@/types/database';
 import { revalidatePath } from 'next/cache';
-
-// Helper: get current user's org_id
-async function getOrgId() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('org_id')
-        .eq('id', user.id)
-        .single();
-
-    return profile?.org_id || null;
-}
+import { getOrgId, requireAuthOrg } from '@/lib/rbac/guard';
 
 export async function getIncidents() {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { data: null, error: 'Chưa đăng nhập' };
 
     const { data, error } = await supabase
         .from('incidents')
@@ -29,6 +17,7 @@ export async function getIncidents() {
             room:rooms(id, name),
             building:buildings(id, name)
         `)
+        .eq('org_id', orgId)
         .order('created_at', { ascending: false });
 
     if (error) return { data: null, error: error.message };
@@ -36,39 +25,39 @@ export async function getIncidents() {
 }
 
 export async function createIncident(formData: IncidentFormData) {
-    const supabase = await createClient();
-    const orgId = await getOrgId();
+    try {
+        const { supabase, orgId, userId } = await requireAuthOrg();
 
-    // Also get the current user ID for the reporter field
-    const { data: { user } } = await supabase.auth.getUser();
+        const { error } = await supabase
+            .from('incidents')
+            .insert({
+                org_id: orgId,
+                building_id: formData.building_id,
+                room_id: formData.room_id || null,
+                reporter_type: formData.reporter_type,
+                reported_by: formData.reported_by || userId,
+                title: formData.title,
+                description: formData.description || null,
+                status: formData.status || 'open',
+                priority: formData.priority || 'medium',
+                admin_notes: formData.admin_notes || null,
+                image_urls: formData.image_urls || [],
+            });
 
-    if (!orgId) return { error: 'Không tìm thấy tổ chức. Vui lòng đăng nhập lại.' };
+        if (error) return { error: error.message };
 
-    const { error } = await supabase
-        .from('incidents')
-        .insert({
-            org_id: orgId,
-            building_id: formData.building_id,
-            room_id: formData.room_id || null,
-            reporter_type: formData.reporter_type,
-            reported_by: formData.reported_by || user?.id,
-            title: formData.title,
-            description: formData.description || null,
-            status: formData.status || 'open',
-            priority: formData.priority || 'medium',
-            admin_notes: formData.admin_notes || null,
-            image_urls: formData.image_urls || [],
-        });
-
-    if (error) return { error: error.message };
-
-    revalidatePath('/incidents');
-    revalidatePath('/dashboard');
-    return { success: true };
+        revalidatePath('/incidents');
+        revalidatePath('/dashboard');
+        return { success: true };
+    } catch (err: unknown) {
+        return { error: (err as Error).message || 'Lỗi xác thực người dùng.' };
+    }
 }
 
 export async function updateIncident(id: string, formData: IncidentFormData) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('incidents')
@@ -83,7 +72,8 @@ export async function updateIncident(id: string, formData: IncidentFormData) {
             admin_notes: formData.admin_notes || null,
             image_urls: formData.image_urls || [],
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
 
@@ -94,11 +84,14 @@ export async function updateIncident(id: string, formData: IncidentFormData) {
 
 export async function deleteIncident(id: string) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('incidents')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
 
@@ -109,11 +102,14 @@ export async function deleteIncident(id: string) {
 
 export async function updateIncidentStatus(id: string, status: IncidentStatus) {
     const supabase = await createClient();
+    const orgId = await getOrgId();
+    if (!orgId) return { error: 'Chưa đăng nhập' };
 
     const { error } = await supabase
         .from('incidents')
         .update({ status })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('org_id', orgId);
 
     if (error) return { error: error.message };
 
