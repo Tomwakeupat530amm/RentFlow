@@ -810,6 +810,57 @@
       border-left: 3px solid var(--emerald);
     }
 
+    /* Round Filter Pills & Q&A Styles */
+    .round-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0 24px 0;
+      align-items: center;
+    }
+
+    .round-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .round-pill:hover {
+      background: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .round-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+    }
+
+    .q-en-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    .code-ref {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      background: rgba(13, 148, 136, 0.1);
+      color: var(--primary-dark);
+      border-radius: 4px;
+      border: 1px solid rgba(13, 148, 136, 0.2);
+    }
+
     /* Print Styles */
     @media print {
       .sidebar, .top-bar, .tab-nav, .btn, .search-box {
@@ -1526,188 +1577,798 @@
       </div>
     </div>
 
-    <!-- ========================================== -->
+        <!-- ========================================== -->
     <!-- TAB 3: BỘ CÂU HỎI PHẢN BIỆN HỘI ĐỒNG (Q&A) -->
     <!-- ========================================== -->
     <div class="content-section" id="sec-defense">
       <div class="callout tip">
         <span class="callout-icon">💡</span>
         <div>
-          <strong>Bí Quyết Trả Lời Phản Biện:</strong> Hãy luôn trả lời theo công thức: <strong>Khẳng định giải pháp ➜ Nêu công nghệ/cơ chế cốt lõi ➜ Dẫn chứng kết quả thực tế trong code RentFlow</strong>.
+          <strong>Chiến Thuật Trả Lời Phản Biện Hội Đồng:</strong> Trả lời theo công thức 3 bước: 
+          <strong>Khẳng định giải pháp ➜ Nêu công nghệ & cơ chế kỹ thuật ➜ Dẫn chứng file code / kết quả thực tế trong RentFlow</strong>.
+        </div>
+      </div>
+
+      <!-- Round Filter Bar -->
+      <div class="round-filters">
+        <button class="round-pill active" onclick="filterRound('all', this)">Tất cả (31 câu)</button>
+        <button class="round-pill" onclick="filterRound('r1', this)">Vòng 1: Công nghệ (5)</button>
+        <button class="round-pill" onclick="filterRound('r2', this)">Vòng 2: Kiến trúc (5)</button>
+        <button class="round-pill" onclick="filterRound('r3', this)">Vòng 3: Dữ liệu & Auth (5)</button>
+        <button class="round-pill" onclick="filterRound('r4', this)">Vòng 4: Nghiệp vụ lõi (5)</button>
+        <button class="round-pill" onclick="filterRound('r5', this)">Vòng 5: Phân quyền & RLS (4)</button>
+        <button class="round-pill" onclick="filterRound('r6', this)">Vòng 6: Giới hạn & Cải tiến (4)</button>
+        <button class="round-pill" onclick="filterRound('r7', this)">Vòng 7: Áp lực Demo (3)</button>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button class="btn btn-outline" style="font-size: 12px; padding: 4px 10px;" onclick="toggleAllAccordions(true)">Mở tất cả</button>
+          <button class="btn btn-outline" style="font-size: 12px; padding: 4px 10px;" onclick="toggleAllAccordions(false)">Thu gọn</button>
         </div>
       </div>
 
       <div class="accordion">
+
+        <!-- ROUND 1 -->
         <!-- Q1 -->
-        <div class="accordion-item open">
+        <div class="accordion-item open" data-round="r1">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 1: Dự án áp dụng mô hình Multi-Tenancy như thế nào? Làm sao đảm bảo Chủ nhà A không bao giờ xem trộm được dữ liệu của Chủ nhà B?</span>
+              <div>
+                <span>Câu 1: RentFlow giải quyết bài toán vận hành nào của các chủ trọ?</span>
+                <div class="q-en-sub">What operational problem does Rent-Flow solve for boarding house managers?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Bảo Mật RLS</span>
+              <span class="accordion-tag">Vòng 1 • Nghiệp Vụ Lõi</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng kiến trúc <strong>Multi-Tenancy cấp cơ sở dữ liệu</strong> sử dụng chính sách <strong>Row Level Security (RLS)</strong> của PostgreSQL trên Supabase, thay vì chỉ lọc dữ liệu bằng câu lệnh WHERE ở tầng ứng dụng.</p>
+            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow giải quyết triệt để bài toán quản lý thủ công, rời rạc và dễ thất thoát doanh thu của các chủ nhà trọ, căn hộ dịch vụ và homestay tại Việt Nam:</p>
             <div class="qa-highlight">
-              • Mọi bảng dữ liệu (buildings, rooms, contracts, invoices...) đều bắt buộc có cột <code>org_id</code> (hoặc <code>organization_id</code>).
-              <br>• Khi người dùng đăng nhập qua Supabase Auth, JWT Token sẽ chứa <code>auth.uid()</code>.
-              <br>• PostgreSQL thực thi chính sách bảo mật: <code>USING (organization_id IN (SELECT organization_id FROM organization_members WHERE user_id = auth.uid()))</code>.
-              <br>• Toàn bộ cấu trúc bảng và chính sách phân quyền RLS được quản trị chặt chẽ qua <strong>19 file migration SQL trong thư mục <code>supabase/migrations/</code></strong> và lưu vết đầy đủ trong Git repo, đảm bảo chuẩn CI/CD và tính toàn vẹn khi triển khai.
+              • <strong>Khép kín chu trình hàng tháng (Monthly Loop):</strong> Bàn giao phòng ➜ Nhập chỉ số điện nước ➜ Sinh hóa đơn tự động ➜ Thu tiền qua mã VietQR động ➜ Cập nhật trực quan doanh thu, chi phí và lợi nhuận thời gian thực trên Dashboard.
+              <br>• <strong>Loại bỏ sai sót tính toán:</strong> Thuật toán tự động tính chênh lệch <code>(Số mới - Số cũ) * Đơn giá</code>, chặn nhập lùi chỉ số, và lưu trữ tiền tệ dưới dạng số nguyên <code>INTEGER</code> trong VND để tránh hoàn toàn lỗi làm tròn số thực (floating-point).
+              <br>• <strong>Tiết kiệm 80% thời gian vận hành:</strong> Bấm 1 nút sinh hàng loạt hóa đơn cho toàn bộ tòa nhà, kết hợp Cổng Khách Thuê tự phục vụ giúp cư dân chủ động xem bill và báo hỏng.
             </div>
           </div>
         </div>
 
         <!-- Q2 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r1">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 2: Tại sao Cổng Khách Thuê (Tenant Portal) lại dùng mã PIN 6 số mà không dùng tài khoản Email/Password truyền thống? Chủ nhà quản lý mã này ở đâu?</span>
+              <div>
+                <span>Câu 2: Tại sao chọn Next.js 15 App Router thay vì React SPA truyền thống?</span>
+                <div class="q-en-sub">Why did you choose Next.js (App Router) instead of a traditional React SPA?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Trải Nghiệm UX</span>
+              <span class="accordion-tag">Vòng 1 • Next.js 15 RSC</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, đây là một quyết định thiết kế tối ưu trải nghiệm (Frictionless UX) dựa trên nghiên cứu hành vi thực tế của đối tượng thuê trọ:</p>
+            <p><strong>Trả lời:</strong> Em chọn Next.js 15 với App Router vì các ưu điểm kiến trúc vượt trội so với Single Page Application (SPA):</p>
             <div class="qa-highlight">
-              • <strong>Rào cản người dùng:</strong> Khách thuê trọ thường ngại tạo tài khoản, xác thực email, và thường xuyên quên mật khẩu, dẫn đến việc họ không muốn dùng ứng dụng.
-              <br>• <strong>Bảo mật thực tế:</strong> Chỉ những khách thuê có hợp đồng đang hoạt động mới được cấp mã PIN 6 chữ số ngẫu nhiên. Khi đăng nhập, hệ thống xác thực đồng thời cả <strong>Số điện thoại + Mã PIN</strong> qua HTTP-Only cookies an toàn.
-              <br>• <strong>Giao diện quản lý toàn diện trên Dashboard:</strong> Trên màn hình Quản lý Khách thuê (<code>TenantsClient.tsx</code>), chủ trọ có riêng một cột xem mã PIN, nút bấm <strong>1-click sao chép thông tin gửi Zalo</strong> (kèm sẵn link portal + SĐT + PIN), và nút <strong>"Đổi mã PIN mới"</strong> tức thì nếu khách quên hoặc cần bảo mật lại.
-              <br>• <strong>Quản lý vòng đời:</strong> Khi khách trả phòng (Hợp đồng kết thúc), mã PIN sẽ tự động bị vô hiệu hoá, ngăn chặn việc truy cập thông tin toà nhà sau khi đã dọn đi.
+              • <strong>Server Components (RSC) & Server Actions:</strong> Cho phép truy vấn cơ sở dữ liệu và xử lý logic nghiệp vụ ngay tại máy chủ. Trình duyệt không phải tải hàng megabyte thư viện logic, giúp trang tải ban đầu (FCP) dưới 500ms.
+              <br>• <strong>Bảo mật tuyệt đối (Zero API Key Leak):</strong> Các khóa bí mật nhạy cảm như <code>SUPABASE_SERVICE_ROLE_KEY</code>, <code>PAYOS_API_KEY</code>, <code>PAYOS_CHECKSUM_KEY</code> được giữ an toàn trên server, hoàn toàn không bị rò rỉ xuống bundle JavaScript của Client.
+              <br>• <strong>Full-stack trong một codebase:</strong> Cung cấp sẵn Route Handlers (<span class="code-ref">/api/webhooks/payos</span>, <span class="code-ref">/api/tenant/login</span>, <span class="code-ref">/api/ocr</span>) để xử lý Webhook và API ngoài mà không cần dựng thêm backend riêng biệt như Express.
             </div>
           </div>
         </div>
 
         <!-- Q3 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r1">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 3: Làm thế nào hệ thống đạt được tốc độ chuyển trang siêu nhanh dưới 500ms?</span>
+              <div>
+                <span>Câu 3: Tại sao chọn Supabase thay vì tự dựng Backend Node.js với MongoDB hay PostgreSQL?</span>
+                <div class="q-en-sub">Why use Supabase instead of building a custom Node.js backend with MongoDB or PostgreSQL?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Hiệu Năng & Cache</span>
+              <span class="accordion-tag">Vòng 1 • Supabase BaaS</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow đạt được tốc độ dưới 500ms nhờ vào 4 kỹ thuật tối ưu hóa chuyên sâu:</p>
+            <p><strong>Trả lời:</strong> Supabase là nền tảng Backend-as-a-Service mã nguồn mở dựa trên PostgreSQL mạnh mẽ, mang lại các lợi ích then chốt:</p>
             <div class="qa-highlight">
-              1. <strong>Next.js 15 Server Components (RSC):</strong> Render giao diện trước tại máy chủ, giảm dung lượng JavaScript tải về trình duyệt xuống mức tối thiểu.
-              <br>2. <strong>Request Deduplication với <code>React.cache()</code>:</strong> Hàm xác thực người dùng và lấy thông tin tổ chức <code>getCurrentUserOrganization()</code> được bọc trong bộ đệm nhớ memoize. Dù trong 1 trang có gọi lại nhiều lần thì database chỉ phải truy vấn đúng 1 lần duy nhất.
-              <br>3. <strong>Truy vấn song song (Parallel Fetching):</strong> Thay vì dùng <code>await</code> tuần tự gây nghẽn cổ chai (waterfall), hệ thống dùng <code>Promise.all([getRooms(), getBuildings(), getStats()])</code> để thực thi đồng thời.
-              <br>4. <strong>Next.js Link Prefetching:</strong> Thẻ chuyển trang sử dụng <code>prefetch={true}</code>, trình duyệt tự động nạp sẵn dữ liệu trang tiếp theo ngay khi người dùng rê chuột qua menu.
+              • <strong>Row Level Security (RLS) cấp cơ sở dữ liệu:</strong> Bảo vệ dữ liệu Multi-Tenancy ngay trong nhân PostgreSQL. Dù code tầng ứng dụng có sơ suất thì cơ sở dữ liệu vẫn chặn không cho rò rỉ dữ liệu giữa các tổ chức.
+              <br>• <strong>Tích hợp toàn diện:</strong> Cung cấp sẵn Supabase Auth (quản lý phiên qua JWT HTTP-only cookie), Supabase Storage (lưu ảnh CCCD và ảnh đồng hồ có phân quyền), và Database Webhooks/Triggers.
+              <br>• <strong>Tối ưu năng suất phát triển:</strong> Tiết kiệm 60–70% thời gian dựng CRUD và xác thực cơ bản, giúp em tập trung toàn lực vào nghiệp vụ lõi: đối soát điện nước, tính toán hóa đơn, thanh toán QR và vận hành homestay.
             </div>
           </div>
         </div>
 
         <!-- Q4 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r1">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 4: Trong phân hệ Homestay, nếu 2 khách hàng cùng bấm đặt phòng cho cùng một khoảng ngày thì hệ thống xử lý tranh chấp (Race Condition) như thế nào?</span>
+              <div>
+                <span>Câu 4: Tại sao kết hợp Ant Design v5 với Tailwind CSS? Ưu nhược điểm là gì?</span>
+                <div class="q-en-sub">Why did you combine Ant Design (antd) with Tailwind CSS? What are the pros and cons?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Concurrency</span>
+              <span class="accordion-tag">Vòng 1 • Giao Diện UI</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow áp dụng cơ chế <strong>Phòng thủ 2 lớp</strong> để ngăn chặn triệt để hiện tượng Double-booking (trùng phòng):</p>
+            <p><strong>Trả lời:</strong> Sự kết hợp này nhằm tận dụng thế mạnh riêng của từng công cụ:</p>
             <div class="qa-highlight">
-              • <strong>Lớp 1 (Application logic):</strong> Trước khi tạo booking, Server Action kiểm tra điều kiện giao thoa ngày bằng toán tử: <code>WHERE room_id = X AND status != 'cancelled' AND (check_in &lt;= new_check_out AND check_out &gt;= new_check_in)</code>. Nếu số lượng bản ghi &gt; 0 thì lập tức từ chối và báo lỗi cho người thứ hai.
-              <br>• <strong>Lớp 2 (Database Constraint):</strong> Tầng PostgreSQL sử dụng ràng buộc loại trừ <code>EXCLUDE USING gist (room_id WITH =, daterange(check_in, check_out) WITH &amp;&amp;)</code>. Ràng buộc cấp nhân cơ sở dữ liệu này đảm bảo dù 2 request có ghi vào cùng một microsecond thì giao dịch thứ hai cũng bị rollback an toàn.
+              • <strong>Ant Design v5:</strong> Cung cấp bộ linh kiện UI chuẩn doanh nghiệp cực kỳ phức tạp và hoàn thiện (Table phân trang/sắp xếp, Modal, DatePicker tiếng Việt qua dayjs, Kanban board kéo thả, Form validation).
+              <br>• <strong>Tailwind CSS:</strong> Cung cấp hệ thống utility classes giúp dàn trang (Flexbox/Grid), căn chỉnh khoảng cách, hiệu ứng vi mô và responsive trên di động một cách nhanh chóng mà không cần viết file CSS riêng.
+              <br>• <strong>Đánh đổi (Cons):</strong> Dung lượng bundle ban đầu lớn hơn và cần cấu hình cẩn thận <code>StyleProvider</code> / CSS hash priority trong Next.js App Router để tránh xung đột thứ tự ưu tiên giữa reset CSS của Tailwind và CSS-in-JS của Antd.
             </div>
           </div>
         </div>
 
         <!-- Q5 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r1">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 5: Cơ chế Webhook của PayOS đối soát hoá đơn như thế nào? Nếu nhà mạng chập chờn gửi lại webhook nhiều lần (Retry) thì có bị lỗi dữ liệu không?</span>
+              <div>
+                <span>Câu 5: Tại sao tích hợp PayOS thay vì chỉ theo dõi chuyển khoản ngân hàng thủ công?</span>
+                <div class="q-en-sub">Why integrate PayOS instead of just letting users track manual bank transfers?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">PayOS Webhook</span>
+              <span class="accordion-tag">Vòng 1 • VietQR PayOS</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, endpoint Webhook tại <code>/api/webhooks/payos</code> được thiết kế theo chuẩn đối soát 2 lớp tự động và bất biến (Idempotent):</p>
+            <p><strong>Trả lời:</strong> PayOS nâng cấp trải nghiệm thanh toán và tự động hóa toàn diện quy trình thu tiền:</p>
             <div class="qa-highlight">
-              • <strong>Khớp hoá đơn 2 lớp thông minh:</strong> Lớp 1 ưu tiên tìm theo mã số <code>order_code</code> chuẩn của PayOS được lưu trên hoá đơn. Nếu không có, Lớp 2 (Fallback) tự động dùng Regular Expression trích xuất mã UUID của hoá đơn từ nội dung thanh toán <code>description</code>.
-              <br>• <strong>Xác thực chữ ký số:</strong> Webhook kiểm tra <code>signature</code> gửi kèm bằng thuật toán HMAC SHA256 với Client ID, API Key và Checksum Key của tổ chức (hoặc khóa hệ thống) để chống giả mạo giao dịch nạp tiền.
-              <br>• <strong>Xử lý bất biến (Idempotency):</strong> Khi nhận thông báo, hệ thống kiểm tra nếu hoá đơn đã <code>status === 'paid'</code> thì phản hồi HTTP 200 ngay, không cộng dồn tiền hay ghi log trùng lặp.
-              <br>• <strong>Cập nhật trạng thái tự động:</strong> Tự động tính <code>paid_amount</code> mới, đổi trạng thái sang 'paid', và lưu dấu thời gian hoàn tất <code>paid_at</code>. Đồng thời chủ trọ vẫn có nút cập nhật thanh toán thủ công nếu khách trả bằng tiền mặt.
+              • <strong>Trải nghiệm thanh toán chuẩn Napas247:</strong> PayOS tạo mã <strong>VietQR động</strong> cho từng hóa đơn. Khi khách quét bằng app ngân hàng, số tiền chính xác và nội dung chuyển khoản được nạp tự động, loại bỏ 100% lỗi khách gõ sai số tiền hoặc quên ghi số phòng.
+              <br>• <strong>Tự động hóa đối soát (Auto-Reconciliation):</strong> Khi tiền về tài khoản, PayOS gửi Webhook đến hệ thống trong vòng 2–3 giây. Hệ thống tự động xác thực chữ ký HMAC-SHA256, tìm hóa đơn tương ứng, gạch nợ và chuyển trạng thái sang <code>paid</code> mà chủ nhà không cần mở app ngân hàng kiểm tra thủ công.
+              <br>• <strong>Phương án dự phòng (Manual Fallback):</strong> Nếu khách thanh toán tiền mặt hoặc chuyển khoản ngoài, chủ trọ vẫn có nút "Cập nhật thanh toán" thủ công trên giao diện để linh hoạt xử lý thực tế.
             </div>
           </div>
         </div>
 
+        <!-- ROUND 2 -->
         <!-- Q6 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r2">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 6: Nếu khách thuê tự ý dọn đi và bùng tiền điện nước, hoặc làm hỏng thiết bị phòng thì quy trình phần mềm xử lý thế nào?</span>
+              <div>
+                <span>Câu 6: Phân biệt Server Components và Client Components trong ứng dụng? Sử dụng ở đâu?</span>
+                <div class="q-en-sub">Explain the difference between Server Components and Client Components in your app. Where do you use each?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Nghiệp Vụ Thực Tế</span>
+              <span class="accordion-tag">Vòng 2 • Kiến Trúc RSC</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, đây là nghiệp vụ phổ biến và RentFlow đã chuẩn hóa thành <strong>Modal Quyết toán trả phòng (Check-out Settlement)</strong>:</p>
+            <p><strong>Trả lời:</strong> Trong RentFlow, kiến trúc được phân tách rành mạch theo nguyên tắc:</p>
             <div class="qa-highlight">
-              • Khi ký hợp đồng ban đầu, hệ thống luôn bắt buộc thu khoản <strong>Tiền cọc (Deposit)</strong>, thường tương đương 1 đến 2 tháng tiền phòng.
-              <br>• Lúc làm thủ tục trả phòng, chủ trọ nhập các khoản chi phí phát sinh: Tiền điện nước ngày cuối, tiền phòng lẻ chưa thanh toán, và các mục hư hại tài sản (mỗi mục có tên hư hại và số tiền phạt).
-              <br>• Phần mềm tự động lấy Tiền cọc trừ đi Tổng các khoản phạt. Nếu cọc còn thừa, hệ thống báo số tiền chủ trọ cần chuyển khoản trả lại khách. Nếu tiền phạt vượt quá tiền cọc, hệ thống sinh ra biên bản nợ để gửi Zalo yêu cầu khách thanh toán bù.
+              • <strong>Server Components (mặc định):</strong> Chạy 100% trên Server, không gửi JavaScript xuống máy khách. Dùng cho các file <span class="code-ref">page.tsx</span> chính (<span class="code-ref">/buildings</span>, <span class="code-ref">/rooms</span>, <span class="code-ref">/contracts</span>, <span class="code-ref">/invoices</span>, <span class="code-ref">/dashboard</span>) để lấy dữ liệu qua Supabase Server Client, áp dụng cache và kiểm tra phiên an toàn.
+              <br>• <strong>Client Components (chứa <code>'use client'</code>):</strong> Đóng gói và chạy trên trình duyệt người dùng, quản lý state và event handlers. Dùng cho các thành phần tương tác:
+              <br>  - Form nhập liệu và popup modal: <span class="code-ref">BatchRoomModal.tsx</span>, <span class="code-ref">CheckoutModal.tsx</span>, <span class="code-ref">TenantFormModal.tsx</span>.
+              <br>  - Bảng Kanban kéo thả sự cố: <span class="code-ref">KanbanBoard.tsx</span> (sử dụng <code>@dnd-kit/core</code>).
+              <br>  - Bộ lọc tìm kiếm và bảng tương tác: <span class="code-ref">InvoicesClient.tsx</span>, <span class="code-ref">TenantsClient.tsx</span>.
             </div>
           </div>
         </div>
 
         <!-- Q7 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r2">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 7: Hình ảnh CCCD của khách thuê và hình ảnh chỉ số đồng hồ điện nước được lưu trữ ở đâu và bảo mật ra sao?</span>
+              <div>
+                <span>Câu 7: Ứng dụng giao tiếp với CSDL như thế nào? Supabase client được dùng ở frontend hay backend?</span>
+                <div class="q-en-sub">How does the application communicate with the database? Do you use the Supabase client mostly on frontend or backend?</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Storage & Privacy</span>
+              <span class="accordion-tag">Vòng 2 • 3 Supabase Clients</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Toàn bộ tệp tin đa phương tiện được lưu trữ trên <strong>Supabase Storage Bucket</strong> với chính sách Private Access:</p>
+            <p><strong>Trả lời:</strong> Ứng dụng giao tiếp chủ yếu qua <strong>Backend</strong> bằng gói thư viện <code>@supabase/ssr</code> với 3 loại client có cấp độ tin cậy khác nhau:</p>
             <div class="qa-highlight">
-              • Ảnh CCCD và ảnh đồng hồ không được để Public URL ngoài Internet.
-              <br>• Chỉ những người dùng đã xác thực và có quyền trong cùng một <code>organization_id</code> mới được cấp <strong>Signed URL</strong> (đường link có chữ ký bảo mật và tự hết hạn sau 60 phút) để hiển thị trên trình duyệt.
-              <br>• Điều này đảm bảo tuân thủ Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân tại Việt Nam.
+              1. <strong>Server SSR Client (<span class="code-ref">src/lib/supabase/server.ts</span> - Mặc định):</strong> Chạy trong Server Components và Server Actions. Client này đọc JWT token từ HTTP-only Cookies của người dùng, do đó <strong>mọi truy vấn vào PostgreSQL đều bị kiểm soát chặt chẽ bởi Row Level Security (RLS)</strong> theo <code>org_id</code> của user đó.
+              <br>2. <strong>Admin Service-Role Client (<span class="code-ref">src/lib/supabase/admin.ts</span>):</strong> Sử dụng <code>SUPABASE_SERVICE_ROLE_KEY</code> để bypass RLS. Client này chỉ được dùng trong các ngữ cảnh không có session người dùng:
+              <br>  - Route Webhook tiếp nhận thanh toán PayOS (<span class="code-ref">/api/webhooks/payos</span>).
+              <br>  - Route đăng nhập bằng mã PIN của khách thuê (<span class="code-ref">/api/tenant/login</span>).
+              <br>  - Xử lý xác thực đăng ký tài khoản tham gia tổ chức bằng mã mời (<span class="code-ref">registerAndJoinOrg</span>).
+              <br>3. <strong>Browser Client (<span class="code-ref">src/lib/supabase/client.ts</span>):</strong> Dùng ở Client Component cho các tác vụ tải file hoặc tương tác nhẹ, vẫn tuân thủ RLS.
             </div>
           </div>
         </div>
 
         <!-- Q8 -->
-        <div class="accordion-item">
+        <div class="accordion-item" data-round="r2">
           <div class="accordion-header" onclick="toggleAccordion(this)">
             <div class="accordion-title">
-              <span>Câu 8: Điểm khác biệt lớn nhất giữa RentFlow và các phần mềm quản lý trọ hiện có trên thị trường là gì?</span>
+              <div>
+                <span>Câu 8: Mô tả luồng xử lý từ khi bấm "Tạo hóa đơn" đến CSDL và phản hồi?</span>
+                <div class="q-en-sub">Describe a request flow from clicking "Tạo hóa đơn" (Create Invoice) to the database and back.</div>
+              </div>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="accordion-tag">Lợi Thế Cạnh Tranh</span>
+              <span class="accordion-tag">Vòng 2 • Server Action Flow</span>
               <span class="accordion-icon">▼</span>
             </div>
           </div>
           <div class="accordion-body">
-            <p><strong>Trả lời:</strong> Dạ thưa Thầy/Cô, RentFlow sở hữu 3 lợi thế cạnh tranh vượt trội:</p>
+            <p><strong>Trả lời:</strong> Trình tự thực thi diễn ra khép kín qua 6 bước:</p>
             <div class="qa-highlight">
-              1. <strong>Tương tác 2 chiều khép kín:</strong> Đa số phần mềm chỉ phục vụ riêng chủ nhà. RentFlow cung cấp Cổng Khách Thuê chuyên biệt không cần mật khẩu giúp cư dân quét mã VietQR và gửi phản ánh sự cố tức thì.
-              <br>2. <strong>VietQR Động chuẩn Napas247:</strong> Tự động tính đúng số tiền nợ còn lại và nạp sẵn nội dung, kết hợp webhook gạch nợ tự động trong 3 giây.
-              <br>3. <strong>Hiệu năng và trải nghiệm hiện đại:</strong> Giao diện thiết kế theo chuẩn SaaS quốc tế, không giật lag trang, có tính năng sinh 100 phòng trong 10 giây (Batch Generator) giúp chủ trọ bắt đầu sử dụng ngay mà không mất cả tuần nhập liệu.
+              1. <strong>Client Event:</strong> Người dùng bấm "Sinh hóa đơn tháng này" trên giao diện <span class="code-ref">InvoicesClient.tsx</span>.
+              <br>2. <strong>Server Action Invocation:</strong> Client gọi hàm Server Action <span class="code-ref">generateMonthlyInvoices</span> (nằm trong <span class="code-ref">invoices/actions.ts</span>).
+              <br>3. <strong>RLS Context:</strong> Server Action khởi tạo Supabase Server Client từ cookie người dùng để trích xuất <code>org_id</code> hợp lệ.
+              <br>4. <strong>Toán tử tính cước:</strong> Đọc danh sách hợp đồng <code>active</code>, đọc chỉ số điện nước mới nhất từ bảng <code>meter_records</code>, lấy bảng giá dịch vụ tòa nhà <code>service_prices</code> và tính toán: <code>Tiền phòng + Tiền điện + Tiền nước + Dịch vụ cố định</code>.
+              <br>5. <strong>Database Mutation:</strong> Ghi bản ghi vào bảng <code>invoices</code> và các dòng chi tiết vào <code>invoice_items</code>.
+              <br>6. <strong>Revalidation:</strong> Gọi <code>revalidatePath('/invoices')</code> và <code>revalidatePath('/dashboard')</code> để xóa cache. Server trả về kết quả, client hiển thị thông báo thành công và làm mới bảng dữ liệu tức thì.
             </div>
           </div>
         </div>
+
+        <!-- Q9 -->
+        <div class="accordion-item" data-round="r2">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 9: Hệ thống xử lý Webhook từ PayOS khi khách thanh toán như thế nào?</span>
+                <div class="q-en-sub">How do you handle webhook events from PayOS when a customer pays?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 2 • Webhook 2 Lớp</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống có <strong>2 route Webhook riêng biệt</strong> cho 2 mục đích:</p>
+            <div class="qa-highlight">
+              • <strong>Webhook Tiền Thuê Trọ (<span class="code-ref">/api/webhooks/payos/route.ts</span>):</strong>
+              <br>  - <em>Xác thực chữ ký HMAC-SHA256:</em> Dùng Checksum Key riêng của từng Tổ chức (<span class="code-ref">payment_settings</span>) hoặc khóa hệ thống để xác thực tính toàn vẹn payload.
+              <br>  - <em>Đối soát 2 lớp (Dual-matching):</em> Lớp 1 ưu tiên tìm hóa đơn theo <code>order_code</code>; Lớp 2 (Fallback) dùng Regex trích xuất mã UUID của hóa đơn nằm trong chuỗi nội dung chuyển khoản <code>description</code>.
+              <br>  - <em>Bất biến (Idempotent):</em> Nếu hóa đơn đã ở trạng thái <code>paid</code>, trả về HTTP 200 ngay, không cộng dồn tiền.
+              <br>  - <em>Cập nhật:</em> Tăng <code>paid_amount</code>, chuyển trạng thái sang <code>paid</code> (hoặc <code>partial</code> nếu trả thiếu), và lưu dấu thời gian <code>paid_at</code>.
+              <br>• <strong>Webhook Gói Premium SaaS (<span class="code-ref">/api/webhooks/payment/route.ts</span>):</strong> Nhận thông báo mua gói phần mềm của chủ nhà, cập nhật bảng <code>payment_transactions</code> sang <code>PAID</code> và gia hạn bảng <code>subscriptions</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="accordion-item" data-round="r2">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 10: Vai trò của middleware.ts trong ứng dụng Next.js là gì?</span>
+                <div class="q-en-sub">What is the role of middleware.ts in your Next.js application?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 2 • Edge Route Guard</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> File <span class="code-ref">src/middleware.ts</span> đóng vai trò là trạm gác cổng ở rìa mạng (Edge Route Guard):</p>
+            <div class="qa-highlight">
+              • <strong>Bảo vệ phân hệ Quản trị (<span class="code-ref">/dashboard/*</span>):</strong> Kiểm tra phiên đăng nhập Supabase Auth. Nếu người dùng chưa đăng nhập, lập tức điều hướng về <code>/login</code>. Nếu token sắp hết hạn, tự động gọi <code>updateSession()</code> để làm mới cookie JWT.
+              <br>• <strong>Bảo vệ Cổng Khách Thuê (<span class="code-ref">/portal/*</span>):</strong> Kiểm tra cookie bảo mật <code>tenant-session</code> (JWT chứa <code>tenantId</code>, <code>phone</code>, <code>orgId</code>). Nếu chưa có hoặc token không hợp lệ, chuyển hướng khách thuê về trang <code>/portal/login</code>.
+              <br>• <strong>Chặn truy cập ngược:</strong> Nếu người dùng đã đăng nhập tài khoản chủ nhà hoặc khách thuê, họ sẽ bị chặn không cho vào lại các trang đăng nhập tương ứng, tự động chuyển về trang tổng quan.
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUND 3 -->
+        <!-- Q11 -->
+        <div class="accordion-item" data-round="r3">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 11: Các thực thể CSDL quan trọng nhất và quan hệ của chúng trong luồng tính tiền?</span>
+                <div class="q-en-sub">What are the most important database entities and how are they related in the billing flow?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 3 • ERD 13 Thực Thể</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống gồm 13 thực thể chính được thiết kế chuẩn hóa và cô lập theo <code>org_id</code>:</p>
+            <div class="qa-highlight">
+              • <strong>Tài sản & Giá:</strong> <code>organizations</code> ➜ <code>buildings</code> (chứa bảng giá <code>service_prices</code>) ➜ <code>rooms</code> (trạng thái: <code>available</code>, <code>occupied</code>, <code>maintenance</code>).
+              <br>• <strong>Khách & Ràng buộc:</strong> <code>tenants</code> liên kết với <code>rooms</code> qua <code>contracts</code> (chứa tiền cọc, chỉ số đầu vào, ngày bắt đầu/kết thúc).
+              <br>• <strong>Chuỗi tính cước hàng tháng:</strong>
+              <br>  - Chốt <code>meter_records</code> (chỉ số điện/nước cũ và mới).
+              <br>  - Sinh <code>invoices</code> tham chiếu <code>contract_id</code> và <code>room_id</code>.
+              <br>  - Chi tiết các khoản phí nằm trong <code>invoice_items</code>.
+              <br>  - Kết nối với <code>payment_transactions</code> để ghi nhận thanh toán.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q12 -->
+        <div class="accordion-item" data-round="r3">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 12: Supabase xử lý xác thực người dùng và quản lý phiên trong Next.js như thế nào?</span>
+                <div class="q-en-sub">How does Supabase handle user authentication and session management in Next.js?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 3 • JWT PKCE Cookie</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Cơ chế xác thực tuân thủ tiêu chuẩn bảo mật hiện đại:</p>
+            <div class="qa-highlight">
+              • <strong>Chuẩn PKCE (Proof Key for Code Exchange):</strong> Supabase Auth sử dụng chuẩn này khi đăng nhập bằng Email/Password hoặc Google OAuth.
+              <br>• <strong>HTTP-only Secure Cookies:</strong> Gói <code>@supabase/ssr</code> lưu trữ Access Token và Refresh Token vào HTTP-only Cookies trên trình duyệt. Cookie này không thể bị đọc bởi mã JavaScript máy khách, loại trừ hoàn toàn nguy cơ bị đánh cắp phiên qua tấn công XSS.
+              <br>• <strong>Làm mới token tự động:</strong> Mỗi khi người dùng chuyển trang, <code>middleware.ts</code> tự động kiểm tra tính hợp lệ và hoán đổi Refresh Token để gia hạn phiên làm việc liên tục mà không gây gián đoạn trải nghiệm người dùng.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q13 -->
+        <div class="accordion-item" data-round="r3">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 13: Hình ảnh CCCD của khách thuê và hình ảnh sự cố được tải lên và bảo mật ra sao?</span>
+                <div class="q-en-sub">How are images (e.g., ID cards, incident photos) uploaded and secured in your system?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 3 • Storage RLS</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Toàn bộ hình ảnh tài liệu cá nhân được bảo mật qua 3 tầng:</p>
+            <div class="qa-highlight">
+              • <strong>Lưu trữ trên Supabase Storage:</strong> Sử dụng các bucket riêng (<span class="code-ref">tenants</span>, <span class="code-ref">incidents</span>).
+              <br>• <strong>Chính sách Storage RLS (<span class="code-ref">20260629000002_storage_rls.sql</span>):</strong> Các bucket được cấu hình ở chế độ <strong>Private</strong> (không có Public URL). Chỉ người dùng thuộc đúng <code>org_id</code> mới có quyền đọc hoặc tải lên file.
+              <br>• <strong>Cơ chế Signed URL:</strong> Khi cần xem ảnh trên giao diện, server tạo ra một đường link tạm có chữ ký số bí mật và tự động hết hạn sau 60 phút, đảm bảo tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân tại Việt Nam.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q14 -->
+        <div class="accordion-item" data-round="r3">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 14: Quản lý "Mã mời" cho nhân viên và "Mã PIN" cho khách thuê như thế nào?</span>
+                <div class="q-en-sub">How do you manage "Invite Codes" for staff AND "Access PINs" for tenants?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 3 • Mã Mời & PIN Portal</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống tách bạch hoàn toàn 2 cơ chế truy cập tương ứng với 2 đối tượng:</p>
+            <div class="qa-highlight">
+              • <strong>Mã Mời Nhân Viên (Staff Invite Code):</strong> Mỗi tổ chức có một mã ngẫu nhiên (<span class="code-ref">organizations.invite_code</span>) hiển thị tại trang Cài Đặt. Khi nhân viên đăng ký, họ nhập mã này vào form đăng ký (<span class="code-ref">registerAndJoinOrg</span>), hệ thống xác thực và tự động gán role <code>staff</code> cho họ.
+              <br>• <strong>Mã PIN Cổng Khách Thuê (Tenant Access PIN):</strong> Khi tạo khách thuê mới, Server Action tự động sinh mã PIN 6 số ngẫu nhiên lưu vào <span class="code-ref">tenants.access_code</span>. Trên màn hình Khách thuê (<span class="code-ref">TenantsClient.tsx</span>), chủ nhà có cột xem PIN, nút <strong>1-click sao chép thông tin gửi Zalo</strong> (kèm link portal, SĐT và mã PIN), và nút <strong>"Cấp lại mã PIN mới"</strong> tức thì. Khách thuê chỉ cần dùng Số điện thoại + PIN 6 số để đăng nhập mà không cần nhớ mật khẩu.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q15 -->
+        <div class="accordion-item" data-round="r3">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 15: Khi khách chuyển đi, dữ liệu lịch sử được xử lý thế nào để không làm hỏng hóa đơn cũ?</span>
+                <div class="q-en-sub">If a tenant moves out, how do you handle their historical data to avoid breaking past invoices?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 3 • Soft Delete & History</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dữ liệu được bảo toàn tính toàn vẹn quan hệ (Referential Integrity) qua 2 cơ chế:</p>
+            <div class="qa-highlight">
+              • <strong>Thanh lý hợp đồng thay vì xóa cứng:</strong> Khi khách trả phòng qua <span class="code-ref">CheckoutModal.tsx</span>, hợp đồng chuyển trạng thái thành <code>terminated</code>, phòng được giải phóng thành <code>available</code>. Toàn bộ bản ghi của khách thuê, hợp đồng và chỉ số điện nước cũ vẫn được giữ nguyên vẹn trong CSDL.
+              <br>• <strong>Cơ chế Soft Delete:</strong> Dựa trên migration <span class="code-ref">20260629000001_soft_delete.sql</span>, các bảng có cột <code>deleted_at</code>. Khi bấm xóa khách thuê, hệ thống chỉ cập nhật timestamp <code>deleted_at = NOW()</code>. Các hóa đơn cũ khi join vẫn lấy được đầy đủ tên khách, số CCCD và số tiền lịch sử mà không bao giờ bị lỗi null.
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUND 4 -->
+        <!-- Q16 -->
+        <div class="accordion-item" data-round="r4">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 16: Mô tả toàn bộ luồng từ khi khách vào ở đến khi nhận hóa đơn tháng đầu tiên?</span>
+                <div class="q-en-sub">Walk us through the full flow from a tenant moving in to them receiving their first monthly bill.</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 4 • Chu Trình Vận Hành</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Chu trình hàng tháng gồm 4 bước liền mạch:</p>
+            <div class="qa-highlight">
+              1. <strong>Bàn giao phòng:</strong> Thêm khách thuê ➜ Tạo Hợp đồng (chọn phòng trống, điền cọc, chỉ số điện nước đầu vào). Trạng thái phòng tự động chuyển sang <code>occupied</code>.
+              <br>2. <strong>Chốt chỉ số cuối tháng:</strong> Vào <span class="code-ref">/meters</span> nhập chỉ số điện và nước hiện tại. Hệ thống tự trừ chỉ số cũ để tính ra sản lượng tiêu thụ.
+              <br>3. <strong>Sinh hóa đơn:</strong> Vào <span class="code-ref">/invoices</span> bấm "Sinh hóa đơn tháng này". Hệ thống tự cộng: <code>Tiền phòng + Tiền điện + Tiền nước + Dịch vụ cố định</code>.
+              <br>4. <strong>Thanh toán VietQR:</strong> Hóa đơn sinh ra có mã VietQR động. Khách thuê quét mã trên app ngân hàng hoặc trên Cổng Khách Thuê <span class="code-ref">/portal</span>. Khi chuyển khoản xong, Webhook PayOS tự động đổi hóa đơn sang <code>paid</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q17 -->
+        <div class="accordion-item" data-round="r4">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 17: Tính tiền điện nước thế nào và có cơ chế nào chặn nhập số lùi không?</span>
+                <div class="q-en-sub">How is monthly electricity/water calculated, and what validation prevents entering a lower reading than last month?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 4 • Kiểm Soát Chỉ Số</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Công thức và cơ chế kiểm soát được cài đặt chặt chẽ ở Server Action:</p>
+            <div class="qa-highlight">
+              • <strong>Công thức:</strong> <code>Tiêu thụ = Math.max(0, Chỉ số mới - Chỉ số cũ)</code>. <code>Thành tiền = Tiêu thụ * Đơn giá của tòa nhà</code>.
+              <br>• <strong>Cơ chế chặn nhập lùi (Validation Guard):</strong> Trong Server Action <span class="code-ref">recordMeterReading</span> (<span class="code-ref">meters/actions.ts</span>), hệ thống truy vấn chỉ số kỳ trước (<code>old_reading</code>). Nếu <code>new_reading &lt; old_reading</code>, Server Action từ chối ngay và ném ra lỗi: <em>"Chỉ số mới không được nhỏ hơn chỉ số cũ kỳ trước"</em>, ngăn chặn tuyệt đối việc lưu sai vào CSDL.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q18 -->
+        <div class="accordion-item" data-round="r4">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 18: Bảng Kanban quản lý sự cố hoạt động thế nào với @dnd-kit/core?</span>
+                <div class="q-en-sub">How does the Incident Management Kanban board work technically using @dnd-kit/core?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 4 • Kanban 60fps</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Bảng Kanban <span class="code-ref">KanbanBoard.tsx</span> được thiết kế cho trải nghiệm kéo thả mượt mà 60fps:</p>
+            <div class="qa-highlight">
+              • <strong>Kiến trúc kéo thả:</strong> Sử dụng <code>@dnd-kit/core</code> với cảm biến con trỏ và bàn phím, quản lý 3 cột: <code>open</code> (Chờ xử lý), <code>in_progress</code> (Đang sửa) và <code>resolved</code> (Đã xong).
+              <br>• <strong>Cập nhật lạc quan (Optimistic UI Update):</strong> Khi thả thẻ sự cố sang cột mới, hàm <code>onDragEnd</code> cập nhật ngay state trên giao diện trong 16ms, đem lại cảm giác phản hồi tức thì.
+              <br>• <strong>Đồng bộ nền:</strong> Gọi Server Action <span class="code-ref">updateIncidentStatus</span> cập nhật CSDL. Nếu xảy ra lỗi mạng, hệ thống tự động rollback trạng thái thẻ về cột cũ và hiển thị thông báo lỗi.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q19 -->
+        <div class="accordion-item" data-round="r4">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 19: Dashboard tính tổng doanh thu như thế nào? Theo dòng tiền thực thu hay hóa đơn phát hành?</span>
+                <div class="q-en-sub">How does the dashboard compute total revenue? Is it cash-basis or accrual-basis?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 4 • Cash-Basis Accounting</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Dashboard của RentFlow áp dụng nguyên tắc <strong>Kế toán dòng tiền thực thu (Cash-basis Accounting)</strong>:</p>
+            <div class="qa-highlight">
+              • <strong>Doanh thu thực tế (Total Revenue):</strong> Tính bằng tổng số tiền thực thu <code>paid_amount</code> từ các hóa đơn đã thanh toán (<code>status = 'paid'</code> hoặc phần đã trả của <code>partial</code>) phát sinh trong tháng đang chọn.
+              <br>• <strong>Công nợ chưa thu (Receivables):</strong> Các hóa đơn chưa đóng tiền được tách riêng thành chỉ số "Công nợ đang chờ thu".
+              <br>• <strong>Ý nghĩa:</strong> Giúp chủ trọ nắm rõ dòng tiền thực tế có trong tài khoản để chi trả chi phí vận hành, không bị nhầm lẫn giữa doanh số lý thuyết trên giấy và tiền mặt thực tế.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q20 -->
+        <div class="accordion-item" data-round="r4">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 20: Chức năng tạo phòng hàng loạt (Bulk Create) hoạt động ra sao và chống trùng tên phòng thế nào?</span>
+                <div class="q-en-sub">How does Bulk Room Creation work, and how do you prevent duplicate rooms in a building?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 4 • BatchRoomModal</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Chức năng được triển khai qua **Modal Sinh Ma Trận Phòng Tự Động** (<span class="code-ref">BatchRoomModal.tsx</span>):</p>
+            <div class="qa-highlight">
+              • <strong>Sinh theo ma trận tầng:</strong> Người dùng nhập: Tầng bắt đầu, Tầng kết thúc, Số phòng mỗi tầng, Định dạng tên (<code>101</code>, <code>P101</code>, <code>P.101</code>), Giá thuê và Diện tích.
+              <br>• <strong>Bảng xem trước trực quan (Live Preview Table):</strong> Hệ thống sinh ra bảng danh sách có checkbox. Người dùng có thể bỏ chọn các phòng không tồn tại (ví dụ tầng 1 để xe).
+              <br>• <strong>Chống trùng lặp 2 tầng:</strong>
+              <br>  - <em>Tầng ứng dụng:</em> Server Action <span class="code-ref">batchCreateRooms</span> lọc trước danh sách phòng đã có trong tòa nhà, chỉ insert phòng mới và thông báo rõ: <em>"Đã tạo thành công N phòng, bỏ qua X phòng đã tồn tại"</em>.
+              <br>  - <em>Tầng cơ sở dữ liệu:</em> Ràng buộc <code>UNIQUE(building_id, name)</code> trên bảng <code>rooms</code> đảm bảo không bao giờ có 2 phòng trùng tên trong cùng tòa nhà.
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUND 5 -->
+        <!-- Q21 -->
+        <div class="accordion-item" data-round="r5">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 21: Chính sách Row Level Security (RLS) được thực thi ở đâu và tại sao quan trọng với Multi-Tenancy?</span>
+                <div class="q-en-sub">Where are Row Level Security (RLS) policies enforced, and why are they critical for Multi-Tenancy?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 5 • PostgreSQL RLS</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> RLS là cốt lõi bảo mật của toàn bộ hệ thống:</p>
+            <div class="qa-highlight">
+              • <strong>Thực thi sâu trong nhân PostgreSQL:</strong> Row Level Security được kiểm tra trực tiếp ở mức nhân của hệ quản trị CSDL PostgreSQL tại thời điểm biên dịch câu truy vấn SQL, độc lập hoàn toàn với code ứng dụng.
+              <br>• <strong>Ý nghĩa với SaaS:</strong> Trong mô hình cơ sở dữ liệu dùng chung (Shared Database), mọi câu lệnh <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> đều tự động chèn thêm điều kiện: <code>WHERE org_id = auth.user_org_id()</code>.
+              <br>• <strong>Bảo vệ 100%:</strong> Dù lập trình viên có quên viết mệnh đề WHERE trong code, cơ sở dữ liệu vẫn chặn đứng và không bao giờ trả về bản ghi của chủ trọ khác. Toàn bộ chính sách RLS được quản lý qua **19 file migration SQL trong Git repo**.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q22 -->
+        <div class="accordion-item" data-round="r5">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 22: Phân quyền giữa Chủ nhà (Owner) và Nhân viên/Kế toán (Staff) như thế nào?</span>
+                <div class="q-en-sub">How do you differentiate permissions between a property owner (Admin) and a staff/accountant?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 5 • RBAC Authorization</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống áp dụng mô hình phân quyền theo vai trò **RBAC (Role-Based Access Control)**:</p>
+            <div class="qa-highlight">
+              • <strong>Lưu trữ vai trò:</strong> Cột <code>role</code> trong bảng <code>user_profiles</code> nhận các giá trị: <code>owner</code> (Chủ nhà) hoặc <code>staff</code> (Nhân viên).
+              <br>• <strong>Kiểm soát trên giao diện (UI Guard):</strong> Menu điều hướng và các nút thao tác nhạy cảm (Xóa toà nhà, Cấu hình tài khoản ngân hàng PayOS, Quản lý mã mời) sẽ tự động ẩn đối với tài khoản có role <code>staff</code>.
+              <br>• <strong>Bảo vệ ở tầng Server Actions:</strong> Mọi Server Action nhạy cảm đều gọi hàm <span class="code-ref">getCurrentUserOrganization()</span>. Nếu không phải <code>owner</code>, hệ thống từ chối thực thi và trả về lỗi <em>"Bạn không có quyền thực hiện thao tác này"</em>, ngăn chặn tấn công giả mạo request API.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q23 -->
+        <div class="accordion-item" data-round="r5">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 23: Nếu Webhook từ PayOS bị lỗi hoặc gửi chậm thì hóa đơn xử lý thế nào? Có phương án dự phòng không?</span>
+                <div class="q-en-sub">If a webhook from PayOS fails or is delayed, how is the invoice updated? Is there a manual fallback?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 5 • Manual Fallback</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống thiết kế theo nguyên tắc phòng thủ đa lớp (Defense in Depth):</p>
+            <div class="qa-highlight">
+              • <strong>Cơ chế Retry & Đối soát thông minh:</strong> Webhook PayOS (<span class="code-ref">/api/webhooks/payos</span>) hỗ trợ đối soát kép qua <code>order_code</code> hoặc Regex trích xuất mã UUID hóa đơn từ nội dung chuyển khoản, đồng thời có kiểm tra Idempotent chống xử lý lặp tiền.
+              <br>• <strong>Phương án Dự phòng Thủ công (Manual Fallback):</strong> Nếu mạng ngân hàng nghẽn hoặc khách trả tiền mặt tại quầy, chủ trọ mở chi tiết hóa đơn trên giao diện <span class="code-ref">InvoicesClient.tsx</span> và bấm nút **"Cập nhật thanh toán" (Record Payment)** để xác nhận thu tiền trực tiếp, hóa đơn lập tức đổi sang <code>paid</code> mà không cần chờ webhook.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q24 -->
+        <div class="accordion-item" data-round="r5">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 24: Luồng nào thể hiện rõ nhất tính giao dịch CSDL (Database Transaction) và nó ghi những bản ghi nào?</span>
+                <div class="q-en-sub">Which flow demonstrates the best use of a database transaction, and what records does it write?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 5 • Atomicity ACID</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Có 2 luồng thể hiện tính giao dịch toàn vẹn cao nhất:</p>
+            <div class="qa-highlight">
+              • <strong>Luồng Tạo Hợp Đồng (<span class="code-ref">createContract</span>):</strong> Phải đảm bảo tính nguyên tử (Atomicity) giữa 2 thao tác:
+              <br>  - Thao tác 1: Tạo bản ghi hợp đồng mới trong bảng <code>contracts</code>.
+              <br>  - Thao tác 2: Chuyển trạng thái phòng trong bảng <code>rooms</code> từ <code>available</code> sang <code>occupied</code>. Nếu một trong hai bước gặp lỗi, toàn bộ giao dịch rollback, tránh tình trạng có hợp đồng nhưng phòng vẫn báo trống.
+              <br>• <strong>Luồng Trả Phòng & Quyết Toán Cọc (<span class="code-ref">CheckoutModal.tsx</span>):</strong> Ghi bản ghi quyết toán hoàn cọc, chuyển trạng thái hợp đồng thành <code>terminated</code>, và trả phòng về lại <code>available</code> sẵn sàng cho thuê tiếp.
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUND 6 -->
+        <!-- Q25 -->
+        <div class="accordion-item" data-round="r6">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 25: Điểm yếu nhất về tính nhất quán trong luồng tính tiền là gì và cải thiện thế nào?</span>
+                <div class="q-en-sub">What is the most important consistency weakness in your current billing flow, and how would you improve it?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 6 • Pricing Snapshot</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Đây là một phân tích trung thực về tính nhất quán dữ liệu:</p>
+            <div class="qa-highlight">
+              • <strong>Điểm yếu thực tế:</strong> Đơn giá điện, nước hiện tại được cấu hình theo từng Tòa nhà trong bảng <code>service_prices</code>. Nếu chủ nhà đổi giá ở giữa tháng (ví dụ 3.500 đ lên 4.000 đ/kWh) mà chưa chốt hóa đơn, khi sinh hóa đơn hệ thống sẽ lấy đơn giá mới nhất áp dụng cho toàn bộ kỳ.
+              <br>• <strong>Giải pháp cải thiện:</strong> Áp dụng cơ chế **Chụp nhanh đơn giá (Pricing Snapshot)**. Khi ký hợp đồng, đơn giá sẽ được sao chép và lưu cứng trực tiếp vào bản ghi của Hợp đồng (<span class="code-ref">contracts.service_rates</span>) hoặc lưu snapshot vào từng dòng <span class="code-ref">invoice_items.unit_price</span>. Nhờ đó, việc sửa bảng giá tòa nhà sau này không bao giờ làm sai lệch các hợp đồng đã ký trước đó.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q26 -->
+        <div class="accordion-item" data-round="r6">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 26: Nếu 2 nhân viên cùng chốt chỉ số điện nước cho 1 phòng cùng một lúc thì sao?</span>
+                <div class="q-en-sub">If two staff members update the meter reading for the same room at the exact same time, what happens?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 6 • Race Condition Index</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> CSDL đã được bảo vệ tuyệt đối chống tương tranh (Race Condition):</p>
+            <div class="qa-highlight">
+              • <strong>Chỉ mục duy nhất cấp CSDL:</strong> Migration <span class="code-ref">20260928000000_fix_meter_records_unique_index.sql</span> thiết lập Unique Constraint <code>idx_one_meter_record_per_room_month</code> trên bộ 4 trường: <code>(room_id, month, year, meter_type)</code>.
+              <br>• <strong>Kết quả:</strong> Khi 2 nhân viên bấm Lưu cùng một microsecond, PostgreSQL sẽ đảm bảo giao dịch thứ nhất thành công. Giao dịch thứ hai sẽ bị từ chối với lỗi vi phạm ràng buộc duy nhất (PostgreSQL Error 23505). Server Action bắt lỗi này và hiển thị thông báo rõ ràng: <em>"Chỉ số của phòng này trong kỳ đã được ghi nhận trước đó"</em>, ngăn chặn nhân đôi số liệu.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q27 -->
+        <div class="accordion-item" data-round="r6">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 27: Nêu một điểm yếu bảo mật hoặc thiếu sót kiểm tra dữ liệu hiện tại?</span>
+                <div class="q-en-sub">Name one security weakness or missing validation in the current implementation.</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 6 • Bảo Mật PIN Hash</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Một đánh giá khách quan về an toàn thông tin:</p>
+            <div class="qa-highlight">
+              • <strong>Hạn chế thực tế:</strong> Mã PIN đăng nhập của khách thuê (<span class="code-ref">tenants.access_code</span>) hiện đang được lưu dạng chuỗi thô (plain text) thay vì băm một chiều qua bcrypt/argon2. Nguyên nhân ban đầu là để chủ nhà có thể xem lại mã và bấm 1-click gửi qua Zalo cho khách thuê lớn tuổi không rành công nghệ.
+              <br>• <strong>Giải pháp chuẩn hóa:</strong> Áp dụng thuật toán băm <code>bcrypt</code> cho mã PIN trước khi lưu xuống database giống như mật khẩu, kết hợp cơ chế gửi mã OTP đăng nhập dùng 1 lần trực tiếp qua Zalo ZNS hoặc SMS Brandname khi khách truy cập cổng thông tin.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q28 -->
+        <div class="accordion-item" data-round="r6">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 28: Hệ thống xử lý thanh lý hợp đồng giữa tháng và tính tiền lẻ ngày (Prorated billing) ra sao?</span>
+                <div class="q-en-sub">How does the system handle contract termination before the month ends and prorated billing?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 6 • CheckoutModal Hoàn Cọc</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> RentFlow đã phát triển hoàn chỉnh **Modal Trả Phòng & Quyết Toán Hoàn Cọc** (<span class="code-ref">CheckoutModal.tsx</span>):</p>
+            <div class="qa-highlight">
+              • <strong>Chốt điện nước ngày cuối:</strong> Cho phép nhập chỉ số đồng hồ lúc trả phòng, tự tính tiền điện nước lẻ ngày theo công thức chuẩn: <code>(Mới - Cũ) * Đơn giá</code>.
+              <br>• <strong>Tiền phòng lẻ & Nợ cũ:</strong> Có ô nhập số tiền phòng lẻ ngày hoặc nợ kỳ trước chưa trả (<span class="code-ref">unpaid_rent</span>).
+              <br>• <strong>Khấu trừ phát sinh linh hoạt:</strong> Cho phép thêm danh sách các khoản phạt thực tế (vệ sinh phòng, đền bù chốt cửa...) kèm số tiền tương ứng.
+              <br>• <strong>Tự động quyết toán:</strong> Lấy <code>Tiền cọc ban đầu - Tổng các khoản khấu trừ</code>, báo rõ số tiền chủ nhà cần hoàn cọc cho khách, hoặc số tiền khách cần thanh toán bù.
+              <br>• <strong>Biên bản Zalo tức thì:</strong> Tự sinh mẫu biên bản quyết toán chi tiết với nút 1-click sao chép gửi thẳng cho khách thuê qua Zalo.
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUND 7 -->
+        <!-- Q29 -->
+        <div class="accordion-item" data-round="r7">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 29: Nếu Supabase API bị mất mạng hoặc sự cố khi đang demo thì sao? Hệ thống xử lý lỗi thế nào?</span>
+                <div class="q-en-sub">If the Supabase API goes down during a demo, what happens? How does it handle the error gracefully?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 7 • Error Boundary & Backup</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Hệ thống có cơ chế xử lý lỗi nhiều tầng:</p>
+            <div class="qa-highlight">
+              • <strong>Next.js Error Boundaries (<span class="code-ref">error.tsx</span>):</strong> Nếu việc fetch dữ liệu từ Supabase gặp lỗi mạng hoặc timeout, Next.js kích hoạt component <code>error.tsx</code>. Ứng dụng không bị sập trang trắng mà hiển thị thông báo lỗi thân thiện: <em>"Không thể kết nối đến máy chủ dữ liệu. Vui lòng kiểm tra lại kết nối mạng"</em> kèm nút "Thử lại".
+              <br>• <strong>Ảnh chụp sao lưu dự phòng:</strong> Trong slide thuyết trình (Slide 13) và báo cáo, em đã chụp lại đầy đủ kết quả chạy thực tế trên máy chủ triển khai với đúng bộ dữ liệu chuẩn (Doanh thu 10.500.000 đ, 3/6 phòng đang thuê, tỷ lệ lấp đầy 50%). Em hoàn toàn có thể trình chiếu các bằng chứng này nếu hội trường gặp sự cố mạng cục bộ.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q30 -->
+        <div class="accordion-item" data-round="r7">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 30: Tính năng nào bạn sẽ ưu tiên biểu diễn trước để chứng minh giá trị thực tế?</span>
+                <div class="q-en-sub">Which part of the demo would you show first to prove the system has real business value, and why?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 7 • The Golden Path</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Em sẽ trình diễn chuỗi liên hoàn **"Chốt Chỉ Số Điện Nước ➜ Sinh Hóa Đơn Hàng Loạt ➜ Hiển Thị VietQR Động"**.</p>
+            <div class="qa-highlight">
+              • <strong>Lý do:</strong> Đây chính là "điểm đau" (pain point) lớn nhất của tất cả các chủ trọ tại Việt Nam vào ngày 30 hàng tháng. Thay vì mất 2–3 ngày đi chép sổ, cộng trừ thủ công bằng máy tính cầm tay và dễ bị cãi nhau với khách vì tính nhầm, RentFlow giải quyết toàn bộ quy trình này chỉ trong <strong>dưới 30 giây</strong> với độ chính xác toán học tuyệt đối.
+              <br>• <strong>Hiệu quả thuyết phục:</strong> Việc click một nút ra ngay hàng loạt hóa đơn chính xác tuyệt đối kèm mã VietQR tự động sẽ chứng minh rõ nhất giá trị thương mại và tính khả thi của đồ án trước Hội đồng.
+            </div>
+          </div>
+        </div>
+
+        <!-- Q31 -->
+        <div class="accordion-item" data-round="r7">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            <div class="accordion-title">
+              <div>
+                <span>Câu 31: Nếu có thêm một đợt phát triển nữa, bạn sẽ xây dựng hoặc củng cố điều gì trước tiên?</span>
+                <div class="q-en-sub">If you had one more development iteration, what would you build or harden first?</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="accordion-tag">Vòng 7 • PWA & Zalo ZNS</span>
+              <span class="accordion-icon">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body">
+            <p><strong>Trả lời:</strong> Vì Cổng Khách Thuê trên di động (<span class="code-ref">/portal</span>) đã được hoàn thiện với đầy đủ tính năng xem hóa đơn, quét VietQR và báo cáo sự cố, nên trong đợt phát triển tiếp theo, em sẽ tập trung vào 2 hạng mục nâng cấp giá trị cao:</p>
+            <div class="qa-highlight">
+              1. <strong>PWA & Cơ chế Offline-First cho ghi số điện nước:</strong> Cho phép người quản lý cầm điện thoại đi ghi chỉ số điện nước dưới tầng hầm hoặc các khu nhà trọ sóng yếu mà không bị mất dữ liệu. Dữ liệu được lưu tạm trong IndexedDB trên máy và tự động đồng bộ lên Supabase ngay khi có sóng trở lại.
+              <br>2. <strong>Tự động gửi thông báo qua Zalo ZNS / SMS Brandname:</strong> Tích hợp trực tiếp với Zalo Official Account để khi chủ trọ bấm "Sinh hóa đơn", tin nhắn kèm ảnh hóa đơn và mã QR sẽ tự động bắn thẳng về Zalo của khách thuê mà không cần chủ nhà phải sao chép thủ công qua ứng dụng thứ ba.
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1799,6 +2460,32 @@
   function toggleAccordion(header) {
     const item = header.parentElement;
     item.classList.toggle('open');
+  }
+
+  // Filter by Round in Q&A Tab
+  function filterRound(round, btn) {
+    document.querySelectorAll('.round-pill').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const items = document.querySelectorAll('#sec-defense .accordion-item');
+    items.forEach(item => {
+      if (round === 'all' || item.getAttribute('data-round') === round) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Toggle All Accordions in Q&A
+  function toggleAllAccordions(open) {
+    document.querySelectorAll('#sec-defense .accordion-item').forEach(item => {
+      if (open) {
+        item.classList.add('open');
+      } else {
+        item.classList.remove('open');
+      }
+    });
   }
 
   // Copy Speech Script
