@@ -122,10 +122,21 @@ export async function POST(req: Request) {
             updatePayload.paid_at = new Date().toISOString();
         }
 
-        const { error: updateError } = await supabase
+        let { error: updateError } = await supabase
             .from('invoices')
             .update(updatePayload)
             .eq('id', invoice.id);
+
+        // Phòng vệ schema cache: Nếu DB chưa có cột paid_at, thử lại chỉ với paid_amount và status
+        if (updateError && updateError.message.includes('paid_at')) {
+            console.warn('⚠️ [Webhook PayOS] Bảng invoices chưa có cột paid_at trong schema, thử lại không có paid_at.');
+            delete updatePayload.paid_at;
+            const retryRes = await supabase
+                .from('invoices')
+                .update(updatePayload)
+                .eq('id', invoice.id);
+            updateError = retryRes.error;
+        }
 
         if (updateError) {
             console.error('❌ [Webhook PayOS] Lỗi cập nhật hoá đơn:', updateError.message);

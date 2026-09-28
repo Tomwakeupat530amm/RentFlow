@@ -330,6 +330,7 @@ export interface Invoice {
     due_date: string | null;
     notes: string | null;
     order_code?: number | null;
+    paid_at?: string | null;
     created_at: string;
     updated_at: string;
     // Virtual fields
