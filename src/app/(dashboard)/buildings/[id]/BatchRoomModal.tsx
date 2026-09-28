@@ -55,7 +55,7 @@ export default function BatchRoomModal({
                     floor: f,
                     default_rent: defaultRent,
                     area,
-                    max_occupants: 2,
+                    area_m2: area,
                     room_type: roomType,
                 });
             }
@@ -73,12 +73,11 @@ export default function BatchRoomModal({
     const handleSubmit = async () => {
         const roomsToCreate = previewRooms
             .filter(r => selectedRowKeys.includes(r.key))
-            .map(({ name, floor, default_rent, area: rArea, max_occupants, room_type }) => ({
+            .map(({ name, floor, default_rent, area: rArea, room_type }) => ({
                 name,
                 floor,
                 default_rent,
-                area: rArea,
-                max_occupants,
+                area_m2: rArea,
                 room_type,
             }));
 

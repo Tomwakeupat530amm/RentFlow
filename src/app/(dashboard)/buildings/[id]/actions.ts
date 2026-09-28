@@ -264,7 +264,7 @@ export interface BatchRoomInput {
     floor: number;
     default_rent: number;
     area?: number;
-    max_occupants?: number;
+    area_m2?: number;
     room_type?: string;
 }
 
@@ -331,8 +331,7 @@ export async function batchCreateRooms(
         name: r.name,
         floor: r.floor,
         default_rent: r.default_rent,
-        area: r.area || 25,
-        max_occupants: r.max_occupants || 2,
+        area_m2: r.area_m2 ?? r.area ?? 25,
         room_type: r.room_type || 'single',
         status: 'vacant',
     }));
