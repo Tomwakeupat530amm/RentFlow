@@ -866,39 +866,7 @@
     }
 
     
-    /* Project Folder Tree & Schema Styling */
-    .folder-tree {
-      background: #0f172a;
-      color: #94a3b8;
-      border-radius: var(--radius-md);
-      padding: 20px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      overflow-x: auto;
-      border: 1px solid #1e293b;
-      margin: 18px 0;
-    }
-
-    .folder-tree .dir-name {
-      color: #38bdf8;
-      font-weight: 700;
-    }
-
-    .folder-tree .file-name {
-      color: #cbd5e1;
-    }
-
-    .folder-tree .comment {
-      color: #64748b;
-      font-style: italic;
-    }
-
-    .folder-tree .highlight-file {
-      color: #34d399;
-      font-weight: 600;
-    }
-
+    /* Schema Styling */
     .schema-cluster {
       margin-bottom: 28px;
     }
@@ -1089,8 +1057,8 @@
         <span class="badge">31 Câu</span>
       </a>
       <a class="nav-item" onclick="switchTab('architecture')">
-        <span class="icon">🏗️</span> Kiến Trúc & Cấu Trúc Mã
-        <span class="badge">Src</span>
+        <span class="icon">🏗️</span> Kiến Trúc Hệ Thống
+        <span class="badge">Full-Stack</span>
       </a>
       <a class="nav-item" onclick="switchTab('database')">
         <span class="icon">🗄️</span> Cấu Trúc CSDL (22 Bảng)
@@ -1169,7 +1137,7 @@
         🎯 Bộ Câu Hỏi Phản Biện Hội Đồng (Q&A)
       </button>
       <button class="tab-btn" id="tabBtn-architecture" onclick="switchTab('architecture')">
-        🏗️ Kiến Trúc Hệ Thống & Cấu Trúc Mã Nguồn
+        🏗️ Kiến Trúc Hệ Thống & Luồng Hoạt Động
       </button>
       <button class="tab-btn" id="tabBtn-database" onclick="switchTab('database')">
         🗄️ Cấu Trúc CSDL (22 Bảng Dữ Liệu)
@@ -2600,102 +2568,136 @@
         </div>
       </div>
 
-      <!-- MỤC 4.2: CẤU TRÚC THƯ MỤC & MÃ NGUỒN CHI TIẾT -->
+      <!-- MỤC 4.2: GIẢI THÍCH CHI TIẾT SƠ ĐỒ KIẾN TRÚC HỆ THỐNG -->
       <div class="module-card" style="margin-top: 24px;">
         <div class="module-header">
           <div class="module-title-wrap">
-            <div class="module-num" style="background: linear-gradient(135deg, #0284c7, #0369a1);">SRC</div>
+            <div class="module-num" style="background: linear-gradient(135deg, #0d9488, #0f766e);">ARCH</div>
             <div>
-              <h3 class="module-title">Giải Thích Chi Tiết Cấu Trúc Thư Mục & Phân Tách Mã Nguồn (Project Structure)</h3>
-              <div class="module-route-tag">Mô hình phân tầng chuẩn Next.js 15 App Router & React 19</div>
+              <h3 class="module-title">Giải Thích Chi Tiết Sơ Đồ Kiến Trúc Hệ Thống (Luồng Hoạt Động & Kết Nối)</h3>
+              <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Phân tích bằng lời tường minh về nguyên lý hoạt động và cách các thành phần trong sơ đồ phía trên kết nối với nhau</div>
             </div>
           </div>
+          <span class="badge-primary">Kiến Trúc Chuẩn Serverless</span>
         </div>
 
-        <p>RentFlow áp dụng nguyên tắc kiến trúc <strong>Strict Boundary Separation (Phân tách ngữ cảnh nghiêm ngặt)</strong> giữa 3 vùng: Trình duyệt Client (chỉ giữ UI tương tác), Máy chủ Server (nơi duy nhất giữ secrets và thực thi Server Actions), và Trạm kiểm soát Edge (kiểm tra JWT trước mọi request). Dưới đây là phân bổ chi tiết cây thư mục dự án:</p>
+        <p style="font-size: 14.5px; line-height: 1.75; color: var(--text-main); margin-bottom: 20px;">
+          Sơ đồ kiến trúc trên mô tả toàn bộ vòng đời của một yêu cầu (<strong>Request Lifecycle</strong>) trong hệ thống RentFlow: từ lúc người dùng thao tác trên màn hình, đi qua lớp mạng biên Cloudflare CDN, phân luồng về 2 cổng truy cập chuyên biệt, được xử lý tại máy chủ trung tâm Next.js 15, cho đến khi tương tác với cơ sở dữ liệu Supabase và cổng thanh toán PayOS. Chi tiết <strong>4 chặng kết nối liên hoàn</strong> được giải thích cụ thể như sau:
+        </p>
 
-        <div class="folder-tree">
-<span class="dir-name">RentFlow/</span>
-├── <span class="dir-name">src/</span>
-│   ├── <span class="dir-name">app/</span>                               <span class="comment"># Next.js 15 App Router (Routing, Server Components & Actions)</span>
-│   │   ├── <span class="dir-name">(auth)/</span>                          <span class="comment"># Route group xác thực: /login, /register, /forgot-password</span>
-│   │   │   └── <span class="highlight-file">actions.ts</span>                     <span class="comment"># Server Actions đăng ký, đăng nhập theo mã mời tổ chức (registerAndJoinOrg)</span>
-│   │   ├── <span class="dir-name">(dashboard)/</span>                     <span class="comment"># Route group Quản Trị của Chủ nhà & Quản lý (Được bảo vệ bởi Supabase Auth)</span>
-│   │   │   ├── <span class="dir-name">buildings/</span>                     <span class="comment"># Quản lý tòa nhà, số tầng, biểu phí dịch vụ & Modal tạo phòng</span>
-│   │   │   │   └── <span class="dir-name">[id]/</span>
-│   │   │   │       ├── <span class="highlight-file">BatchRoomModal.tsx</span>        <span class="comment"># Ma trận sinh phòng tự động (tầng, phòng/tầng, prefix, preview, lọc trùng)</span>
-│   │   │   │       └── <span class="file-name">actions.ts</span>                <span class="comment"># Server Action batchCreateRooms, updateBuilding, createBuilding</span>
-│   │   │   ├── <span class="dir-name">rooms/</span>                         <span class="comment"># Danh mục phòng, lọc trạng thái (vacant, occupied, maintenance)</span>
-│   │   │   ├── <span class="dir-name">tenants/</span>                       <span class="comment"># Quản lý khách thuê, CCCD, cấp và đổi mã PIN Portal 6 số (TenantsClient.tsx)</span>
-│   │   │   ├── <span class="dir-name">contracts/</span>                     <span class="comment"># Hợp đồng thuê, tiền cọc, chữ ký và quyết toán trả phòng</span>
-│   │   │   │   ├── <span class="highlight-file">CheckoutModal.tsx</span>         <span class="comment"># Modal quyết toán hoàn cọc: chốt điện nước ngày cuối, nợ lẻ, trừ đồ đạc, Zalo text</span>
-│   │   │   │   └── <span class="file-name">actions.ts</span>                <span class="comment"># Server Actions: createContract, checkoutContract (Atomicity ACID)</span>
-│   │   │   ├── <span class="dir-name">meters/</span>                        <span class="comment"># Ghi nhận chỉ số điện/nước hàng tháng, tự tính sản lượng tiêu thụ delta</span>
-│   │   │   │   └── <span class="file-name">actions.ts</span>                <span class="comment"># Validation chặn nhập lùi chỉ số & ghi nhận an toàn</span>
-│   │   │   ├── <span class="dir-name">invoices/</span>                      <span class="comment"># Hóa đơn hàng tháng, sinh bill hàng loạt, tạo mã VietQR động, gửi Zalo</span>
-│   │   │   ├── <span class="dir-name">incidents/</span>                     <span class="comment"># Bảng Kanban kéo thả trạng thái sự cố 60fps dùng @dnd-kit/core</span>
-│   │   │   ├── <span class="dir-name">expenses/</span>                      <span class="comment"># Ghi nhận chi phí vận hành toà nhà, phân loại danh mục</span>
-│   │   │   ├── <span class="dir-name">homestay/</span>                      <span class="comment"># Phân hệ Homestay: bookings (đặt phòng), calendar (lịch), housekeeping (dọn phòng)</span>
-│   │   │   ├── <span class="dir-name">settings/</span>                      <span class="comment"># Thiết lập tổ chức, mã mời thành viên, cấu hình ngân hàng PayOS</span>
-│   │   │   ├── <span class="file-name">layout.tsx</span>                    <span class="comment"># Layout thanh bên (MainLayout) với menu điều hướng, chuông thông báo</span>
-│   │   │   └── <span class="file-name">error.tsx</span>                     <span class="comment"># Next.js Error Boundary bắt lỗi kết nối Supabase, hiển thị UI thân thiện</span>
-│   │   ├── <span class="dir-name">portal/</span>                            <span class="comment"># Phân hệ Cổng Khách Thuê di động (Mobile-first, không mật khẩu)</span>
-│   │   │   ├── <span class="dir-name">login/</span>                         <span class="comment"># Đăng nhập nhanh bằng SĐT + Mã PIN 6 số</span>
-│   │   │   ├── <span class="dir-name">dashboard/</span>                     <span class="comment"># Trang chủ khách: thông tin phòng, hợp đồng, tóm tắt công nợ</span>
-│   │   │   ├── <span class="dir-name">invoices/</span>                      <span class="comment"># Xem danh sách hóa đơn, quét mã VietQR Napas247 thanh toán tức thì</span>
-│   │   │   ├── <span class="dir-name">incidents/</span>                     <span class="comment"># Báo cáo sự cố phòng, đính kèm ảnh thực tế</span>
-│   │   │   ├── <span class="dir-name">profile/</span>                       <span class="comment"># Thông tin cá nhân khách thuê và danh sách người ở cùng</span>
-│   │   │   └── <span class="highlight-file">PortalLayoutClient.tsx</span>        <span class="comment"># Khung giao diện mobile với thanh điều hướng 4 tab cố định ở chân trang</span>
-│   │   └── <span class="dir-name">api/</span>                               <span class="comment"># Route Handlers (API Endpoints & Webhooks)</span>
-│   │       ├── <span class="dir-name">webhooks/payos/</span>                <span class="comment"># Webhook đối soát tự động hóa đơn phòng (dual-matching order_code/UUID)</span>
-│   │       ├── <span class="dir-name">webhooks/payment/</span>              <span class="comment"># Webhook gia hạn gói SaaS Premium cho tổ chức</span>
-│   │       ├── <span class="dir-name">tenant/login/</span>                  <span class="comment"># API xác thực mã PIN và cấp cookie JWT tenant-session</span>
-│   │       ├── <span class="dir-name">ocr/</span>                           <span class="comment"># API nhận diện thông tin CCCD tự động</span>
-│   │       └── <span class="dir-name">cron/</span>                          <span class="comment"># Tác vụ định kỳ kiểm tra hạn hợp đồng & nhắc nợ</span>
-│   ├── <span class="dir-name">components/</span>                        <span class="comment"># Kho linh kiện UI tái sử dụng (Ant Design v5 + TailwindCSS)</span>
-│   │   ├── <span class="dir-name">layout/</span>                            <span class="comment"># MainLayout, Sidebar, NotificationBell</span>
-│   │   ├── <span class="dir-name">invoices/</span>                          <span class="comment"># InvoiceDetailModal, ZaloShareModal, VietQRCode</span>
-│   │   ├── <span class="dir-name">incidents/</span>                         <span class="comment"># KanbanBoard, IncidentCard, IncidentFormModal</span>
-│   │   └── <span class="dir-name">expenses/</span>                          <span class="comment"># ExpenseFormModal, CategoryPieChart</span>
-│   ├── <span class="dir-name">lib/</span>                               <span class="comment"># Thư viện dùng chung & Tích hợp dịch vụ ngoài</span>
-│   │   ├── <span class="dir-name">supabase/</span>                          <span class="comment"># 3 cấp độ Supabase Client</span>
-│   │   │   ├── <span class="highlight-file">server.ts</span>                      <span class="comment"># Client mặc định có Cookie session, tuân thủ nghiêm ngặt RLS</span>
-│   │   │   ├── <span class="highlight-file">admin.ts</span>                       <span class="comment"># Client Service-Role Key bypass RLS (chỉ dùng cho Webhooks & Auth)</span>
-│   │   │   └── <span class="file-name">client.ts</span>                      <span class="comment"># Client trình duyệt cho các tác vụ công khai</span>
-│   │   ├── <span class="highlight-file">payos.ts</span>                           <span class="comment"># Khởi tạo SDK PayOS & tạo dynamic client theo Checksum Key từng tổ chức</span>
-│   │   ├── <span class="highlight-file">tenant-auth.ts</span>                     <span class="comment"># Ký và xác minh JWT Cookie cho Cổng Khách Thuê</span>
-│   │   └── <span class="dir-name">rbac/</span>                              <span class="comment"># Logic kiểm tra quyền hạn vai trò (owner vs member)</span>
-│   ├── <span class="dir-name">types/</span>                             <span class="comment"># Định nghĩa kiểu dữ liệu TypeScript</span>
-│   │   └── <span class="highlight-file">database.ts</span>                        <span class="comment"># Khai báo TypeScript types khớp 100% với 22 bảng CSDL Supabase</span>
-│   └── <span class="highlight-file">middleware.ts</span>                          <span class="comment"># Edge Route Guard bảo vệ /dashboard (Supabase) và /portal (Tenant JWT)</span>
-├── <span class="dir-name">supabase/</span>
-│   └── <span class="dir-name">migrations/</span>                        <span class="comment"># 19 file SQL migration versioned trong Git quản lý toàn bộ DDL, RLS & Triggers</span>
-└── <span class="file-name">package.json</span>                           <span class="comment"># Next.js 15, React 19, Ant Design v5, @dnd-kit/core, @payos/node</span>
-        </div>
+        <!-- 4 CHẶNG KẾT NỐI -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
-          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-            <h4 style="font-size: 14.5px; font-weight: 700; color: #0284c7; margin-bottom: 6px;">1. Client Boundary ('use client')</h4>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-              Chỉ chứa giao diện tương tác người dùng: các Modal nhập liệu, bảng Kanban kéo thả, và bộ lọc tìm kiếm. Tuyệt đối không chứa secrets hay API keys.
+          <!-- CHẶNG 1 -->
+          <div style="background: var(--border-subtle); padding: 20px 24px; border-radius: var(--radius-md); border: 1px solid var(--border); border-left: 4px solid #0284c7;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: #0284c7; display: flex; align-items: center; gap: 8px;">
+                <span>🌐</span> 1. Chặng 1: Tầng Người Dùng & Mạng Biên (Trình Duyệt ➔ Cloudflare Edge CDN)
+              </h4>
+              <span style="font-size: 11.5px; padding: 3px 10px; border-radius: 12px; background: #e0f2fe; color: #0369a1; font-weight: 600;">Giao Thức: HTTPS / WSS</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-main); line-height: 1.75;">
+              Mọi truy cập từ trình duyệt web của người dùng (máy tính để bàn, laptop hay điện thoại thông minh) đều được định tuyến qua mạng lưới máy chủ biên <strong>Cloudflare Edge CDN</strong> trước khi chạm tới hệ thống:
             </p>
+            <div style="margin-top: 10px; font-size: 13.5px; color: var(--text-muted); line-height: 1.8; padding-left: 8px;">
+              • <strong>Tăng tốc độ tải trang (Edge Caching):</strong> Toàn bộ tài nguyên tĩnh (file hình ảnh, font chữ, CSS, file JavaScript đã đóng gói) được lưu đệm (cache) tại các máy chủ biên Cloudflare đặt gần người dùng nhất tại Việt Nam. Nhờ đó, người dùng mở trang gần như tức thì mà không cần máy chủ gốc xử lý lại các file tĩnh.<br>
+              • <strong>Bảo mật & Mã hóa toàn diện:</strong> Toàn bộ dữ liệu truyền nhận được tự động mã hóa qua chứng chỉ SSL/TLS (HTTPS) và kết nối thời gian thực WebSocket (WSS), ngăn chặn triệt để nguy cơ đánh cắp thông tin trên đường truyền hoặc các đợt tấn công từ chối dịch vụ (DDoS).
+            </div>
           </div>
-          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-            <h4 style="font-size: 14.5px; font-weight: 700; color: #0d9488; margin-bottom: 6px;">2. Server Actions ('use server')</h4>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-              Thay thế hoàn toàn REST CRUD endpoints. Nhận dữ liệu trực tiếp từ form, kiểm tra quyền, truy vấn CSDL qua Supabase SSR Client có RLS và gọi revalidatePath.
+
+          <!-- CHẶNG 2 -->
+          <div style="background: var(--border-subtle); padding: 20px 24px; border-radius: var(--radius-md); border: 1px solid var(--border); border-left: 4px solid #0d9488;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: #0d9488; display: flex; align-items: center; gap: 8px;">
+                <span>🚪</span> 2. Chặng 2: Phân Tách Hai Cổng Truy Cập Độc Lập (/dashboard vs /portal)
+              </h4>
+              <span style="font-size: 11.5px; padding: 3px 10px; border-radius: 12px; background: #ccfbf1; color: #0f766e; font-weight: 600;">Kiến Trúc Đa Cổng (Dual-Portal)</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-main); line-height: 1.75;">
+              Sau khi qua lớp mạng biên, hệ thống lập tức phân chia lưu lượng thành <strong>2 cổng giao diện hoàn toàn độc lập</strong>, được may đo chuyên biệt cho 2 nhóm đối tượng người dùng:
             </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 14px;">
+              <div style="background: var(--bg-card); padding: 16px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-weight: 700; color: #0284c7; margin-bottom: 8px; font-size: 14.5px; display: flex; align-items: center; gap: 6px;">
+                  <span>👔</span> Cổng Quản Trị Chủ Nhà & Quản Lý (<code>/dashboard</code>)
+                </div>
+                <div style="font-size: 13.5px; color: var(--text-muted); line-height: 1.75;">
+                  • <strong>Công nghệ:</strong> Xây dựng bằng <em>Next.js 15 Server Components (RSC)</em> kết hợp bộ linh kiện doanh nghiệp <em>Ant Design v5</em> và <em>TailwindCSS</em>.<br>
+                  • <strong>Đặc thù nghiệp vụ:</strong> Tối ưu cho màn hình máy tính với không gian làm việc rộng rãi, xử lý nghiệp vụ nặng: ma trận tạo phòng hàng loạt (Batch Generator), bảng Kanban kéo thả sự cố (60fps), chốt chỉ số điện nước, lập hóa đơn và quản lý dòng tiền thu chi.<br>
+                  • <strong>Phân quyền quản trị (RBAC):</strong> Kiểm soát nghiêm ngặt giữa vai trò Chủ nhà (Owner - toàn quyền) và Quản lý/Nhân viên (Member - chỉ thao tác các nghiệp vụ được phân công).
+                </div>
+              </div>
+              <div style="background: var(--bg-card); padding: 16px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-weight: 700; color: #0d9488; margin-bottom: 8px; font-size: 14.5px; display: flex; align-items: center; gap: 6px;">
+                  <span>📱</span> Cổng Khách Thuê Trọ (<code>/portal</code>)
+                </div>
+                <div style="font-size: 13.5px; color: var(--text-muted); line-height: 1.75;">
+                  • <strong>Công nghệ:</strong> Giao diện <em>Mobile-First</em> siêu gọn nhẹ, tải nhanh tức thì ngay cả khi dùng 4G/3G sóng yếu.<br>
+                  • <strong>Đăng nhập không cần mật khẩu:</strong> Khách thuê đăng nhập nhanh bằng <strong>Số điện thoại + Mã PIN 6 số</strong> do chủ nhà cấp, loại bỏ hoàn toàn phiền toái phải nhớ mật khẩu hay xác thực email.<br>
+                  • <strong>Tính năng tập trung:</strong> Xem bảng kê hóa đơn chi tiết hàng tháng, quét mã VietQR tự động để thanh toán đúng từng đồng, và chụp ảnh gửi báo cáo sự cố hư hỏng trong phòng về cho ban quản lý xử lý.
+                </div>
+              </div>
+            </div>
           </div>
-          <div style="background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-            <h4 style="font-size: 14.5px; font-weight: 700; color: #7c3aed; margin-bottom: 6px;">3. Edge Middleware Guard</h4>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-              Chạy tại rìa mạng trước khi request chạm vào server. Phân tách rành mạch: bảo vệ /dashboard bằng Supabase Auth JWT và /portal bằng Tenant JWT cookie.
+
+          <!-- CHẶNG 3 -->
+          <div style="background: var(--border-subtle); padding: 20px 24px; border-radius: var(--radius-md); border: 1px solid var(--border); border-left: 4px solid #6366f1;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: #4f46e5; display: flex; align-items: center; gap: 8px;">
+                <span>⚡</span> 3. Chặng 3: Tầng Máy Chủ Ứng Dụng Trung Tâm (Next.js 15 App Router & React 19)
+              </h4>
+              <span style="font-size: 11.5px; padding: 3px 10px; border-radius: 12px; background: #e0e7ff; color: #3730a3; font-weight: 600;">Bộ Não Xử Lý Dữ Liệu</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-main); line-height: 1.75;">
+              Mọi hành động và yêu cầu dữ liệu từ cả 2 cổng đều được chuyển về máy chủ Next.js 15 xử lý tập trung. Hệ thống áp dụng 4 cơ chế tối ưu hóa hiện đại nhất của React 19:
             </p>
+            <div style="margin-top: 10px; font-size: 13.5px; color: var(--text-muted); line-height: 1.8; padding-left: 8px;">
+              • <strong>React 19 Server Actions:</strong> Thay vì phải viết các API RESTful trung gian rườm rà, các thao tác nghiệp vụ (ghi chỉ số điện nước, lập hợp đồng thuê, quyết toán trả phòng, đổi trạng thái sự cố) được gọi trực tiếp như một hàm JavaScript chạy trên máy chủ. Toàn bộ logic nhạy cảm và chìa khóa bảo mật (API keys, Database secrets) được giữ tuyệt mật trên server, không bao giờ gửi xuống trình duyệt.<br>
+              • <strong>React.cache() Memoization:</strong> Tự động ghi nhớ phiên xác thực (Auth) và thông tin tổ chức (Organization) trong suốt vòng đời của 1 request. Nhờ đó, dù một trang web có nhiều thành phần component cùng cần đọc thông tin tổ chức thì database cũng chỉ phải truy vấn đúng 1 lần duy nhất, loại bỏ triệt để các câu truy vấn lặp lại lãng phí.<br>
+              • <strong>Truy vấn song song (Parallel Data Fetching với Promise.all):</strong> Máy chủ đồng thời gửi yêu cầu nạp dữ liệu của các bảng (phòng trọ, hợp đồng, hóa đơn, sự cố) cùng lúc thay vì đợi xong bảng này mới gọi bảng kia, xóa bỏ hoàn toàn hiện tượng nghẽn cổ chai thác nước (waterfall).<br>
+              • <strong>Edge Link Prefetching:</strong> Khi người dùng rê chuột qua các mục menu trên thanh điều hướng, trình duyệt tự động nạp trước dữ liệu của trang tiếp theo ở chế độ nền. Khi người dùng bấm chuột, trang mới hiển thị ngay lập tức với tốc độ chuyển trang dưới 500ms.
+            </div>
           </div>
+
+          <!-- CHẶNG 4 -->
+          <div style="background: var(--border-subtle); padding: 20px 24px; border-radius: var(--radius-md); border: 1px solid var(--border); border-left: 4px solid #f59e0b;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: #d97706; display: flex; align-items: center; gap: 8px;">
+                <span>🗄️</span> 4. Chặng 4: Tầng Dịch Vụ Nền Tảng (Supabase PostgreSQL, Supabase Storage & PayOS)
+              </h4>
+              <span style="font-size: 11.5px; padding: 3px 10px; border-radius: 12px; background: #fef3c7; color: #92400e; font-weight: 600;">Dịch Vụ Đám Mây Chuyên Biệt</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-main); line-height: 1.75;">
+              Tại tầng cuối cùng, máy chủ Next.js giao tiếp với 3 dịch vụ đám mây chuyên biệt để thực hiện lưu trữ bền vững và thanh toán tự động:
+            </p>
+            <div style="margin-top: 10px; font-size: 13.5px; color: var(--text-muted); line-height: 1.8; padding-left: 8px;">
+              • <strong>Supabase PostgreSQL (Cơ sở dữ liệu quan hệ trung tâm):</strong><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ <em>Bảo mật đa người thuê (Row Level Security - RLS):</em> Mọi bảng dữ liệu đều gắn khóa ngoại <code>org_id</code>. Nhân cơ sở dữ liệu PostgreSQL tự động kiểm tra quyền sở hữu trên từng dòng dữ liệu, đảm bảo tuyệt đối rằng Chủ nhà A không bao giờ có thể đọc hoặc sửa nhầm dữ liệu của Chủ nhà B.<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ <em>Chống xung đột dữ liệu (Concurrency-Safe Constraints):</em> Áp dụng các chỉ mục duy nhất (Unique Index) nghiêm ngặt để chặn đứng việc ghi đè chỉ số điện nước 2 lần trong 1 tháng hoặc tình trạng đặt trùng phòng homestay khi có nhiều người cùng thao tác đồng thời.<br>
+              • <strong>Supabase Storage (Kho lưu trữ tệp tin riêng tư):</strong><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ Lưu trữ ảnh chụp Căn cước công dân (CCCD) và ảnh chụp công tơ điện nước trong các Private Bucket (chế độ riêng tư tuyệt đối).<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ Khi giao diện cần hiển thị, máy chủ cấp đường link tạm thời (Signed URL) có chữ ký số tự hết hạn sau 60 phút. Sau thời gian này link hoàn toàn vô hiệu, bảo vệ tối đa quyền riêng tư của khách thuê.<br>
+              • <strong>PayOS Gateway (Cổng thanh toán tự động VietQR):</strong><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ <em>Sinh mã VietQR động:</em> Tự động sinh mã QR ngân hàng chuẩn Napas247 chứa sẵn chính xác số tiền, số tài khoản nhận và mã hóa đơn duy nhất. Khách thuê chỉ cần quét mã là thanh toán chính xác từng đồng.<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;↳ <em>Webhook đối soát tức thì:</em> Ngay khi tiền vào tài khoản ngân hàng, PayOS gửi Webhook có chữ ký số bảo mật <strong>HMAC-SHA256</strong> về máy chủ. Hệ thống tự động xác thực và gạch nợ hóa đơn sang trạng thái "Đã thanh toán" chỉ trong vòng 2–3 giây mà không cần con người can thiệp.
+            </div>
+          </div>
+
+          <!-- TỔNG KẾT 3 ĐIỂM SÁNG BẢO VỆ -->
+          <div style="background: var(--bg-card); border: 2px dashed var(--primary); padding: 18px 22px; border-radius: var(--radius-md); margin-top: 4px;">
+            <h5 style="font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <span>💡</span> 3 Điểm Sáng Kiến Trúc Cần Nhấn Mạnh Khi Bảo Vệ Trước Hội Đồng
+            </h5>
+            <div style="font-size: 13.5px; color: var(--text-main); line-height: 1.8;">
+              1. <strong>Tách biệt 2 cổng truy cập (/dashboard vs /portal):</strong> Giải quyết trúng bài toán thực tế: Chủ nhà cần màn hình lớn với nhiều công cụ nghiệp vụ sâu, trong khi khách thuê chỉ cần giao diện di động siêu nhẹ, đăng nhập bằng mã PIN 1 chạm không cần nhớ mật khẩu.<br>
+              2. <strong>Bảo mật RLS tại nhân PostgreSQL:</strong> Bảo vệ dữ liệu ngay tại tầng lõi database thay vì chỉ phụ thuộc vào câu lệnh lọc ở tầng code ứng dụng, đạt tiêu chuẩn bảo mật đa người dùng (Multi-Tenancy) của các hệ thống SaaS chuyên nghiệp.<br>
+              3. <strong>Tự động hóa thanh toán khép kín:</strong> Sự kết hợp giữa mã VietQR động và Webhook đối soát tự động của PayOS giúp chủ trọ loại bỏ 100% công sức kiểm tra sao kê hay chụp màn hình tin nhắn ngân hàng thủ công.
+            </div>
+          </div>
+
         </div>
       </div>
-
-    </div>
+</div>
 
 
     <!-- ========================================== -->
